@@ -14,10 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\" />
-    <Folder Include="Dtos\" />
-    <Folder Include="Extensions\" />
-    <Folder Include="Services\" />
     <Folder Include="OptionTypes\" />
   </ItemGroup>
 

@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NaturalAndNutritious.Business.Abstractions;
+using NaturalAndNutritious.Business.Services;
 using NaturalAndNutritious.Data.Data;
 using NaturalAndNutritious.Data.Entities;
 
@@ -35,7 +37,7 @@ builder.Services.AddAuthentication()
 //-------------------------------------------------------------
 
 builder.Services.AddSession();
-//builder.Services.AddScoped<IStorageService, LocalStorageService>();
+builder.Services.AddScoped<IStorageService, LocalStorageService>();
 //Services.AddSingleton<IStorageService, LocalStorageService>();
 
 var app = builder.Build();
