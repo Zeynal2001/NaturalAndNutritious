@@ -14,11 +14,11 @@ namespace NaturalAndNutritious.Data.Repositories
 
         private readonly AppDbContext _context;
 
-        public async Task<IQueryable<Order>> GetOrdersByUserId(Guid userId)
+        public async Task<IQueryable<Order>> GetOrdersByUserId(string userId)
         {
             return await Task.Run(() => _context.Orders
                 .Include(o => o.AppUser)
-                .Where(o => o.AppUser.Id == userId.ToString()));
+                .Where(o => o.AppUser.Id == userId));
         }
 
         public async Task<IQueryable<OrderDetail>> GetOrderDetailsByOrderId(Guid orderId)

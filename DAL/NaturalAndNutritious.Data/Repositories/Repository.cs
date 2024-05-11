@@ -35,6 +35,11 @@ namespace NaturalAndNutritious.Data.Repositories
 
         public IQueryable<T> FilterWithPagination(int page, int size)
         {
+            if (page == 0 && size == 0)
+            {
+                return Table;
+            }
+
             return Table.Skip((page - 1) * size).Take(size);
         }
 

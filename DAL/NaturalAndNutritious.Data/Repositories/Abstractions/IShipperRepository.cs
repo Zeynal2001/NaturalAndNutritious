@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NaturalAndNutritious.Data.Repositories.Abstractions
 {
-    internal interface IShipperRepository : IRepository<Shipper>
+    public interface IShipperRepository : IRepository<Shipper>
     {
 
     }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using NaturalAndNutritious.Business.Abstractions;
+using NaturalAndNutritious.Business.Abstractions.RepoServiceInterfaces;
 using NaturalAndNutritious.Data.Entities;
 
 namespace NaturalAndNutritious.Presentation.Controllers

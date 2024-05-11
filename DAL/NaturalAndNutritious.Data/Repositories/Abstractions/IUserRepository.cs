@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace NaturalAndNutritious.Data.Repositories.Abstractions
 {
-    public interface IDiscountRepository : IRepository<Discount>
+    public interface IUserRepository
     {
-        Task<IQueryable<Discount>> GetDiscountsByProductId(Guid productId);
-        Task<Product> GetProductByDiscountId(Guid discountId);
+        Task<IQueryable<Order>> GetOrdersByUserId(string userId);
+        Task<IQueryable<Review>> GetReviewsByUserId(string userId);
+
     }
 }

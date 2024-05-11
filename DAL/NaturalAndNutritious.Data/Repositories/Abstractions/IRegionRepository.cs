@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NaturalAndNutritious.Data.Repositories.Abstractions
 {
-    internal interface IRegionRepository : IRepository<Region>
+    public interface IRegionRepository : IRepository<Region>
     {
 
     }

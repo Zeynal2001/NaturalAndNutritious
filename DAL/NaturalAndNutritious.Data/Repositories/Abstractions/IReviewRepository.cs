@@ -7,7 +7,11 @@ using System.Threading.Tasks;
 
 namespace NaturalAndNutritious.Data.Repositories.Abstractions
 {
-    internal interface IReviewRepository : IRepository<Review>
+    public interface IReviewRepository : IRepository<Review>
     {
+        Task<IQueryable<Review>> GetReviewsByProductId(Guid productId);
+        Task<IQueryable<Review>> GetReviewsByUserId(string userId);
+        Task<Product> GetProductByReviewId(Guid reviewId);
+        Task<AppUser> GetUserByReviewId(Guid reviewId);
     }
 }

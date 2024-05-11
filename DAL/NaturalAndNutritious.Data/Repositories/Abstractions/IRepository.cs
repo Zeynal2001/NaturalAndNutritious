@@ -11,7 +11,7 @@ namespace NaturalAndNutritious.Data.Repositories.Abstractions
     {
         DbSet<TEntity> Table { get; }
         Task<IQueryable<TEntity>> GetAllAsync();
-        IQueryable<TEntity> FilterWithPagination( int page, int size);
+        IQueryable<TEntity> FilterWithPagination( int page = 0, int size = 0);
         Task<TEntity?> GetByIdAsync(Guid id);
         Task CreateAsync(TEntity entity);
         Task<bool> UpdateAsync(TEntity updatedEntity);
