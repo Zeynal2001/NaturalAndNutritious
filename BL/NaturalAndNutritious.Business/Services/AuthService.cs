@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using NaturalAndNutritious.Business.Abstractions;
 using NaturalAndNutritious.Business.Abstractions.RepoServiceInterfaces;
+using NaturalAndNutritious.Business.Services.Results;
 using NaturalAndNutritious.Data.Entities;
 using System;
 using System.Collections.Generic;
@@ -22,5 +23,15 @@ namespace NaturalAndNutritious.Business.Services
         private readonly UserManager<AppUser> _userManager; //Cox vaxti register ucun istifade edilir
         private readonly SignInManager<AppUser> _signInManager; //Cox vaxti login ucun istifade edilir
         private readonly IStorageService _storageService;
+
+        public Task<ServiceResult> Login(string username, string password)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ServiceResult> Register(string username, string password)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

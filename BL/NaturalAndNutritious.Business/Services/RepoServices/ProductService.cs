@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NaturalAndNutritious.Business.Abstractions.RepoServiceInterfaces;
 using NaturalAndNutritious.Data.Entities;
 using NaturalAndNutritious.Data.Repositories.Abstractions;
@@ -19,7 +20,13 @@ namespace NaturalAndNutritious.Business.Services.RepoServices
 
         public async Task CreateProductAsync(Product product)
         {
-             await _productRepository.CreateAsync(product);
+
+            var produdctu = new Product
+            {
+                Category = product.Category,
+            };
+
+             await _productRepository.CreateAsync(produdctu);
         }
 
         public async Task<bool> UpdateAsync(Product updatedProduct)

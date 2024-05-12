@@ -18,6 +18,7 @@ namespace NaturalAndNutritious.Data.Entities
         public int UnitsOnOrder { get; set; }
         public int ReorderLevel { get; set; }
         public bool Discontinued { get; set; }
+        public int ViewsCount { get; set; }
 
         public IEnumerable<Review> Reviews { get; set; }
         public IEnumerable<Order> Orders { get; set; }

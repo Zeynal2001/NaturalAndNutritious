@@ -51,29 +51,29 @@ namespace NaturalAndNutritious.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a1ce9eaf-c0e6-4ff0-8a06-c50ccc687ec5",
-                            ConcurrencyStamp = "2c74a585-dd72-4946-9448-49a3404370ee",
+                            Id = "4256d88e-c2bf-4cfd-9f71-e22e9591377f",
+                            ConcurrencyStamp = "0cf54db0-56bb-49e0-a529-afe05e835120",
                             Name = "None",
                             NormalizedName = "NONE"
                         },
                         new
                         {
-                            Id = "cfaf5fa5-618a-491b-8b76-9e997664419a",
-                            ConcurrencyStamp = "41c30e95-65d8-4439-86c5-7822ae6c268b",
+                            Id = "6eda9e48-cd67-468c-a860-cb4494baa9dc",
+                            ConcurrencyStamp = "91d0ec92-e860-4f5b-95dc-975ed463f0ec",
                             Name = "Admin",
                             NormalizedName = "ADMİN"
                         },
                         new
                         {
-                            Id = "4637d3ce-ae08-43e1-adfa-c7de62ec66cc",
-                            ConcurrencyStamp = "f2c7e748-9d9f-4d70-8558-922718e0fe26",
+                            Id = "8c835ae2-5db8-4da0-97de-92bbbc39a2e6",
+                            ConcurrencyStamp = "22326463-3bff-4f16-b763-450dbd0838b8",
                             Name = "Client",
                             NormalizedName = "CLİENT"
                         },
                         new
                         {
-                            Id = "92ebce47-9d5a-4a86-a01b-286b158cc743",
-                            ConcurrencyStamp = "f81b9ae1-0868-4d89-b094-576c16164de7",
+                            Id = "fdb12ca5-a56a-42ba-8246-001ff3be52d2",
+                            ConcurrencyStamp = "953399fe-0870-4b07-a046-cf531f87f9e8",
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         });
@@ -486,6 +486,9 @@ namespace NaturalAndNutritious.Data.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("ViewsCount")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

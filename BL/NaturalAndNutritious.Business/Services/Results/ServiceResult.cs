@@ -14,20 +14,11 @@ namespace NaturalAndNutritious.Business.Services.Results
         public string Message { get; set; }
         public IEnumerable<string> CustomErrrors { get; set; }
 
-        
-        //RepositoryResult result = new RepositoryResult();
-        //public void ububu()
-        //{
-        //    if (result.IsNull)
-        //    {
-                
-        //    }
-        //}
 
-        public ServiceResult() 
-        { 
+        public ServiceResult()
+        {
             IsNull = false;
-            Success = false;
+            Success = true;
             Message = "";//string.Empty;
             CustomErrrors = new List<string>();
         }

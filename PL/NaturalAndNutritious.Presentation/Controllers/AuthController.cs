@@ -7,22 +7,28 @@ namespace NaturalAndNutritious.Presentation.Controllers
 {
     public class AuthController : Controller
     {
-        public AuthController(IAuthService authService)
-        {
-            _authService = authService;
-        }
+        //public AuthController(IAuthService authService)
+        //{
+        //    _authService = authService;
+        //}
 
-        private readonly IAuthService _authService;
-        
-        public IActionResult Login()
+        //private readonly IAuthService _authService;
+
+        public IActionResult Login(string? returnUrl)
         {
+            ViewData["title"] = "Login";
+
+            ViewData["hasError"] = false;
+
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Login(object _)
+        public IActionResult Register()
         {
+            ViewData["title"] = "Register";
+
+            ViewData["hasError"] = false;
+
             return View();
         }
 
@@ -31,9 +37,12 @@ namespace NaturalAndNutritious.Presentation.Controllers
             return View();
         }
 
-
-        public IActionResult Register()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Login(object _)
         {
+            ViewData["hasError"] = false;
+
             return View();
         }
 
@@ -41,6 +50,8 @@ namespace NaturalAndNutritious.Presentation.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Register(object _)
         {
+            ViewData["hasError"] = false;
+
             return View();
         }
     }

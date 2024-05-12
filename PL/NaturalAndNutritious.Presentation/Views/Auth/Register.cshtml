@@ -1,0 +1,75 @@
+﻿@model RegisterModel
+
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">@ViewData["title"]</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a asp-action="Login">@Context.Request.Path.ToString().Replace("/Auth/Register", "Auth")</a></li>
+        <li class="breadcrumb-item"><a asp-action="Login">@Context.Request.Path.ToString().Replace("/Auth/Register", "Register")</a></li>
+        @* <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+        <li class="breadcrumb-item active text-white">Shop</li> *@
+    </ol>
+</div>
+
+<div class="section trending m-5">
+    <div class="container">
+        @if ((bool)ViewData["hasError"])
+        {
+            <div asp-validation-summary="All" class="alert alert-danger"></div>
+        }
+
+        <form method="post" enctype="multipart/form-data">
+            <!-- Email input -->
+            <div class="form-outline mb-4">
+                <input asp-for="ProfilePhoto" class="form-control" accept=".png, .jpg, .jpeg, .svg" />
+                <label asp-for="ProfilePhoto" class="form-label"></label>
+            </div>
+
+            <div class="form-outline mb-4">
+                <input asp-for="FirstName" class="form-control" />
+                <label asp-for="FirstName" class="form-label"></label>
+            </div>
+
+            <div class="form-outline mb-4">
+                <input asp-for="LastName" class="form-control" />
+                <label asp-for="LastName" class="form-label"></label>
+            </div>
+
+            <div class="form-outline mb-4">
+                <input asp-for="BirthDate" type="date" class="form-control" />
+                <label asp-for="BirthDate" class="form-label"></label>
+            </div>
+
+
+            <div class="form-outline mb-4">
+                <input asp-for="Email" type="email" id="form2Example1" class="form-control" />
+                <label asp-for="Email" class="form-label" for="form2Example1">Email address</label>
+            </div>
+
+            <!-- Password input -->
+            <div class="form-outline mb-4">
+                <input asp-for="Password" type="password" id="form2Example2" class="form-control" />
+                <label asp-for="Password" class="form-label" for="form2Example2">Password</label>
+            </div>
+
+            <div class="form-outline mb-4">
+                <input asp-for="ConfirmPassword" type="password" id="form2Example2" class="form-control" />
+                <label asp-for="ConfirmPassword" class="form-label" for="form2Example2">ConfPassword</label>
+            </div>
+
+            <!-- Submit button -->
+            <div class="container d-flex align-items-center justify-content-center">
+
+                @* <button type="button" class="btn btn-primary btn-block mb-4">Sign up</button> *@
+                <button type="submit" class="btn btn-primary btn-block mb-4">Sign up</button>
+
+            </div>
+
+            <!-- Register buttons -->
+            <div class="text-center">
+                <p>Already have account? <a asp-action="Login" asp-controller="Auth">Login</a></p>
+            </div>
+        </form>
+
+    </div>
+</div>

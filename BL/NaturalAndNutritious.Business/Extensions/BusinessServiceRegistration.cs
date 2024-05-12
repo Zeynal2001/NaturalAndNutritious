@@ -17,7 +17,7 @@ namespace NaturalAndNutritious.Business.Extensions
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
-            services.AddScoped<IOrderDetailRepository, IOrderDetailRepository>();
+            services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
         }
