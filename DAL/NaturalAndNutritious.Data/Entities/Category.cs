@@ -10,6 +10,6 @@ namespace NaturalAndNutritious.Data.Entities
     {
         public string CategoryName { get; set; }
         public IEnumerable<Product> Products { get; set; }
-        public IEnumerable<SubCategory>? SubCategories { get; set; }
+        public IEnumerable<SubCategory> SubCategories { get; set; }
     }
 }

@@ -1,23 +1,23 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using NaturalAndNutritious.Business.Abstractions.RepoServiceInterfaces;
-using NaturalAndNutritious.Data.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
+using NaturalAndNutritious.Business.Abstractions;
+using NaturalAndNutritious.Business.Dtos;
 
 namespace NaturalAndNutritious.Presentation.Controllers
 {
     public class AuthController : Controller
     {
-        //public AuthController(IAuthService authService)
-        //{
-        //    _authService = authService;
-        //}
+        public AuthController(IAuthService authService, IStorageService storageService)
+        {
+            _authService = authService;
+            _storageService = storageService;
+        }
 
-        //private readonly IAuthService _authService;
+        private readonly IAuthService _authService;
+        private readonly IStorageService _storageService;
 
         public IActionResult Login(string? returnUrl)
         {
             ViewData["title"] = "Login";
-
             ViewData["hasError"] = false;
 
             return View();
@@ -26,33 +26,82 @@ namespace NaturalAndNutritious.Presentation.Controllers
         public IActionResult Register()
         {
             ViewData["title"] = "Register";
-
             ViewData["hasError"] = false;
 
             return View();
         }
 
-        public IActionResult LogOut()
+        public async Task<IActionResult> LogOut()
         {
-            return View();
-        }
+            await _authService.LogOut();
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Login(object _)
-        {
-            ViewData["hasError"] = false;
-
-            return View();
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Register(object _)
+        public async Task<IActionResult> Login(LoginDto model, string? returnUrl)
         {
             ViewData["hasError"] = false;
 
-            return View();
+            if (!ModelState.IsValid)
+            {
+                ViewData["hasError"] = true;
+                return View(model);
+            }
+
+            var result = await _authService.Login(model);
+
+            if (result.IsNull)
+            {
+                ViewData["hasError"] = true;
+                ModelState.AddModelError("loginErors", result.Message);
+                return View(model);
+            }
+
+            if (!result.Success)
+            {
+                ViewData["hasError"] = true;
+                ModelState.AddModelError("loginErors", result.Message);
+                return View(model);
+            }
+
+            if (returnUrl != null)
+            {
+                return Redirect(returnUrl);
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterDto model)
+        {
+            ViewData["hasError"] = false;
+
+            if (!ModelState.IsValid)
+            {
+                ViewData["hasError"] = true;
+                return View(model);
+            }
+
+            var result = await _authService.Register(model, "profile-photos");
+
+            if (!result.Success)
+            {
+                ViewData["hasError"] = true;
+                ModelState.AddModelError("registerErrors", result.Message);
+                return View(model);
+            }
+
+            if (result.Success)
+            {
+                TempData["successMsg"] = result.Message;
+                return RedirectToAction("Login");
+            }
+
+            return View(model);
         }
     }
 }

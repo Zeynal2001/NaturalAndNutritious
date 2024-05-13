@@ -19,7 +19,7 @@ namespace NaturalAndNutritious.Data.Entities
         [NotMapped]
         public string FullName { get => FName + "" + LName; }
 
-        public virtual List<Order>? Orders { get; set; }
+        public virtual List<Order> Orders { get; set; }
         public IEnumerable<Review> Reviews { get; set; }
     }
 }

@@ -8,14 +8,12 @@ namespace NaturalAndNutritious.Business.Services
 {
     public class LocalStorageService : IStorageService
     {
-
-
-        private readonly string _storagePath;
-
         public LocalStorageService(IWebHostEnvironment env)
         {
             _storagePath = Path.Combine(env.WebRootPath, "uploads");
         }
+        
+        private readonly string _storagePath;
 
         public async Task DeleteFileAsync(string dirPath, string fileName)
         {

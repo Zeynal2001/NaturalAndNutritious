@@ -5,8 +5,7 @@ using NaturalAndNutritious.Business.Extensions;
 using NaturalAndNutritious.Business.Services;
 using NaturalAndNutritious.Data.Data;
 using NaturalAndNutritious.Data.Entities;
-using NaturalAndNutritious.Data.Repositories;
-using NaturalAndNutritious.Data.Repositories.Abstractions;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

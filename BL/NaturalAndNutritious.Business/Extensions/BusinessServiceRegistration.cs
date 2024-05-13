@@ -1,11 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using NaturalAndNutritious.Data.Repositories.Abstractions;
-using NaturalAndNutritious.Data.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NaturalAndNutritious.Data.Abstractions;
+using NaturalAndNutritious.Business.Repositories;
+using NaturalAndNutritious.Business.Services;
+using NaturalAndNutritious.Business.Abstractions;
 
 namespace NaturalAndNutritious.Business.Extensions
 {
@@ -20,6 +22,7 @@ namespace NaturalAndNutritious.Business.Extensions
             services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
+            services.AddScoped<IAuthService, AuthService>();
         }
     }
 }
