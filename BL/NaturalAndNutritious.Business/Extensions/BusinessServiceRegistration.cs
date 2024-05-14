@@ -23,6 +23,8 @@ namespace NaturalAndNutritious.Business.Extensions
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IProfileService, ProfileService>();
         }
     }
 }

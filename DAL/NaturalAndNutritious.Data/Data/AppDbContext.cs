@@ -26,6 +26,7 @@ namespace NaturalAndNutritious.Data.Data
         public DbSet<Shipper> Shippers { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Territory> Territories { get; set; }
+        public DbSet<Blog> Blogs { get; set; }
 
 
 

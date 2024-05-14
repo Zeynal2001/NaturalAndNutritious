@@ -1,0 +1,12 @@
+﻿
+<!-- Single Page Header start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">@ViewData["title"]</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a asp-action="Index">@Context.Request.Path.ToString().Replace("/Profile/Edit", "Profile")</a></li>
+        <li class="breadcrumb-item"><a asp-action="Edit">@Context.Request.Path.ToString().Replace("/Profile/Edit", "Edit")</a></li>
+    </ol>
+</div>
+<!-- Single Page Header End -->
+
+<h1>Edit</h1>

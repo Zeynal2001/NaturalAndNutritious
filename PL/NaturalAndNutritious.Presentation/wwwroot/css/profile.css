@@ -1,0 +1,84 @@
+﻿body {
+    background-color: #f8f9fa;
+}
+
+.profile-container {
+    max-width: 600px;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    /* Profil resmini dairevi yapar */
+    object-fit: cover;
+}
+
+.profile-name {
+    font-size: 24px;
+    margin-bottom: 5px;
+    color: #000;
+}
+
+.profile-email {
+    color: #666;
+}
+
+.profile-details {
+    text-align: center;
+}
+
+    .profile-details h3 {
+        font-size: 20px;
+        border-bottom: 2px solid #81c408;
+        padding-bottom: 5px;
+        margin-bottom: 20px;
+        color: #81c408;
+    }
+
+    .profile-details ul {
+        list-style: none;
+        padding: 0;
+        display: inline-block;
+    }
+
+        .profile-details ul li {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+            .profile-details ul li strong {
+                color: #81c408;
+                min-width: 100px;
+                display: inline-block;
+                text-align: left;
+            }
+
+            .profile-details ul li span {
+                color: #81c408;
+                min-width: 100px;
+                display: inline-block;
+                text-align: left;
+            }
+
+.profile-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+    .profile-actions .btn {
+        margin-right: 10px;
+    }

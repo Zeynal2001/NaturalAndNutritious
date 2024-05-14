@@ -1,12 +1,33 @@
-﻿@* @model ErrorViewModel
+﻿@* @model ErrorViewModel *@
 @{
     ViewData["Title"] = "Error";
 }
+<!-- Single Page Header start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">404 Error</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a asp-action="Login">@Context.Request.Path.ToString()</a></li>
+    </ol>
+</div>
+<!-- Single Page Header End -->
+<!-- 404 Start -->
+<div class="container-fluid py-5">
+    <div class="container py-5 text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <i class="bi bi-exclamation-triangle display-1 text-secondary"></i>
+                <h1 class="display-1">404</h1>
+                <h1 class="mb-4">Page Not Found</h1>
+                <p class="mb-4">An error occurred while processing your request.</p>
+                <p class="mb-4">@ViewData["msg"]</p>
+                <a asp-action="Index" asp-controller="Home" class="btn border-secondary rounded-pill py-3 px-5" href="index.html">Go Back To Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 404 End -->
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
-
-@if (Model.ShowRequestId)
+@* @if (Model.ShowRequestId)
 {
     <p>
         <strong>Request ID:</strong> <code>@Model.RequestId</code>
@@ -22,5 +43,4 @@
     It can result in displaying sensitive information from exceptions to end users.
     For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
     and restarting the app.
-</p>
- *@
+</p> *@

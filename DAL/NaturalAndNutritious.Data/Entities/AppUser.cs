@@ -17,7 +17,7 @@ namespace NaturalAndNutritious.Data.Entities
         public bool IsSubscribed { get; set; }
         public string? ProfilePhotoUrl { get; set; }
         [NotMapped]
-        public string FullName { get => FName + "" + LName; }
+        public string FullName { get => FName + " " + LName; }
 
         public virtual List<Order> Orders { get; set; }
         public IEnumerable<Review> Reviews { get; set; }

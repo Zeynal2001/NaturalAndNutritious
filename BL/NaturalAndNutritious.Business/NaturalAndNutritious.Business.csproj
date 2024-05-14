@@ -17,4 +17,8 @@
     <Folder Include="OptionTypes\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="JalilVerdiyev.SessionMapper" Version="1.0.4" />
+  </ItemGroup>
+
 </Project>

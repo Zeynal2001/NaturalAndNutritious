@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using NaturalAndNutritious.Data.Abstractions;
 using NaturalAndNutritious.Data.Data;
 using NaturalAndNutritious.Data.Entities;
@@ -12,12 +13,14 @@ namespace NaturalAndNutritious.Business.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        public UserRepository(AppDbContext context)
+        public UserRepository(AppDbContext context, UserManager<AppUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         private readonly AppDbContext _context;
+        private readonly UserManager<AppUser> _userManager;
 
         public Task<IQueryable<Order>> GetOrdersByUserId(string userId)
         {
@@ -39,6 +42,21 @@ namespace NaturalAndNutritious.Business.Repositories
 
             //Və burada da asinxron bir task içində onları return eləyirik.
             return Task.FromResult(reviews);
+        }
+
+        public async Task<AppUser> GetUserByIdAsync(string userId)
+        {
+            return await _userManager.FindByIdAsync(userId);
+        }
+
+        public async Task<IdentityResult> UpdateUserAsync(AppUser user)
+        {
+            return await _userManager.UpdateAsync(user);
+        }
+
+        public async Task<IdentityResult> ChangeUserPasswordAsync(AppUser user, string currentPassword, string newPassword)
+        {
+            return await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
         }
 
 

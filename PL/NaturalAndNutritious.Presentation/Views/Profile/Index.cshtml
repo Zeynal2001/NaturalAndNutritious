@@ -1,0 +1,51 @@
+﻿@model ProfileIndexDto
+
+@section profilecss {
+    <link rel="stylesheet" href="~/css/profile.css" />
+}
+
+<!-- Single Page Header start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">@ViewData["title"]</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a asp-action="Index">@Context.Request.Path.ToString().Replace("/Profile", "")</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index">@Context.Request.Path.ToString().Replace("/Profile", "Profile")</a></li>
+        @* <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+        <li class="breadcrumb-item active text-white">Shop</li> *@
+    </ol>
+</div>
+<!-- Single Page Header End -->
+
+<div class="container">
+    <div class="profile-container">
+        @if (TempData["succesMsg"] != null)
+        {
+            <div class="alert alert-success">@TempData["succesMsg"]</div>
+        }
+        <div class="profile-header">
+            <img src="~/@Model.ProfilPhoto" alt="Profile Photo" class="profile-avatar">
+            <h2 class="profile-name">@Model.FullName</h2>
+            <p class="profile-email"><a href="mailto:@Model.Email">@Model.Email</a></p>
+        </div>
+        <div class="profile-details">
+            <h3>Personal Information</h3>
+            <div class="row">
+                <div class="col-sm-6">
+                    <ul>
+                        <li><strong>Date of Birth:</strong></li>
+                    </ul>
+                </div>
+                <div class="col-sm-6">
+                    <ul>
+                        <li><span>@Model.DateOfBirth.Day/@Model.DateOfBirth.Month/@Model.DateOfBirth.Year</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="profile-actions">
+            <a asp-action="Edit" class="btn btn-outline-success" style="color: rgba(255,181,36,255)">Edit</a>
+            <a href="#" class="btn btn-danger">Delete Account</a>
+        </div>
+    </div>
+</div>

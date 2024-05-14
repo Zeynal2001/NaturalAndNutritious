@@ -16,10 +16,10 @@
     <Folder Include="Areas\admin_panel\Data\" />
     <Folder Include="Areas\admin_panel\Models\" />
     <Folder Include="Areas\admin_panel\Views\" />
-    <Folder Include="ViewModels\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="JalilVerdiyev.SessionMapper" Version="1.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.29">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

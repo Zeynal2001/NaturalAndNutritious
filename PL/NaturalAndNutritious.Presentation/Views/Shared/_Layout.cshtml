@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+<!DOCTYPE html>
 <html lang="en">
 
     <head>
@@ -16,10 +17,10 @@
         <!-- Icon Font Stylesheet -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
         <!-- Libraries Stylesheet -->
         <link href="~/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
         <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+        @RenderSection("ProfileCss", false)
 
 
         <!-- Customized Bootstrap Stylesheet -->
@@ -118,10 +119,45 @@
                                 <i class="fa fa-shopping-bag fa-2x"></i>
                                 <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">3</span>
                             </a>
-                            <a asp-action="Login" asp-controller="Auth" class="my-auto">
-                                <i class="fas fa-user fa-2x"></i>
-                            </a>
-                        </div>
+
+                        @{
+                            if (User.Identity == null || !User.Identity.IsAuthenticated)
+                            {
+                                <a asp-action="Login" asp-controller="Auth" class="my-auto">
+                                    <i class="fas fa-user fa-2x"></i>
+                                </a>
+                            }
+                            else if (User.Identity.IsAuthenticated)
+                            {
+                                <div class="dropdown">
+                                    <a class="my-auto btn dropdown-toggle btn-scuccess" style="color: #ffb524" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-user fa-2x"></i>
+
+                                        @{
+                                            var name = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
+                                        }
+                                        @if (name != null)
+                                        {
+                                            @name.Value
+                                        }
+                                        else
+                                        {
+                                            <span>Profile</span>
+                                        }
+                                    </a>
+
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                        <li><a asp-action="Index" asp-controller="Profile" class="dropdown-item">Go to your profile</a></li>
+                                        <li><a asp-action="LogOut" asp-controller="Auth" class="dropdown-item">Sign Out</a></li>
+                                    </ul>
+                                    @* <a class="my-auto btn dropdown-toggle btn-scuccess">
+                                    <i class="fas fa-user fa-2x"></i>
+                                    </a> *@
+                                </div>
+                            }
+                        }
+                        
+                        
                     </div>
                 </nav>
             </div>
@@ -232,6 +268,7 @@
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/easing/easing.min.js"></script>
     <script src="~/lib/waypoints/waypoints.min.js"></script>
     <script src="~/lib/lightbox/js/lightbox.min.js"></script>
