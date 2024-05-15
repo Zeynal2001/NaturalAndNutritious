@@ -47,31 +47,49 @@ namespace NaturalAndNutritious.Presentation.Controllers
                 return View("Error");
             }
 
-            var editModel = models.ProfileEditModel;
+            //var editModel = models.ProfileEditModel;
 
-            HttpContext.Session.SetAsJson("userDetails", editModel);
+            //HttpContext.Session.SetAsJson("userDetails", editModel);
 
             return View(models.ProfileIndexModel);
         }
 
 
-        public IActionResult Edit()
+        public async Task<IActionResult> Edit()
         {
             ViewData["title"] = "Edit";
 
-            var userDetails = HttpContext.Session.Get<ProfileEditDto>("userDetails");
+            var Id = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            if (userDetails == null)
+            if (Id == null)
             {
-                ViewData["msg"] = "You aren't loggin in";
+                ViewData["msg"] = "You aren't logged in";
                 return View("Error");
             }
 
-            HttpContext.Session.Remove("userDetails");
+            var userResult = await _profileService.GetUserByIdAsync(Id);
+            if (userResult.IsNull)
+            {
+                ViewData["msg"] = userResult.Message;
+                return View("Error");
+            }
+
+            var user = userResult.FoundUser;
+
+            var profileEditDetails = new ProfileEditDto()
+            {
+                Id = user.Id,
+                FirstName = user.FName,
+                LastName = user.LName,
+                Email = user.Email,
+                NickName = user.UserName,
+                ProfilePhotoUrl = user.ProfilePhotoUrl,
+                BirthDate = user.BirthDate
+            };
 
             var editVm = new ProfileEditVm()
             {
-                ProfileDetails = userDetails
+                ProfileDetails = profileEditDetails
             };
 
             ViewData["hasError"] = false;
@@ -81,17 +99,17 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(ProfileEditVm model)
+        public async Task<IActionResult> Edit(ProfileEditVm vm)
         {
             ViewData["hasError"] = false;
 
             if (!ModelState.IsValid)
             {
                 ViewData["hasError"] = true;
-                return View(model);
+                return View(vm);
             }
 
-            var userResult = await _profileService.GetUserByIdAsync(model.ProfileDetails.Id);
+            var userResult = await _profileService.GetUserByIdAsync(vm.ProfileDetails.Id);
 
             if (userResult.IsNull)
             {
@@ -101,9 +119,9 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
             var user = userResult.FoundUser;
 
-            var profilePhotoUrl = await _profileService.CompleteFileOperations(model.ProfileDetails);
+            var profilePhotoUrl = await _profileService.CompleteFileOperations(vm.ProfileDetails);
 
-            var result = await _profileService.EditUserDetails(user, profilePhotoUrl, model.ProfileDetails);
+            var result = await _profileService.EditUserDetails(user, profilePhotoUrl, vm.ProfileDetails);
 
             if (!result.Succeeded)
             {
@@ -116,7 +134,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
                 ViewData["hasError"] = true;
             }
 
-            return View(model);
+            return View(vm);
         }
 
         [HttpPost]
@@ -131,7 +149,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
                 return View(model);
             }
 
-            var userResult = await _profileService.GetUserByIdAsync(model.ProfileDetails.Id);
+            var userResult = await _profileService.GetUserByIdAsync(model.ChangeDetails.Id);
 
             if (userResult.IsNull)
             {
@@ -150,8 +168,9 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
             ModelState.AddModelError("editErrors", result.Message);
             ViewData["hasError"] = true;
+            TempData["errorMsg"] = result.Message;
 
-            return View("Edit", model);
+            return RedirectToAction("Edit");
         }
     }
 }

@@ -21,6 +21,7 @@
         <link href="~/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
         <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
         @RenderSection("ProfileCss", false)
+        @RenderSection("ProfileEditCss", false)
 
 
         <!-- Customized Bootstrap Stylesheet -->
@@ -163,6 +164,27 @@
             </div>
         </div>
         <!-- Navbar End -->
+            
+        
+
+        <!-- Modal Search Start -->
+        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content rounded-0">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Search by keyword</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body d-flex align-items-center">
+                        <div class="input-group w-75 mx-auto d-flex">
+                            <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
+                            <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Search End -->
         
         
         @RenderBody()
@@ -175,7 +197,9 @@
                     <div class="row g-4">
                         <div class="col-lg-3">
                             <a href="#">
-                                <h1 class="text-primary mb-0">Fruitables</h1>
+                                <h1 class="text-primary mb-0">
+                                    Natural & Nutritious
+                                </h1>
                                 <p class="text-secondary mb-0">Fresh products</p>
                             </a>
                         </div>
@@ -246,7 +270,11 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        <span class="text-light"><a href="#"><i class="fas fa-copyright text-light me-2"></i>Your Site Name</a>, All right reserved.</span>
+                    <span class="text-light">
+                        <a asp-action="Index" asp-controller="Home">
+                            <i class="fas fa-copyright text-light me-2"></i>Natural & Nutritious
+                        </a>, All right reserved.
+                    </span>
                     </div>
                     <div class="col-md-6 my-auto text-center text-md-end text-white">
                         <!--/*** This template is free as long as you keep the below author’s credit link/attribution link/backlink. ***/-->
@@ -273,7 +301,7 @@
     <script src="~/lib/waypoints/waypoints.min.js"></script>
     <script src="~/lib/lightbox/js/lightbox.min.js"></script>
     <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
-
+    @RenderSection("ProfileEditJs", false)
     <!-- Template Javascript -->
     <script src="~/js/main.js"></script>
     </body>

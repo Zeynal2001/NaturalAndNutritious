@@ -46,16 +46,6 @@ namespace NaturalAndNutritious.Business.Services
                 {
                     IsNull = false,
                     Succeeded = true,
-                    ProfileEditModel = new Dtos.ProfileEditDto()
-                    {
-                        Id = user.Id,
-                        FirstName = user.FName,
-                        LastName = user.LName,
-                        Email = user.Email,
-                        NickName = user.FullName,
-                        ProfilePhotoUrl = user.ProfilePhotoUrl,
-                        BirthDate = user.BirthDate,
-                    },
                     ProfileIndexModel = new Dtos.ProfileIndexDto()
                     {
                         FullName = user.FullName,
