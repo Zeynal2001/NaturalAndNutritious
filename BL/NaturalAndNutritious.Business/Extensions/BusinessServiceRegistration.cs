@@ -1,13 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NaturalAndNutritious.Data.Abstractions;
 using NaturalAndNutritious.Business.Repositories;
 using NaturalAndNutritious.Business.Services;
 using NaturalAndNutritious.Business.Abstractions;
+using NaturalAndNutritious.Business.Abstractions.AdminPanelAbstractions;
+using NaturalAndNutritious.Business.Services.AdminPanelServices;
 
 namespace NaturalAndNutritious.Business.Extensions
 {
@@ -25,6 +22,10 @@ namespace NaturalAndNutritious.Business.Extensions
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IProfileService, ProfileService>();
+            services.AddScoped<IAdminAuthService, AdminAuthService>();
+            services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ICategoryService, CategoryService>();
         }
     }
 }

@@ -1,0 +1,55 @@
+﻿@model ChangeRoleVm
+@{
+    ViewData["Title"] = "Change User Role";
+}
+
+<div class="row">
+    <div class="col-md-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <div asp-validation-summary="All"></div>
+                <h4 class="card-title">Change User Role</h4>
+                <div class="row">
+                    <div class="container mb-4">
+                        <img src="~/@Model.ProfilePhotoPath" id="profile-image-show" width="200" height="200" />
+                        <p>@Model.UserName</p>
+                        <p>@Model.Email</p>
+                        @foreach (var userRole in Model.UserRoles)
+                        {
+                            <button type="button" class="btn btn-dark btn-rounded btn-fw">@userRole</button>
+                        }
+                    </div>
+                    <div class="container">
+                        <form class="forms-sample" method="post">
+                            <select asp-for="SelectedRoleId">
+                                @foreach (var role in Model.Roles)
+                                {
+                                    <option value="@role.Id">
+                                        @role.Name
+                                    </option>
+                                }
+                            </select>
+
+                            <input asp-for="@Model.Id" value="@Model.Id" hidden>
+
+                            <button type="submit" class="btn btn-primary me-2" style="color:honeydew;">Submit</button>
+                            <button asp-action="GetAllUsers" asp-controller="Users" class="btn btn-light">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*
+<div class="form-group">
+    <label for="exampleInputPassword1">Password</label>
+    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+</div>
+<div class="form-group">
+    <label for="exampleInputConfirmPassword1">Confirm Password</label>
+    <input type="password" class="form-control" id="exampleInputConfirmPassword1" placeholder="Password">
+</div>
+<button type="submit" class="btn btn-primary me-2">Submit</button>
+<button asp-action="GetAllUsers" asp-controller="Users" class="btn btn-light">Cancel</button>
+*@

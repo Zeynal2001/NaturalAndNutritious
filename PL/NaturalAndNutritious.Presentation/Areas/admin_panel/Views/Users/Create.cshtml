@@ -1,0 +1,59 @@
+﻿@model RegisterDto
+@{
+    ViewData["Title"] = "Create";
+}
+<div class="">
+    <div class="col-md-12 grid-margin">
+        <div class="card">
+            @if ((bool)ViewData["hasError"])
+            {
+                <div asp-validation-summary="All" class="alert alert-danger"></div>
+            }
+            <h4 class="card-title">Create User</h4>
+            <div class="">
+                <div class="container">
+                    <form class="forms-sample" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label asp-for="ProfilePhoto" class="form-label">Profile Photo:</label>
+                            <input asp-for="ProfilePhoto" class="form-control" type="file" id="formFile">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.FirstName" for="exampleInputUsername1">First Name:</label>
+                            <input asp-for="@Model.FirstName" type="text" class="form-control" id="exampleInputUsername1">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.LastName" for="exampleInputUsername2">Last Name:</label>
+                            <input asp-for="@Model.LastName" type="text" class="form-control" id="exampleInputUsername2">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.BirthDate" for="exampleInputBirthDate">Birth Date:</label>
+                            <input asp-for="@Model.BirthDate" type="date" class="form-control" id="exampleInputBirthDate">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.Email" for="exampleInputEmail1">Email address:</label>
+                            <input asp-for="@Model.Email" type="email" class="form-control" id="exampleInputEmail1">
+                        </div>
+
+                        <!-- Password input -->
+                        <div class="form-group">
+                            <input asp-for="Password" type="password" id="form2Example2" class="form-control" />
+                            <label asp-for="Password" class="form-label" for="form2Example2">Password</label>
+                        </div>
+
+                        <div class="form-group">
+                            <input asp-for="ConfirmPassword" type="password" id="form2Example2" class="form-control" />
+                            <label asp-for="ConfirmPassword" class="form-label" for="form2Example2">ConfPassword</label>
+                        </div>
+
+                        <button type="submit" asp-action="Create" class="btn btn-primary me-2" style="color:honeydew;">Submit</button>
+                        <button asp-action="GetAllUsers" asp-controller="Users" class="btn btn-light">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

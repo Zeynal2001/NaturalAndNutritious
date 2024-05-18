@@ -14,6 +14,7 @@ namespace NaturalAndNutritious.Data.Abstractions
         Task<IQueryable<Review>> GetReviewsByUserId(string userId);
         Task<AppUser> GetUserByIdAsync(string userId);
         Task<IdentityResult> UpdateUserAsync(AppUser user);
+        Task<IdentityResult> DeleteUserAsync(AppUser user);
         Task<IdentityResult> ChangeUserPasswordAsync(AppUser user, string currentPassword, string newPassword);
     }
 }

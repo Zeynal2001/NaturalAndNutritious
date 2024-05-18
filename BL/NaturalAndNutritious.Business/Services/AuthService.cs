@@ -27,18 +27,18 @@ namespace NaturalAndNutritious.Business.Services
 
             if (user == null)
             {
-                return new ServiceResult { Success = false, IsNull = true, Message = "Email or password is incorrect." };
+                return new ServiceResult { Succeeded = false, IsNull = true, Message = "Email or password is incorrect." };
             }
 
             var res = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
 
             if (!res.Succeeded)
             {
-                return new ServiceResult { Success = false, IsNull = false, Message = "Email or password is incorrect." };
+                return new ServiceResult { Succeeded = false, IsNull = false, Message = "Email or password is incorrect." };
             }
             else
             {
-                return new ServiceResult { Success = true, IsNull = false, Message = "" };
+                return new ServiceResult { Succeeded = true, IsNull = false, Message = "" };
             }
         }
 
@@ -70,20 +70,20 @@ namespace NaturalAndNutritious.Business.Services
             {
                 var regErrors = res.Errors.ErrorsToString();
 
-                return new ServiceResult { Success = false, IsNull = false, Message = regErrors };
+                return new ServiceResult { Succeeded = false, IsNull = false, Message = regErrors };
             }
 
             var roleRes = await _userManager.AddToRoleAsync(user, nameof(RoleTypes.Client));
 
             if (roleRes.Succeeded)
             {
-                return new ServiceResult { Success = true, IsNull = false, Message = "Registered!" };
+                return new ServiceResult { Succeeded = true, IsNull = false, Message = "Registered!" };
             }
             else
             {
                 var errors = roleRes.Errors.ErrorsToString();
 
-                return new ServiceResult { Success = false, IsNull = false, Message = errors};
+                return new ServiceResult { Succeeded = false, IsNull = false, Message = errors};
             }
         }
 

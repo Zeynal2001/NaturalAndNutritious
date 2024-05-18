@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NaturalAndNutritious.Business.Abstractions.RepoServiceInterfaces
 {
-    public interface IProductService
+    public interface IProductService2
     {
         //public Product Products { get; }
         Task<IEnumerable<Product>> GetAllProductsAsync();

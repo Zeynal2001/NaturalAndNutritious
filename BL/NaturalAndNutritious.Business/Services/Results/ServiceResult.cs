@@ -11,7 +11,7 @@ namespace NaturalAndNutritious.Business.Services.Results
     public class ServiceResult
     {
         public bool IsNull { get; set; }
-        public bool Success { get; set; }
+        public bool Succeeded { get; set; }
         public string Message { get; set; }
         public IEnumerable<string> CustomErrrors { get; set; }
 
@@ -19,7 +19,7 @@ namespace NaturalAndNutritious.Business.Services.Results
         public ServiceResult()
         {
             IsNull = false;
-            Success = true;
+            Succeeded = true;
             Message = "";//string.Empty;
             CustomErrrors = new List<string>();
         }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NaturalAndNutritious.Business.Dtos.AdminPanelDtos;
 using NaturalAndNutritious.Data.Abstractions;
 using NaturalAndNutritious.Data.Data;
 using NaturalAndNutritious.Data.Entities;
@@ -14,6 +15,38 @@ namespace NaturalAndNutritious.Business.Repositories
 
         private readonly AppDbContext _context;
 
+        new public async Task<List<AllProductsDto>> FilterWithPagination(int page, int pageSize)
+        {
+            if (page == 0 && pageSize == 0)
+            {
+                throw new ArgumentException();
+            }
+
+            var products = await _context.Products
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Where(p => p.IsDeleted == false)
+                .OrderByDescending(p => p.CreatedAt)
+                .Select(p => new AllProductsDto()
+                {
+                    Id = p.Id.ToString(),
+                    ProductName = p.ProductName,
+                    ProductImageUrl = p.ProductImageUrl,
+                    ProductPrice = p.ProductPrice,
+                    Discontinued = p.Discontinued,
+                    UnitsInStock = p.UnitsInStock,
+                    UnitsOnOrder = p.UnitsOnOrder,
+                    ReOrderLevel = p.ReorderLevel
+
+                    //CategoryName = p.Category.CategoryName,
+                    //CategoryId = p.Category.Id.ToString(),
+                    //Price = p.Price,
+                    //ImageUrl = p.ImageUrl,
+                    //IsDeleted = p.IsDeleted,
+                }).ToListAsync();
+
+            return products;
+        }
 
         public Task<IQueryable<Product>> GetProductsByCategoryId(Guid categoryId)
         {
@@ -56,6 +89,10 @@ namespace NaturalAndNutritious.Business.Repositories
             return product;
         }
 
+        public Task<int> TotalProducts()
+        {
+            throw new NotImplementedException();
+        }
 
         /*
         public async Task<IQueryable<Product>> GetProductsByCategoryId(Guid categoryId)

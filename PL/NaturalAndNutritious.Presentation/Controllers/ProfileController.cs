@@ -47,10 +47,6 @@ namespace NaturalAndNutritious.Presentation.Controllers
                 return View("Error");
             }
 
-            //var editModel = models.ProfileEditModel;
-
-            //HttpContext.Session.SetAsJson("userDetails", editModel);
-
             return View(models.ProfileIndexModel);
         }
 
@@ -127,11 +123,13 @@ namespace NaturalAndNutritious.Presentation.Controllers
             {
                 ModelState.AddModelError("editErrors", result.Message);
                 ViewData["hasError"] = true;
+                return View(vm);
             }
             if (result.IsNull)
             {
                 ModelState.AddModelError("editErrors", result.Message);
                 ViewData["hasError"] = true;
+                return View(vm);
             }
 
             return View(vm);

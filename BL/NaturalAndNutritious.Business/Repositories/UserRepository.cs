@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NaturalAndNutritious.Business.Dtos.AdminPanelDtos;
 using NaturalAndNutritious.Data.Abstractions;
 using NaturalAndNutritious.Data.Data;
 using NaturalAndNutritious.Data.Entities;
@@ -59,15 +60,18 @@ namespace NaturalAndNutritious.Business.Repositories
             return await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
         }
 
-
-        /*
-        public IQueryable<Review> GetReviewsByUserId(string userId)
+        public async Task<IdentityResult> DeleteUserAsync(AppUser user)
         {
-            return _context.Reviews
-                        .Include(r => r.AppUser)
-                        .Where(r => r.AppUser.Id == userId).AsQueryable();
+            return await _userManager.DeleteAsync(user);
         }
-        */
+        /*
+public IQueryable<Review> GetReviewsByUserId(string userId)
+{
+   return _context.Reviews
+               .Include(r => r.AppUser)
+               .Where(r => r.AppUser.Id == userId).AsQueryable();
+}
+*/
 
         /*
         public async Task<IQueryable<Order>> GetOrdersByUserId(string userId)

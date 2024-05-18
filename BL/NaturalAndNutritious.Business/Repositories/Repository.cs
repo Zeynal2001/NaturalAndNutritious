@@ -33,14 +33,15 @@ namespace NaturalAndNutritious.Business.Repositories
             //}
         }
 
-        public IQueryable<T> FilterWithPagination(int page, int size)
+        public async Task<IQueryable<T>> FilterWithPagination(int page, int size)
         {
             if (page == 0 && size == 0)
             {
-                return Table;
+                return await Task.FromResult(Table.Where(c => c.IsDeleted == false));
             }
 
-            return Table.Skip((page - 1) * size).Take(size);
+            return await Task.FromResult(Table.Skip((page - 1) * size).Take(size)
+                .Where(c => c.IsDeleted == false));
         }
 
         public async Task<T?> GetByIdAsync(Guid id)
@@ -82,6 +83,11 @@ namespace NaturalAndNutritious.Business.Repositories
         }
 
         public async Task<int> SaveChangesAsync() => await _context.SaveChangesAsync();
+
+        public async Task<int> TotalCountAsync(T entity)
+        {
+            return await Table.CountAsync();
+        }
 
 
         //public async Task<int> SaveChangesAsync()

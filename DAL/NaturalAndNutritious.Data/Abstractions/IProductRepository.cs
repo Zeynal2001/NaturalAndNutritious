@@ -14,5 +14,6 @@ namespace NaturalAndNutritious.Data.Abstractions
         Task<IQueryable<Product>> GetProductsWithReviews();
         Task<Product> GetProductWithReviewsByProductId(Guid productId);
         Task<IQueryable<Product>> GetProductsByOrderId(Guid orderId);
+        Task<int> TotalProducts();
     }
 }

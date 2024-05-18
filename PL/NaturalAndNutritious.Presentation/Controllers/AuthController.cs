@@ -59,7 +59,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
                 return View(model);
             }
 
-            if (!result.Success)
+            if (!result.Succeeded)
             {
                 ViewData["hasError"] = true;
                 ModelState.AddModelError("loginErors", result.Message);
@@ -88,14 +88,14 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
             var result = await _authService.Register(model, "profile-photos");
 
-            if (!result.Success)
+            if (!result.Succeeded)
             {
                 ViewData["hasError"] = true;
                 ModelState.AddModelError("registerErrors", result.Message);
                 return View(model);
             }
 
-            if (result.Success)
+            if (result.Succeeded)
             {
                 TempData["successMsg"] = result.Message;
                 return RedirectToAction("Login");

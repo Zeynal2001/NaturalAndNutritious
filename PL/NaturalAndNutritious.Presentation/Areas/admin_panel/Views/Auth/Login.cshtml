@@ -1,0 +1,47 @@
+﻿@{
+    Layout = null;
+}
+@model AdminLoginDto
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel Girişi</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/admin/css/admin-login.css">
+
+    <!-- Özelleştirilmiş CSS -->
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div asp-validation-summary="All"></div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Natural & Nutritious Admin Login</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            <div class="form-group">
+                                <label asp-for="@Model.Email" for="username">Email</label>
+                                <input asp-for="@Model.Email" type="email" id="username" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="@Model.Password" for="password">Password</label>
+                                <input asp-for="@Model.Password" type="password" id="password" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-login btn-block">Login</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
