@@ -1,0 +1,31 @@
+﻿@model UpdateCategoryDto
+@{
+    ViewData["Title"] = "Update Category";
+}
+<div class="">
+    <div class="col-md-12 grid-margin">
+        <div class="card">
+            <div asp-validation-summary="All"></div>
+            <h4 class="card-title">Update Category</h4>
+            <div class="">
+                <div class="container">
+                    <form class="forms-sample" method="post" enctype="multipart/form-data">
+                        
+
+                        <div class="form-group">
+                            <label asp-for="@Model.CategoryName" for="exampleInputNickName2">Category Name:</label>
+                            <input asp-for="@Model.CategoryName" type="text" class="form-control" id="exampleInputNickName2" placeholder="@Model.CategoryName">
+                        </div>
+
+                        <div class="form-group">
+                            <input asp-for="@Model.Id" type="text" class="form-control" id="exampleInputEmail1" hidden>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary me-2" style="color:honeydew;">Submit</button>
+                        <button asp-action="GetAllCategories" asp-controller="Categories" class="btn btn-light">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

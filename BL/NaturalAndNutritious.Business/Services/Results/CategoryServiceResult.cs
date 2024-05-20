@@ -6,20 +6,17 @@ using System.Threading.Tasks;
 
 namespace NaturalAndNutritious.Business.Services.Results
 {
-    public class UsersServiceResult
+    public class CategoryServiceResult
     {
         public bool IsNull { get; set; }
         public bool Succeeded { get; set; }
         public string Message { get; set; }
-        public bool IsDeleted { get; set; }
 
-
-        public UsersServiceResult()
+        public CategoryServiceResult()
         {
             IsNull = false;
             Succeeded = true;
-            Message = string.Empty;//string.Empty;
-            IsDeleted = true;
+            Message = string.Empty;
         }
     }
 }

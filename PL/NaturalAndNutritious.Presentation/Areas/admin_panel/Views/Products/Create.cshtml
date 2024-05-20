@@ -1,0 +1,100 @@
+﻿@model CreateProductDto
+
+@{
+    ViewData["Title"] = "Create Product";
+    var categories = (List<Category>?)ViewData["categories"];
+    var subCategories = (List<SubCategory>?)ViewData["subcategories"];
+    var suppliers = (List<Supplier>?)ViewData["suppliers"];
+}
+
+<div class="">
+    <div class="col-md-12 grid-margin">
+        <div class="card">
+            <div asp-validation-summary="All"></div>
+            <h4 class="card-title">Create Product</h4>
+            <div class="">
+
+                <div class="container">
+                    <form class="forms-sample" method="post" enctype="multipart/form-data">
+
+                        <div class="form-group">
+                            <label asp-for="ProductImage" for="exampleInputTitle4">Product Image:</label>
+                            <input asp-for="ProductImage" type="file" class="form-control" id="exampleInputTitle4">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ProductName" for="exampleInputTitle1">Product Name:</label>
+                            <input asp-for="ProductName" type="text" class="form-control" id="exampleInputTitle1">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ShortDescription" for="exampleInputTitle2">Short Description:</label>
+                            <input asp-for="ShortDescription" type="text" class="form-control" id="exampleInputTitle2">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Description" for="exampleInputTitle3">Description:</label>
+                            <textarea asp-for="Description" class="form-control" id="exampleInputTitle3"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ProductPrice" for="exampleInputTitle5">Product Price:</label>
+                            <input asp-for="ProductPrice" type="number" class="form-control" id="exampleInputTitle5">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="UnitsInStock" for="exampleInputTitle6">Units In Stock:</label>
+                            <input asp-for="UnitsInStock" type="number" class="form-control" id="exampleInputTitle7">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="UnitsOnOrder" for="exampleInputTitle8">Units On Order:</label>
+                            <input asp-for="UnitsOnOrder" type="number" class="form-control" id="exampleInputTitle8">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ReorderLevel" for="exampleInputTitle9">Reorder Level:</label>
+                            <input asp-for="ReorderLevel" type="number" class="form-control" id="exampleInputTitle9">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Category" for="categorySelect">Select Category:</label>
+                            <select asp-for="Category" multiple class="form-control" id="categorySelect">
+                                <option selected>--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</option>
+                                @foreach (var category in categories)
+                                {
+                                    <option value="@category.Id">@category.CategoryName</option>
+                                }
+                            </select>
+                        </div> 
+
+                        <div class="form-group">
+                            <label asp-for="SubCategory" for="subcategorySelect">Select Subcategory:</label>
+                            <select asp-for="SubCategory" multiple class="form-control" id="subcategorySelect">
+                                <option selected>--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</option>
+                                @foreach (var subcategory in subCategories)
+                                {
+                                    <option value="@subcategory.Id">@subcategory.SubCategoryName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Supplier" for="supplierSelect">Select Supplier:</label>
+                            <select asp-for="Supplier" multiple class="form-control" id="supplierSelect">
+                                <option selected>--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</option>
+                                @foreach (var supplier in suppliers)
+                                {
+                                    <option value="@supplier.Id">@supplier.CompanyName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary me-2" style="color:honeydew;">Create</button>
+                        <button asp-action="GetAllProducts" asp-controller="Products" class="btn btn-light">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

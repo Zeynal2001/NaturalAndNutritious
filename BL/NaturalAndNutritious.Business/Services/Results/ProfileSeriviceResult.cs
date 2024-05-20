@@ -25,7 +25,7 @@ namespace NaturalAndNutritious.Business.Services.Results
         {
             IsNull = false;
             Succeeded = true;
-            Message = "";//string.Empty;
+            Message = string.Empty;
             CustomErrrors = new List<string>();
             //LoggedInUserId = new Claim("NameIdentifier", "723424ASDASDDDaasdasdas12331");
             FoundUser = new AppUser();

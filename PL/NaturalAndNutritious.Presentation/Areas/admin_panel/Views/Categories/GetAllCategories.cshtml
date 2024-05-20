@@ -1,6 +1,6 @@
-﻿@model GetAllProductsVm
+﻿@model GetAllCategoriesVm
 @{
-    ViewData["Title"] = "GetAllProducts";
+    ViewData["Title"] = "GetAllCategories";
 }
 @{
     var prevPage = Model.CurrentPage - 1;
@@ -12,7 +12,7 @@
             <div class="card-body">
                 <div class="row align-items-center justify-content-between">
                     <div class="col-lg-6">
-                        <h2 class="card-title">All Products</h2>
+                        <h2 class="card-title">All Categories</h2>
                     </div>
                     <div class="col-lg-2">
                         <div class="btn-group" role="group" aria-label="Basic example">
@@ -54,7 +54,21 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                @foreach (var propertyInfo in typeof(AllProductsDto).GetProperties())
+                                @* <th>
+                                ProfilePhoto
+                                </th>
+                                <th>
+                                FullName
+                                </th>
+                                <th>
+                                UserName
+                                <th>
+                                BirthDate
+                                </th>
+                                <th>
+                                Email
+                                </th> *@
+                                @foreach (var propertyInfo in typeof(AllCategoriesDto).GetProperties())
                                 {
                                     if (propertyInfo.Name == "Id")
                                     {
@@ -70,47 +84,48 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var product in Model.Products)
+                            @foreach (var category in Model.Categories)
                             {
                                 <tr>
-                                    @foreach (var prop in product.GetType().GetProperties())
+                                    @foreach (var prop in category.GetType().GetProperties())
                                     {
                                         switch (prop.Name)
                                         {
                                             case "Id":
                                                 continue;
-                                            case "ProductImageUrl":
+                                            case "CategoryName":
                                                 <td class="py-1">
-                                                    <img src="~/@prop.GetValue(product)" alt="image" />
+                                                    @prop.GetValue(category)
+                                                </td>
+                                                continue;
+                                            case "UpdatedAt":
+                                                <td class="py-1">
+                                                    @prop.GetValue(category)
                                                 </td>
                                                 continue;
                                             default:
                                                 <td>
-                                                    @prop.GetValue(product)
+                                                    @prop.GetValue(category)
                                                 </td>
                                                 break;
                                         }
                                     }
                                     <td>
-                                        <a asp-action="Update" asp-controller="Products" asp-route-productId="@product.Id" class="btn btn-success btn-icon-text">
+                                        <a asp-action="Update" asp-controller="Categories" asp-route-categoryId="@category.Id" class="btn btn-success btn-icon-text">
                                             Update
                                             <i class="mdi mdi-pencil-circle btn-icon-append"></i>
                                         </a>
-                                        <a asp-action="AddDiscount" asp-controller="Products" asp-route-productId="@product.Id" class="btn btn-info btn-icon-text">
-                                            Add Discount
-                                            <i class="mdi mdi-percent btn-icon-append"></i>
-                                        </a>
-                                        <form method="post" asp-action="AssumingDeleted" asp-controller="Products" class="m-auto">
-                                            <input name="productId" id="productId" hidden value="@product.Id" />
+                                        <form method="post" asp-action="AssumingDeleted" asp-controller="Categories" class="m-auto">
+                                            <input name="categoryId" id="categoryId" hidden value="@category.Id" />
                                             <button type="submit" class="btn btn-warning btn-icon-text">
-                                                Assuming Deleted
+                                                Assuming deleted
                                                 <i class="mdi mdi-delete btn-icon-append"></i>
                                             </button>
                                         </form>
-                                        <form method="post" asp-action="Delete" asp-controller="Products" class="m-auto">
-                                            <input name="productId" id="productId" hidden value="@product.Id" />
+                                        <form method="post" asp-action="Delete" asp-controller="Categories" class="m-auto">
+                                            <input name="categoryId" id="categoryId" hidden value="@category.Id" />
                                             <button type="submit" class="btn btn-danger btn-icon-text">
-                                                Really Delete
+                                                Really delete
                                                 <i class="mdi mdi-delete btn-icon-append"></i>
                                             </button>
                                         </form>

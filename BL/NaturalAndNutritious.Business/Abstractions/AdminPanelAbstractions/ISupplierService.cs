@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace NaturalAndNutritious.Business.Abstractions.AdminPanelAbstractions
 {
-    public interface ICategoryService
+    public interface ISupplierService
     {
-        Task<int> TotalCategories();
-        Task<CategoryServiceResult> CreateCategory(CreateCategoryDto model);
+        Task<int> TotalSuppliers();
+        Task<SupplierServiceResult> CreateSupplier(CreateSupplierDto model);
     }
 }

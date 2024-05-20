@@ -53,7 +53,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                     ErrorMessage = "There isn't such user"
                 };
 
-                return RedirectToAction("Error", errorModel);
+                return RedirectToAction("AdminError", errorModel);
             }
 
             var userEditDetails = new EditUserDto()
@@ -119,7 +119,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                     ErrorMessage = "There isn't such user"
                 };
 
-                return View("Error", errorModel);
+                return View("AdminError", errorModel);
             }
 
             var currentRoles = await _usersService.GetUserRolesAsync(user);
@@ -151,7 +151,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                     ErrorMessage = "There isn't such user"
                 };
 
-                return View("Error", errorModel);
+                return View("AdminError", errorModel);
             }
 
             var role = await _usersService.GetRoleById(model.SelectedRoleId);
@@ -163,7 +163,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                     ErrorMessage = "There isn't such role."
                 };
 
-                return View("Error", errorModel);
+                return View("AdminError", errorModel);
             }
 
             if (await _usersService.IsInRoleAsync(user, role.Name))
@@ -173,7 +173,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                     ErrorMessage = "The user is already has this role."
                 };
 
-                return View("Error", errorModel);
+                return View("AdminError", errorModel);
             }
 
             var result = await _usersService.AddToRoleAsync(user, role.Name);
@@ -196,7 +196,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                 var errorModel = new ErrorModel();
                 errorModel.ErrorMessage = "You are not logged in as an admin!";
 
-                return View("Error", errorModel);
+                return View("AdminError", errorModel);
             }
 
             var result = await _usersService.DeleteUser(currentUserId, userId);
@@ -206,14 +206,15 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                 var errorModel = new ErrorModel();
                 errorModel.ErrorMessage = result.Message;
 
-                return View("Error", errorModel);
+                return View("AdminError", errorModel);
             }
 
             if (!result.IsDeleted)
             {
                 var errorModel = new ErrorModel();
                 errorModel.ErrorMessage = result.Message;
-                return View("Error", errorModel);
+
+                return View("AdminError", errorModel);
             }
 
             return RedirectToAction(nameof(GetAllUsers));

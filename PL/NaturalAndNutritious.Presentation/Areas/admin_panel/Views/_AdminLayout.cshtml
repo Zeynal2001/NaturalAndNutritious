@@ -93,7 +93,6 @@
                         <div class="collapse" id="ui-products">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item"> <a class="nav-link" asp-action="GetAllProducts" asp-controller="Products">All Products</a></li>
-                                <li class="nav-item"> <a class="nav-link" asp-action="GetDeletedProducts" asp-controller="Products">Deleted Products</a></li>
                                 <li class="nav-item"> <a class="nav-link" asp-action="Create" asp-controller="Products">Create Products</a></li>
                             </ul>
                         </div>
@@ -108,7 +107,6 @@
                         <div class="collapse" id="ui-categories">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item"> <a class="nav-link" asp-action="GetAllCategories" asp-controller="Categories">All Categories</a></li>
-                                <li class="nav-item"> <a class="nav-link" asp-action="GetDeletedCategories" asp-controller="Categories">Deleted categories</a></li>
                                 <li class="nav-item"> <a class="nav-link" asp-action="Create" asp-controller="Categories">Create Categories</a></li>
                             </ul>
                         </div>
@@ -122,24 +120,22 @@
                         </a>
                         <div class="collapse" id="ui-subcategories">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"> <a class="nav-link" asp-action="GetAllSubcategories" asp-controller="Subcategories">All Subcategories</a></li>
-                                <li class="nav-item"> <a class="nav-link" asp-action="GetDeletedSubcategories" asp-controller="Subcategories">Deleted Subcategories</a></li>
-                                <li class="nav-item"> <a class="nav-link" asp-action="Create" asp-controller="Subcategories">Create Subcategories</a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-action="GetAllSubCategories" asp-controller="SubCategories">All Subcategories</a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-action="Create" asp-controller="SubCategories">Create Subcategories</a></li>
                             </ul>
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-orders" aria-expanded="false" aria-controls="ui-orders">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-suppliers" aria-expanded="false" aria-controls="ui-suppliers">
                             <i class="mdi mdi-pound-box menu-icon"></i>
                             @*  *@
-                            <span class="menu-title">Orders</span>
+                            <span class="menu-title">Suppliers</span>
                             <i class="menu-arrow"></i>
                         </a>
-                        <div class="collapse" id="ui-orders">
+                        <div class="collapse" id="ui-suppliers">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"> <a class="nav-link" asp-action="GetAllOrders" asp-controller="Tags">All Orders</a></li>
-                                <li class="nav-item"> <a class="nav-link" asp-action="GetDeletedOrders" asp-controller="Tags">Deleted Orders</a></li>
-                                <li class="nav-item"> <a class="nav-link" asp-action="Create" asp-controller="Tags">Create Orders</a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-action="GetAllSuppliers" asp-controller="Suppliers">All Suppliers</a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-action="Create" asp-controller="Suppliers">Create Suppliers</a></li>
                             </ul>
                         </div>
                     </li>

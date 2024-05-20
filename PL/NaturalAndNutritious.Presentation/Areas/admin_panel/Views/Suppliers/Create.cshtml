@@ -1,0 +1,77 @@
+﻿@model CreateSupplierDto
+
+@{
+    ViewData["Title"] = "Create Supplier";
+}
+<div class="">
+    <div class="col-md-12 grid-margin">
+        <div class="card">
+            <div asp-validation-summary="All"></div>
+            <h4 class="card-title">Create Supplier</h4>
+            <div class="">
+                <div class="container">
+                    <form class="forms-sample" method="post" enctype="multipart/form-data">
+                        
+                        <div class="form-group">
+                            <label asp-for="CompanyName" for="exampleInputTitle2">Company Name:</label>
+                            <input asp-for="CompanyName" type="text" class="form-control" id="exampleInputTitle2">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="ContactName" for="exampleInputTitle3">Contact Name:</label>
+                            <input asp-for="ContactName" type="text" class="form-control" id="exampleInputTitle3">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ContactTitle" for="exampleInputTitle4">Contact Title:</label>
+                            <input asp-for="ContactTitle" type="text" class="form-control" id="exampleInputTitle4">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Address" for="exampleInputTitle5">Address:</label>
+                            <input asp-for="Address" type="text" class="form-control" id="exampleInputTitle5">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="City" for="exampleInputTitle6">City:</label>
+                            <input asp-for="City" type="text" class="form-control" id="exampleInputTitle6">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Region" for="exampleInputTitle7">Region:</label>
+                            <input asp-for="Region" type="text" class="form-control" id="exampleInputTitle7">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="PostalCode" for="exampleInputTitle8">Postal Code:</label>
+                            <input asp-for="PostalCode" type="text" class="form-control" id="exampleInputTitle8">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Country" for="exampleInputTitle9">Country:</label>
+                            <input asp-for="Country" type="text" class="form-control" id="exampleInputTitle9">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber" for="exampleInputTitle10">Phone Number:</label>
+                            <input asp-for="PhoneNumber" type="text" class="form-control" id="exampleInputTitle10">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Fax" for="exampleInputTitle11">Fax:</label>
+                            <input asp-for="Fax" type="text" class="form-control" id="exampleInputTitle11">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Website" for="exampleInputTitle11">Website:</label>
+                            <input asp-for="Website" type="text" class="form-control" id="exampleInputTitle11">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary me-2" style="color:honeydew;">Create</button>
+                        <button asp-action="GetAllSuppliers" asp-controller="Suppliers" class="btn btn-light">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

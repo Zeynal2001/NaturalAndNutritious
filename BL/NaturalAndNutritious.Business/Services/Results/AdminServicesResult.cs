@@ -18,7 +18,7 @@ namespace NaturalAndNutritious.Business.Services.Results
         {
             IsNull = false;
             Succeeded = true;
-            Message = "";//string.Empty;
+            Message = string.Empty;//string.Empty;
             UserClaimsPrincipal = new ClaimsPrincipal();
         }
     }

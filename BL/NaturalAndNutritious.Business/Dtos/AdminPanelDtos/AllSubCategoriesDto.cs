@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace NaturalAndNutritious.Business.Dtos.AdminPanelDtos
 {
-    public class AllCategoriesDto
+    public class AllSubCategoriesDto
     {
         public string Id { get; set; }
-        public string CategoryName { get; set; }
+        public string SubCategoryName { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }

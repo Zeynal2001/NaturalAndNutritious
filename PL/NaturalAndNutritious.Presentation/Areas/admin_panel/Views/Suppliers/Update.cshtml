@@ -1,0 +1,81 @@
+﻿@model UpdateSupplierDto
+@{
+    ViewData["Title"] = "Update Supplier";
+}
+<div class="">
+    <div class="col-md-12 grid-margin">
+        <div class="card">
+            <div asp-validation-summary="All"></div>
+            <h4 class="card-title">Update Supplier</h4>
+            <div class="">
+                <div class="container">
+                    <form class="forms-sample" method="post" enctype="multipart/form-data">
+
+
+                        <div class="form-group">
+                            <label asp-for="@Model.CompanyName" for="exampleInputNickName2">Company Name:</label>
+                            <input asp-for="@Model.CompanyName" type="text" class="form-control" id="exampleInputNickName2" placeholder="@Model.CompanyName">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.ContactName" for="exampleInputNickName3">Contact Name:</label>
+                            <input asp-for="@Model.ContactName" type="text" class="form-control" id="exampleInputNickName3" placeholder="@Model.ContactName">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.ContactTitle" for="exampleInputNickName4">Contact Title:</label>
+                            <input asp-for="@Model.ContactTitle" type="text" class="form-control" id="exampleInputNickName4" placeholder="@Model.ContactTitle">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.Address" for="exampleInputNickName5">Address:</label>
+                            <input asp-for="@Model.Address" type="text" class="form-control" id="exampleInputNickName5" placeholder="@Model.Address">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.City" for="exampleInputNickName6">City:</label>
+                            <input asp-for="@Model.City" type="text" class="form-control" id="exampleInputNickName6" placeholder="@Model.City">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.Region" for="exampleInputNickName7">Region:</label>
+                            <input asp-for="@Model.Region" type="text" class="form-control" id="exampleInputNickName7" placeholder="@Model.Region">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.PostalCode" for="exampleInputNickName8">PostalCode:</label>
+                            <input asp-for="@Model.PostalCode" type="text" class="form-control" id="exampleInputNickName8" placeholder="@Model.PostalCode">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.Country" for="exampleInputNickName9">Country</label>
+                            <input asp-for="@Model.Country" type="text" class="form-control" id="exampleInputNickName9" placeholder="@Model.Country">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.PhoneNumber" for="exampleInputNickName10">PhoneNumber:</label>
+                            <input asp-for="@Model.PhoneNumber" type="text" class="form-control" id="exampleInputNickName10" placeholder="@Model.PhoneNumber">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.Fax" for="exampleInputNickName11">Fax:</label>
+                            <input asp-for="@Model.Fax" type="text" class="form-control" id="exampleInputNickName11" placeholder="@Model.Fax">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.Website" for="exampleInputNickName12">Website:</label>
+                            <input asp-for="@Model.Website" type="text" class="form-control" id="exampleInputNickName12" placeholder="@Model.Website">
+                        </div>
+
+                        <div class="form-group">
+                            <input asp-for="@Model.Id" type="text" class="form-control" id="exampleInputEmail1" hidden>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary me-2" style="color:honeydew;">Submit</button>
+                        <button asp-action="GetAllSuppliers" asp-controller="Suppliers" class="btn btn-light">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

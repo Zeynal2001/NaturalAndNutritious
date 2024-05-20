@@ -75,7 +75,7 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                     {
                         Succeeded = true,
                         IsNull = false,
-                        Message = "User details successfully updated"
+                        Message = "User details successfully updated."
                     };
                 }
 
@@ -89,7 +89,7 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                 {
                     Succeeded = false,
                     IsNull = true,
-                    Message = "Something went wrong"
+                    Message = "Something went wrong:/"
                 };
             }
         }

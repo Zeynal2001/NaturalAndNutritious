@@ -19,6 +19,7 @@ namespace NaturalAndNutritious.Business.Extensions
             services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
+            services.AddScoped<ISupplierRepository, SupplierRepository>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IProfileService, ProfileService>();
@@ -26,6 +27,8 @@ namespace NaturalAndNutritious.Business.Extensions
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<ISubCategoryService, SubCategoryService>();
+            services.AddScoped<ISupplierService, SupplierService>();
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NaturalAndNutritious.Data.Data;
 
@@ -11,9 +12,10 @@ using NaturalAndNutritious.Data.Data;
 namespace NaturalAndNutritious.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240520130331_mig06")]
+    partial class mig06
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -306,7 +308,7 @@ namespace NaturalAndNutritious.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Blogs", (string)null);
+                    b.ToTable("Blogs");
                 });
 
             modelBuilder.Entity("NaturalAndNutritious.Data.Entities.Category", b =>
@@ -330,7 +332,7 @@ namespace NaturalAndNutritious.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("NaturalAndNutritious.Data.Entities.Discount", b =>
@@ -369,7 +371,7 @@ namespace NaturalAndNutritious.Data.Migrations
                     b.HasIndex("ProductId")
                         .IsUnique();
 
-                    b.ToTable("Discounts", (string)null);
+                    b.ToTable("Discounts");
                 });
 
             modelBuilder.Entity("NaturalAndNutritious.Data.Entities.Order", b =>
@@ -436,7 +438,7 @@ namespace NaturalAndNutritious.Data.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("NaturalAndNutritious.Data.Entities.OrderDetail", b =>
@@ -472,7 +474,7 @@ namespace NaturalAndNutritious.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderDetails", (string)null);
+                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("NaturalAndNutritious.Data.Entities.Product", b =>
@@ -543,7 +545,7 @@ namespace NaturalAndNutritious.Data.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("NaturalAndNutritious.Data.Entities.Region", b =>
@@ -567,7 +569,7 @@ namespace NaturalAndNutritious.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Regions", (string)null);
+                    b.ToTable("Regions");
                 });
 
             modelBuilder.Entity("NaturalAndNutritious.Data.Entities.Review", b =>
@@ -607,7 +609,7 @@ namespace NaturalAndNutritious.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("NaturalAndNutritious.Data.Entities.Shipper", b =>
@@ -635,7 +637,7 @@ namespace NaturalAndNutritious.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Shippers", (string)null);
+                    b.ToTable("Shippers");
                 });
 
             modelBuilder.Entity("NaturalAndNutritious.Data.Entities.SubCategory", b =>
@@ -664,7 +666,7 @@ namespace NaturalAndNutritious.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("SubCategories", (string)null);
+                    b.ToTable("SubCategories");
                 });
 
             modelBuilder.Entity("NaturalAndNutritious.Data.Entities.Supplier", b =>
@@ -728,7 +730,7 @@ namespace NaturalAndNutritious.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Suppliers", (string)null);
+                    b.ToTable("Suppliers");
                 });
 
             modelBuilder.Entity("NaturalAndNutritious.Data.Entities.Territory", b =>
@@ -757,7 +759,7 @@ namespace NaturalAndNutritious.Data.Migrations
 
                     b.HasIndex("RegionId");
 
-                    b.ToTable("Territories", (string)null);
+                    b.ToTable("Territories");
                 });
 
             modelBuilder.Entity("OrderProduct", b =>
@@ -772,7 +774,7 @@ namespace NaturalAndNutritious.Data.Migrations
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("OrderProduct", (string)null);
+                    b.ToTable("OrderProduct");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

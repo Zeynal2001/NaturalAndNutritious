@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NaturalAndNutritious.Data.Entities
+﻿namespace NaturalAndNutritious.Data.Entities
 {
     public class Order : BaseEntity
     {
@@ -19,6 +13,7 @@ namespace NaturalAndNutritious.Data.Entities
         public string ShipRegion { get; set; }
         public string ShipPostalCode { get; set; }
         public string ShipCountry { get; set; }
+        public bool Confirmed { get; set; }
 
         public AppUser AppUser { get; set; }
         public IEnumerable<OrderDetail> OrderDetails { get; set; }

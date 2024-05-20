@@ -1,4 +1,5 @@
 ﻿using NaturalAndNutritious.Business.Dtos.AdminPanelDtos;
+using NaturalAndNutritious.Business.Services.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace NaturalAndNutritious.Business.Abstractions
     {
         Task<List<AllProductsDto>> FilterProductsWithPagination(int page, int pageSize);
         Task<int> TotalProducts();
+        Task<ProductServiceResult> CreateProduct(CreateProductDto model, string dirPath);
     }
 }

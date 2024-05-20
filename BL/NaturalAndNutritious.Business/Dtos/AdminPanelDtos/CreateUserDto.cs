@@ -1,7 +1,8 @@
-﻿using NaturalAndNutritious.Business.CustomValidations;
+﻿using Microsoft.AspNetCore.Http;
+using NaturalAndNutritious.Business.CustomValidations;
 using System.ComponentModel.DataAnnotations;
 
-namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Models
+namespace NaturalAndNutritious.Business.Dtos.AdminPanelDtos
 {
     public class CreateUserDto
     {

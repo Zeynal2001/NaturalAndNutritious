@@ -1,0 +1,40 @@
+﻿@model CreateSubcategoryDto
+
+@{
+    ViewData["Title"] = "Create Subcategory";
+    var categories = (List<Category>?)ViewData["categories"];
+}
+
+<div class="">
+    <div class="col-md-12 grid-margin">
+        <div class="card">
+            <div asp-validation-summary="All"></div>
+            <h4 class="card-title">Create Subcategory</h4>
+            <div class="">
+                
+                <div class="container">
+                    <form class="forms-sample" method="post" enctype="multipart/form-data">
+
+                        <div class="form-group">
+                            <label asp-for="SubCategoryName" for="exampleInputTitle2">Subcategory Name:</label>
+                            <input asp-for="SubCategoryName" type="text" class="form-control" id="exampleInputTitle2">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Category" for="categorySelect">Select Category:</label>
+                            <select asp-for="Category" multiple class="form-control" id="categorySelect">
+                                <option selected>--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</option>
+                                @foreach (var category in categories)
+                                {
+                                    <option value="@category.Id">@category.CategoryName</option>
+                                }
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary me-2" style="color:honeydew;">Create</button>
+                        <button asp-action="GetAllSubCategories" asp-controller="Subcategories" class="btn btn-light">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
