@@ -1,6 +1,6 @@
-﻿@model GetAllSuppliersVm
+﻿@model GetAllOrdersVm
 @{
-    ViewData["Title"] = "GetAllSuppliers";
+    ViewData["Title"] = "GetAllOrders";
 }
 @{
     var prevPage = Model.CurrentPage - 1;
@@ -12,23 +12,23 @@
             <div class="card-body">
                 <div class="row align-items-center justify-content-between">
                     <div class="col-lg-6">
-                        <h2 class="card-title">All Suppliers</h2>
+                        <h2 class="card-title">All Orders</h2>
                     </div>
                     <div class="col-lg-2">
                         <div class="btn-group" role="group" aria-label="Basic example">
-                            <a class="btn btn-outline-secondary" asp-action="GetAllSuppliers" asp-route-pageSize="@Model.PageSize"> &lt;&lt; </a>
+                            <a class="btn btn-outline-secondary" asp-action="GetComfirmedOrders" asp-route-pageSize="@Model.PageSize"> &lt;&lt; </a>
                             @if (prevPage > 0)
                             {
-                                <a class="btn btn-outline-secondary" asp-action="GetAllSuppliers" asp-route-page="@prevPage" asp-route-pageSize="@Model.PageSize">@prevPage</a>
+                                <a class="btn btn-outline-secondary" asp-action="GetComfirmedOrders" asp-route-page="@prevPage" asp-route-pageSize="@Model.PageSize">@prevPage</a>
                             }
 
                             <a class="btn btn-primary active" style="color:honeydew">@Model.CurrentPage</a>
 
                             @if (nextPage <= Model.TotalPages)
                             {
-                                <a class="btn btn-outline-secondary" asp-action="GetAllSuppliers" asp-route-page="@nextPage" asp-route-pageSize="@Model.PageSize">@nextPage</a>
+                                <a class="btn btn-outline-secondary" asp-action="GetComfirmedOrders" asp-route-page="@nextPage" asp-route-pageSize="@Model.PageSize">@nextPage</a>
                             }
-                            <a class="btn btn-outline-secondary" asp-action="GetAllSuppliers" asp-route-page="@Model.TotalPages" asp-route-pageSize="@Model.PageSize"> &gt;&gt; </a>
+                            <a class="btn btn-outline-secondary" asp-action="GetComfirmedOrders" asp-route-page="@Model.TotalPages" asp-route-pageSize="@Model.PageSize"> &gt;&gt; </a>
                         </div>
                     </div>
 
@@ -54,7 +54,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                @foreach (var propertyInfo in typeof(AllSuppliersDto).GetProperties())
+                                @foreach (var propertyInfo in typeof(AllOrdersDto).GetProperties())
                                 {
                                     if (propertyInfo.Name == "Id")
                                     {
@@ -70,96 +70,101 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var supplier in Model.Suppliers)
+                            @foreach (var order in Model.Orders)
                             {
                                 <tr>
-                                    @foreach (var prop in supplier.GetType().GetProperties())
+                                    @foreach (var prop in order.GetType().GetProperties())
                                     {
                                         switch (prop.Name)
                                         {
                                             case "Id":
                                                 continue;
-                                            case "CompanyName":
+                                            case "UserName":
                                                 <td class="py-1">
-                                                    @prop.GetValue(supplier)
+                                                    @prop.GetValue(order)
                                                 </td>
                                                 continue;
-                                            case "ContactName":
+                                            case "OrderDate":
                                                 <td class="py-1">
-                                                    @prop.GetValue(supplier)
+                                                    @prop.GetValue(order)
                                                 </td>
                                                 continue;
-                                            case "ContactTitle":
+                                            case "ShippedDate":
                                                 <td class="py-1">
-                                                    @prop.GetValue(supplier)
+                                                    @prop.GetValue(order)
                                                 </td>
                                                 continue;
-                                            case "Address":
+                                            case "RequiredDate":
                                                 <td class="py-1">
-                                                    @prop.GetValue(supplier)
+                                                    @prop.GetValue(order)
                                                 </td>
                                                 continue;
-                                            case "City":
+                                            case "Freight":
                                                 <td class="py-1">
-                                                    @prop.GetValue(supplier)
+                                                    @prop.GetValue(order)
                                                 </td>
                                                 continue;
-                                            case "Region":
+                                            case "ShipName":
                                                 <td class="py-1">
-                                                    @prop.GetValue(supplier)
+                                                    @prop.GetValue(order)
                                                 </td>
                                                 continue;
-                                            case "PostalCode":
+                                            case "ShipAddress":
                                                 <td class="py-1">
-                                                    @prop.GetValue(supplier)
+                                                    @prop.GetValue(order)
                                                 </td>
                                                 continue;
-                                            case "Country":
+                                            case "ShipCity":
                                                 <td class="py-1">
-                                                    @prop.GetValue(supplier)
+                                                    @prop.GetValue(order)
                                                 </td>
                                                 continue;
-                                            case "PhoneNumber":
+                                            case "ShipRegion":
                                                 <td class="py-1">
-                                                    @prop.GetValue(supplier)
+                                                    @prop.GetValue(order)
                                                 </td>
                                                 continue;
-                                            case "Fax":
+                                            case "ShipCountry":
                                                 <td class="py-1">
-                                                    @prop.GetValue(supplier)
+                                                    @prop.GetValue(order)
                                                 </td>
                                                 continue;
-                                            case "Website":
+                                            case "Confirmed":
                                                 <td class="py-1">
-                                                    @prop.GetValue(supplier)
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "CreatedAt":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
                                                 </td>
                                                 continue;
                                             case "UpdatedAt":
                                                 <td class="py-1">
-                                                    @prop.GetValue(supplier)
+                                                    @prop.GetValue(order)
                                                 </td>
                                                 continue;
                                             default:
                                                 <td>
-                                                    @prop.GetValue(supplier)
+                                                    @prop.GetValue(order)
                                                 </td>
                                                 break;
                                         }
                                     }
                                     <td>
-                                        <a asp-action="Update" asp-controller="Suppliers" asp-route-Id="@supplier.Id" class="btn btn-success btn-icon-text">
+                                        <a asp-action="Update" asp-controller="SubCategories" asp-route-Id="@order.Id" class="btn btn-success btn-icon-text">
                                             Update
                                             <i class="mdi mdi-pencil-circle btn-icon-append"></i>
                                         </a>
-                                        <form method="post" asp-action="AssumingDeleted" asp-controller="Suppliers" class="m-auto">
-                                            <input name="Id" id="Id" hidden value="@supplier.Id" />
+                                        <form method="post" asp-action="AssumingDeleted" asp-controller="SubCategories" class="m-auto">
+                                            <input name="Id" id="Id" hidden value="@order.Id" />
                                             <button type="submit" class="btn btn-warning btn-icon-text">
                                                 Assuming deleted
                                                 <i class="mdi mdi-delete btn-icon-append"></i>
                                             </button>
                                         </form>
-                                        <form method="post" asp-action="Delete" asp-controller="Suppliers" class="m-auto">
-                                            <input name="Id" id="Id" hidden value="@supplier.Id" />
+                                        <form method="post" asp-action="Delete" asp-controller="SubCategories" class="m-auto">
+                                            <input name="Id" id="Id" hidden value="@order.Id" />
                                             <button type="submit" class="btn btn-danger btn-icon-text">
                                                 Really delete
                                                 <i class="mdi mdi-delete btn-icon-append"></i>
@@ -176,6 +181,6 @@
     </div>
 </div>
 
-@section GetAllSuppliersJs {
-    <script src="~/admin/js/suppliers-paginate.js"></script>
+@section GetAllOrders2Js {
+    <script src="~/admin/js/orders2-paginate.js"></script>
 }

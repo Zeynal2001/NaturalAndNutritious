@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@{
+    // var currentUser =  (AppUser)ViewData["currentUser"];
+}
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -140,17 +143,16 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#tags" aria-expanded="false" aria-controls="tags">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-orders" aria-expanded="false" aria-controls="ui-orders">
                             <i class="mdi mdi-pound-box menu-icon"></i>
                             @*  *@
                             <span class="menu-title">Orders</span>
                             <i class="menu-arrow"></i>
                         </a>
-                        <div class="collapse" id="tags">
+                        <div class="collapse" id="ui-orders">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"> <a class="nav-link" asp-action="GetAllTags" asp-controller="Tags">All Orders</a></li>
-                                <li class="nav-item"> <a class="nav-link" asp-action="GetDeletedTags" asp-controller="Tags">Deleted Orders</a></li>
-                                <li class="nav-item"> <a class="nav-link" asp-action="Create" asp-controller="Tags">Create Orders</a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-action="GetAllOrders" asp-controller="Orders">All Orders</a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-action="GetComfirmedOrders" asp-controller="Orders">Comfirmed Orders</a></li>
                             </ul>
                         </div>
                     </li>
@@ -205,6 +207,12 @@
     @RenderSection("ChangeRoleJs", false) *@
     <!-- End custom js for this page-->
     @RenderSection("GetAllUsersJs", false)
+    @RenderSection("GetAllProductsJs", false)
+    @RenderSection("GetAllCategoriesJs", false)
+    @RenderSection("GetAllSubCategoriesJs", false)
+    @RenderSection("GetAllSuppliersJs", false)
+    @RenderSection("GetAllOrdersJs", false)
+    @RenderSection("GetAllOrders2Js", false)
     @RenderSection("UserEditJs", false)
     <script src="js/jquery.cookie.js" type="text/javascript"></script>
 </body>

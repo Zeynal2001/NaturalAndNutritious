@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NaturalAndNutritious.Data.Data;
 
@@ -11,9 +12,10 @@ using NaturalAndNutritious.Data.Data;
 namespace NaturalAndNutritious.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240521192805_mig07")]
+    partial class mig07
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,29 +53,29 @@ namespace NaturalAndNutritious.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "bd68aa17-a33c-460c-88d2-6b3ce4d73286",
-                            ConcurrencyStamp = "b5b04546-ebf7-4256-9061-a5d452bb7ff9",
+                            Id = "d2f4f817-45c6-40ed-851f-4858263a0a6a",
+                            ConcurrencyStamp = "19479166-771a-48f2-840a-a76e7fc37efe",
                             Name = "None",
                             NormalizedName = "NONE"
                         },
                         new
                         {
-                            Id = "c8c75f32-a905-4513-b9e7-22a433b05983",
-                            ConcurrencyStamp = "701d37f4-8583-4868-b7fd-b98bc6f274cb",
+                            Id = "d92215c9-6a1b-4084-b59f-d869123467d3",
+                            ConcurrencyStamp = "6d5686a6-dbd7-47d2-9431-f741d31637e0",
                             Name = "Admin",
                             NormalizedName = "ADMİN"
                         },
                         new
                         {
-                            Id = "a43f0148-2195-40a3-9cfe-1ccf088e4914",
-                            ConcurrencyStamp = "54d1fdc3-85bf-4d15-b674-87d0cd534fdd",
+                            Id = "501f63d6-168b-4b0d-a06f-e02567829b4f",
+                            ConcurrencyStamp = "dfc4e8be-5d02-4884-91af-0882a2919d5b",
                             Name = "Client",
                             NormalizedName = "CLİENT"
                         },
                         new
                         {
-                            Id = "e2f418f0-3f7d-4896-ae38-26fb3b494293",
-                            ConcurrencyStamp = "9a194994-d4b5-4c57-88bb-0e8abdcef5cb",
+                            Id = "d0033598-11c4-4b33-aeeb-cb44c6caa1c6",
+                            ConcurrencyStamp = "d9e01f36-7307-4e3c-8fce-cdff58daf4c5",
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         });
@@ -418,6 +420,9 @@ namespace NaturalAndNutritious.Data.Migrations
                     b.Property<string>("ShipRegion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ShipVia")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("ShippedDate")
                         .HasColumnType("datetime2");

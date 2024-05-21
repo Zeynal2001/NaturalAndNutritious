@@ -29,6 +29,9 @@ namespace NaturalAndNutritious.Business.Extensions
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ISubCategoryService, SubCategoryService>();
             services.AddScoped<ISupplierService, SupplierService>();
+            services.AddScoped<IDiscountService, DiscountService>();
+            services.AddScoped<IDiscountRepository, DiscountRepository>();
+            services.AddScoped<IOrderService, OrderService>();
         }
     }
 }

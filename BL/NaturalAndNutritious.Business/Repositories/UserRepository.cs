@@ -64,12 +64,17 @@ namespace NaturalAndNutritious.Business.Repositories
         {
             return await _userManager.DeleteAsync(user);
         }
+
+        public async Task<IQueryable<AppUser>> GetAllUsers()
+        {
+            return await Task.FromResult(_context.Users);
+        }
         /*
 public IQueryable<Review> GetReviewsByUserId(string userId)
 {
-   return _context.Reviews
-               .Include(r => r.AppUser)
-               .Where(r => r.AppUser.Id == userId).AsQueryable();
+return _context.Reviews
+      .Include(r => r.AppUser)
+      .Where(r => r.AppUser.Id == userId).AsQueryable();
 }
 */
 

@@ -16,19 +16,19 @@
                     </div>
                     <div class="col-lg-2">
                         <div class="btn-group" role="group" aria-label="Basic example">
-                            <a class="btn btn-outline-secondary" asp-action="GetAllUsers" asp-route-pageSize="@Model.PageSize"> &lt;&lt; </a>
+                            <a class="btn btn-outline-secondary" asp-action="GetAllProducts" asp-route-pageSize="@Model.PageSize"> &lt;&lt; </a>
                             @if (prevPage > 0)
                             {
-                                <a class="btn btn-outline-secondary" asp-action="GetAllUsers" asp-route-page="@prevPage" asp-route-pageSize="@Model.PageSize">@prevPage</a>
+                                <a class="btn btn-outline-secondary" asp-action="GetAllProducts" asp-route-page="@prevPage" asp-route-pageSize="@Model.PageSize">@prevPage</a>
                             }
 
                             <a class="btn btn-primary active" style="color:honeydew">@Model.CurrentPage</a>
 
                             @if (nextPage <= Model.TotalPages)
                             {
-                                <a class="btn btn-outline-secondary" asp-action="GetAllUsers" asp-route-page="@nextPage" asp-route-pageSize="@Model.PageSize">@nextPage</a>
+                                <a class="btn btn-outline-secondary" asp-action="GetAllProducts" asp-route-page="@nextPage" asp-route-pageSize="@Model.PageSize">@nextPage</a>
                             }
-                            <a class="btn btn-outline-secondary" asp-action="GetAllUsers" asp-route-page="@Model.TotalPages" asp-route-pageSize="@Model.PageSize"> &gt;&gt; </a>
+                            <a class="btn btn-outline-secondary" asp-action="GetAllProducts" asp-route-page="@Model.TotalPages" asp-route-pageSize="@Model.PageSize"> &gt;&gt; </a>
                         </div>
                     </div>
 
@@ -92,14 +92,28 @@
                                         }
                                     }
                                     <td>
-                                        <a asp-action="Update" asp-controller="Products" asp-route-productId="@product.Id" class="btn btn-success btn-icon-text">
+                                        <a asp-action="Update" asp-controller="Products" asp-route-Id="@product.Id" class="btn btn-success btn-icon-text">
                                             Update
                                             <i class="mdi mdi-pencil-circle btn-icon-append"></i>
                                         </a>
-                                        <a asp-action="AddDiscount" asp-controller="Products" asp-route-productId="@product.Id" class="btn btn-info btn-icon-text">
+                                        <a asp-action="CreateDiscount" asp-controller="Discounts" asp-route-productId="@product.Id" class="btn btn-info btn-icon-text">
                                             Add Discount
                                             <i class="mdi mdi-percent btn-icon-append"></i>
                                         </a>
+                                        <form method="post" asp-action="RemoveDiscount" asp-controller="Products" class="m-auto">
+                                            <input name="productId" id="productId" hidden value="@product.Id" />
+                                            <button type="submit" class="btn btn-warning btn-icon-text">
+                                                Remove Discount
+                                                <i class="mdi mdi-delete btn-icon-append"></i>
+                                            </button>
+                                        </form>
+                                        <form method="post" asp-action="Discontinued" asp-controller="Products" class="m-auto">
+                                            <input name="productId" id="productId" hidden value="@product.Id" />
+                                            <button type="submit" class="btn btn-danger btn-icon-text">
+                                                Discontinued
+                                                <i class="mdi mdi-delete btn-icon-append"></i>
+                                            </button>
+                                        </form>
                                         <form method="post" asp-action="AssumingDeleted" asp-controller="Products" class="m-auto">
                                             <input name="productId" id="productId" hidden value="@product.Id" />
                                             <button type="submit" class="btn btn-warning btn-icon-text">
@@ -125,6 +139,6 @@
     </div>
 </div>
 
-@section GetAllUsersJs {
-    <script src="~/admin/js/users-paginate.js"></script>
+@section GetAllProductsJs {
+    <script src="~/admin/js/products-paginate.js"></script>
 }

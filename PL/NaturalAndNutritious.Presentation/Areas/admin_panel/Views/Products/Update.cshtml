@@ -1,0 +1,86 @@
+﻿@model UpdateProductDto
+@{
+    ViewData["Title"] = "Edit";
+}
+<div class="">
+    <div class="col-md-12 grid-margin">
+        <div class="card">
+            <div asp-validation-summary="All"></div>
+            <h4 class="card-title">Update Product Details</h4>
+            <div class="">
+                <div class="container mb-4">
+                    <img src="~/@Model.ProductImageUrl" id="profile-image-show" width="200" height="200" />
+                </div>
+                <div class="container">
+                    <form class="forms-sample" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label asp-for="ProductImage" class="form-label">Product Image:</label>
+                            <input asp-for="ProductImage" class="form-control" type="file" id="formFile">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.ProductName" for="exampleInputNickName2">Product Name:</label>
+                            <input asp-for="@Model.ProductName" type="text" class="form-control" id="exampleInputNickName2" placeholder="@Model.ProductName">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.ShortDescription" for="exampleInputUsername3">Short Description:</label>
+                            <input asp-for="@Model.ShortDescription" type="text" class="form-control" id="exampleInputUsername3" placeholder="@Model.ShortDescription">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.Description" for="exampleInputUsername4">Description:</label>
+                            <input asp-for="@Model.Description" type="textarea" class="form-control" id="exampleInputUsername4" placeholder="@Model.Description">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.ProductPrice" for="exampleInputBirthDate">ProductPrice:</label>
+                            <input asp-for="@Model.ProductPrice" type="number" class="form-control" id="exampleInputBirthDate">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.UnitsInStock" for="exampleInputEmail1">Units In Stock:</label>
+                            <input asp-for="@Model.UnitsInStock" type="number" class="form-control" id="exampleInputEmail1" placeholder="@Model.UnitsInStock">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="@Model.UnitsOnOrder" for="exampleInputEmail2">Units On Order:</label>
+                            <input asp-for="@Model.UnitsOnOrder" type="number" class="form-control" id="exampleInputEmail2" placeholder="@Model.UnitsOnOrder">
+                        </div> 
+                        
+                        <div class="form-group">
+                            <label asp-for="@Model.ReorderLevel" for="exampleInputEmail3">Reorder Level:</label>
+                            <input asp-for="@Model.ReorderLevel" type="number" class="form-control" id="exampleInputEmail3" placeholder="@Model.ReorderLevel">
+                        </div>
+
+                        <div class="form-group">
+                            <input asp-for="@Model.Id" type="text" class="form-control" id="exampleInputEmail1" hidden>
+                            <input asp-for="@Model.ProductImageUrl" type="text" class="form-control" hidden>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary me-2" style="color:honeydew;">Submit</button>
+                        <button asp-action="GetAllProducts" asp-controller="Products" class="btn btn-light">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section UserEditJs {
+    <script src="~/admin/js/user-edit.js"></script>
+}
+
+@*
+<div class="form-group">
+    <label for="exampleInputPassword1">Password</label>
+    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+</div>
+<div class="form-group">
+    <label for="exampleInputConfirmPassword1">Confirm Password</label>
+    <input type="password" class="form-control" id="exampleInputConfirmPassword1" placeholder="Password">
+</div>
+<button type="submit" class="btn btn-primary me-2">Submit</button>
+<button asp-action="GetAllUsers" asp-controller="Users" class="btn btn-light">Cancel</button>
+*@

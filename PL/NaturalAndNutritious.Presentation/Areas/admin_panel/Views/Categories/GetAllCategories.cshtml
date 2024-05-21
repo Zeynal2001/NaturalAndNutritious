@@ -16,19 +16,19 @@
                     </div>
                     <div class="col-lg-2">
                         <div class="btn-group" role="group" aria-label="Basic example">
-                            <a class="btn btn-outline-secondary" asp-action="GetAllUsers" asp-route-pageSize="@Model.PageSize"> &lt;&lt; </a>
+                            <a class="btn btn-outline-secondary" asp-action="GetAllCategories" asp-route-pageSize="@Model.PageSize"> &lt;&lt; </a>
                             @if (prevPage > 0)
                             {
-                                <a class="btn btn-outline-secondary" asp-action="GetAllUsers" asp-route-page="@prevPage" asp-route-pageSize="@Model.PageSize">@prevPage</a>
+                                <a class="btn btn-outline-secondary" asp-action="GetAllCategories" asp-route-page="@prevPage" asp-route-pageSize="@Model.PageSize">@prevPage</a>
                             }
 
                             <a class="btn btn-primary active" style="color:honeydew">@Model.CurrentPage</a>
 
                             @if (nextPage <= Model.TotalPages)
                             {
-                                <a class="btn btn-outline-secondary" asp-action="GetAllUsers" asp-route-page="@nextPage" asp-route-pageSize="@Model.PageSize">@nextPage</a>
+                                <a class="btn btn-outline-secondary" asp-action="GetAllCategories" asp-route-page="@nextPage" asp-route-pageSize="@Model.PageSize">@nextPage</a>
                             }
-                            <a class="btn btn-outline-secondary" asp-action="GetAllUsers" asp-route-page="@Model.TotalPages" asp-route-pageSize="@Model.PageSize"> &gt;&gt; </a>
+                            <a class="btn btn-outline-secondary" asp-action="GetAllCategories" asp-route-page="@Model.TotalPages" asp-route-pageSize="@Model.PageSize"> &gt;&gt; </a>
                         </div>
                     </div>
 
@@ -54,20 +54,6 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                @* <th>
-                                ProfilePhoto
-                                </th>
-                                <th>
-                                FullName
-                                </th>
-                                <th>
-                                UserName
-                                <th>
-                                BirthDate
-                                </th>
-                                <th>
-                                Email
-                                </th> *@
                                 @foreach (var propertyInfo in typeof(AllCategoriesDto).GetProperties())
                                 {
                                     if (propertyInfo.Name == "Id")
@@ -140,6 +126,6 @@
     </div>
 </div>
 
-@section GetAllUsersJs {
-    <script src="~/admin/js/users-paginate.js"></script>
+@section GetAllCategoriesJs {
+    <script src="~/admin/js/categories-paginate.js"></script>
 }

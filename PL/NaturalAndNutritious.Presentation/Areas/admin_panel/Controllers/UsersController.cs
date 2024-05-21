@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NaturalAndNutritious.Business.Abstractions;
 using NaturalAndNutritious.Business.Abstractions.AdminPanelAbstractions;
 using NaturalAndNutritious.Business.Dtos;
 using NaturalAndNutritious.Business.Dtos.AdminPanelDtos;
 using NaturalAndNutritious.Business.Extensions;
+using NaturalAndNutritious.Data.Abstractions;
+using NaturalAndNutritious.Data.Entities;
 using NaturalAndNutritious.Data.Enums;
 using NaturalAndNutritious.Presentation.Areas.admin_panel.Models;
 using System.Security.Claims;
@@ -15,19 +18,28 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
     [Authorize(Roles = nameof(RoleTypes.Admin), AuthenticationSchemes = "AdminAuth")]
     public class UsersController : Controller
     {
-        public UsersController(IUsersService usersService, IAuthService authService)
+        public UsersController(IUsersService usersService, IAuthService authService, IUserRepository userRepository, UserManager<AppUser> userManager)
         {
             _usersService = usersService;
             _authService = authService;
+            _userRepository = userRepository;
+            _userManager = userManager;
         }
 
         private readonly IUsersService _usersService;
         private readonly IAuthService _authService;
+        private readonly IUserRepository _userRepository;
+        private readonly UserManager<AppUser> _userManager;
 
         [Area("admin_panel")]
         [Authorize(Roles = nameof(RoleTypes.Admin), AuthenticationSchemes = "AdminAuth")]
         public async Task<IActionResult> GetAllUsers(int page = 1, int pageSize = 5)
         {
+            //var currentUserId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            //var currentUser = await _userManager.FindByIdAsync(currentUserId);
+
+            //ViewData["currentUser"] = currentUser;
+
             var users = await _usersService.GetAllUsersWithPaginate(page, pageSize);
 
             var totalUsers = await _usersService.TotalUers();

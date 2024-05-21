@@ -11,6 +11,5 @@ namespace NaturalAndNutritious.Data.Abstractions
     {
         Task<IQueryable<Product>> GetProductsBySubCategoryId(Guid subCategoryId);
         Task<Category> GetCategoryBySubCategoryId(Guid subCategoryId);
-
     }
 }

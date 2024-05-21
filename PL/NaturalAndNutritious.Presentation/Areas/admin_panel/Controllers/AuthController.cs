@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using NaturalAndNutritious.Business.Abstractions.AdminPanelAbstractions;
-using NaturalAndNutritious.Business.Dtos;
 using NaturalAndNutritious.Business.Dtos.AdminPanelDtos;
-using NaturalAndNutritious.Presentation.Areas.admin_panel.Models;
-using System.Security.Claims;
 
 namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
 {

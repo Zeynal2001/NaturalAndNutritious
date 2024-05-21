@@ -11,6 +11,7 @@ namespace NaturalAndNutritious.Data.Abstractions
     public interface IUserRepository
     {
         Task<IQueryable<Order>> GetOrdersByUserId(string userId);
+        Task<IQueryable<AppUser>> GetAllUsers();
         Task<IQueryable<Review>> GetReviewsByUserId(string userId);
         Task<AppUser> GetUserByIdAsync(string userId);
         Task<IdentityResult> UpdateUserAsync(AppUser user);

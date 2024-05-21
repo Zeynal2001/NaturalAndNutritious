@@ -39,7 +39,8 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                 throw new ArgumentException();
             }
 
-            var products = await _context.Products
+            var products = await  _context.Products 
+                .Include(p => p.Discount)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Where(p => p.IsDeleted == false)
@@ -58,7 +59,8 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                     SubCategory = p.SubCategory.SubCategoryName,
                     Supplier = p.Supplier.CompanyName,
                     CreatedAt = p.CreatedAt,
-                    UpdatedAt = p.UpdatedAt
+                    UpdatedAt = p.UpdatedAt,
+                    Discount = p.Discount.DiscountRate
                 }).ToListAsync();
 
             return products;
@@ -127,7 +129,7 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                     IsDeleted = false,
                     CategoryId = selectedCategory.Id,
                     SubCategoryId = selectedSubCategory.Id,
-                    SupplierId = selectedSupplier.Id,
+                    SupplierId = selectedSupplier.Id
                 };
 
                 await _productRepository.CreateAsync(product);

@@ -1,4 +1,6 @@
-﻿<div class="row">
+﻿@model HomeVm
+
+<div class="row">
     <div class="col-md-12 grid-margin">
         <div class="d-flex justify-content-between flex-wrap">
             <div class="d-flex align-items-end flex-wrap">
@@ -32,45 +34,46 @@
                 <div class="d-none d-xl-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
                     <i class="mdi mdi-calendar-heart icon-lg me-3 text-primary"></i>
                     <div class="d-flex flex-column justify-content-around">
-                        <small class="mb-1 text-muted">Start date</small>
-                        <div class="dropdown">
-                            <a class="btn btn-secondary dropdown-toggle p-0 bg-transparent border-0 text-dark shadow-none font-weight-medium" href="#" role="button" id="dropdownMenuLinkA" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <h5 class="mb-0 d-inline-block">26 Jul 2018</h5>
-                            </a>
+                        <small class="mb-1 text-muted">Creation date</small>
+                        <a class="btn p-0 bg-transparent border-0 text-dark shadow-none font-weight-medium" href="#" role="button" id="dropdownMenuLinkA" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <h5 class="mb-0 d-inline-block">28 May 2024</h5>
+                        </a>
+                        @* <div class="dropdown">
+                            
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLinkA">
                                 <a class="dropdown-item" href="#">12 Aug 2018</a>
                                 <a class="dropdown-item" href="#">22 Sep 2018</a>
                                 <a class="dropdown-item" href="#">21 Oct 2018</a>
                             </div>
-                        </div>
+                        </div> *@
                     </div>
                 </div>
                 <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
                     <i class="mdi mdi-currency-usd me-3 icon-lg text-danger"></i>
                     <div class="d-flex flex-column justify-content-around">
-                        <small class="mb-1 text-muted">Revenue</small>
-                        <h5 class="me-2 mb-0">$577545</h5>
+                        <small class="mb-1 text-muted">Total Budget</small>
+                        <h5 class="me-2 mb-0">$@Model.TotalBudget</h5>
                     </div>
                 </div>
                 <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
                     <i class="mdi mdi-eye me-3 icon-lg text-success"></i>
                     <div class="d-flex flex-column justify-content-around">
-                        <small class="mb-1 text-muted">Total views</small>
-                        <h5 class="me-2 mb-0">9833550</h5>
+                        <small class="mb-1 text-muted">Total Views</small>
+                        <h5 class="me-2 mb-0">@Model.TotalViews</h5>
                     </div>
                 </div>
                 <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
-                    <i class="mdi mdi-download me-3 icon-lg text-warning"></i>
+                    <i class="mdi mdi-package  me-3 icon-lg text-warning"></i>
                     <div class="d-flex flex-column justify-content-around">
-                        <small class="mb-1 text-muted">Downloads</small>
-                        <h5 class="me-2 mb-0">2233783</h5>
+                        <small class="mb-1 text-muted">Total Products</small>
+                        <h5 class="me-2 mb-0">@Model.TotalProducts</h5>
                     </div>
                 </div>
                 <div class="d-flex py-3 border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
-                    <i class="mdi mdi-flag me-3 icon-lg text-danger"></i>
+                    <i class="mdi mdi-account  me-3 icon-lg text-danger"></i>
                     <div class="d-flex flex-column justify-content-around">
-                        <small class="mb-1 text-muted">Flagged</small>
-                        <h5 class="me-2 mb-0">3497843</h5>
+                        <small class="mb-1 text-muted">Total Users/Customers</small>
+                        <h5 class="me-2 mb-0">@Model.TotalUsers</h5>
                     </div>
                 </div>
             </div>

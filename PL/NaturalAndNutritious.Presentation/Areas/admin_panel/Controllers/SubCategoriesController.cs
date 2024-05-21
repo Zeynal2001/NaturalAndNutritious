@@ -115,8 +115,6 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                 SubCategoryName = category.SubCategoryName,
             };
 
-            ViewData["hasError"] = false;
-
             return View(subCategoryDetails);
         }
 
