@@ -30,17 +30,17 @@
 
                         <div class="form-group">
                             <label asp-for="@Model.Description" for="exampleInputUsername4">Description:</label>
-                            <input asp-for="@Model.Description" type="textarea" class="form-control" id="exampleInputUsername4" placeholder="@Model.Description">
+                            <textarea asp-for="Description" class="form-control" id="exampleInputUsername4" placeholder="@Model.Description"></textarea>
                         </div>
 
                         <div class="form-group">
-                            <label asp-for="@Model.ProductPrice" for="exampleInputBirthDate">ProductPrice:</label>
-                            <input asp-for="@Model.ProductPrice" type="number" class="form-control" id="exampleInputBirthDate">
+                            <label asp-for="@Model.ProductPrice" for="exampleInputEmail0">ProductPrice:</label>
+                            <input asp-for="@Model.ProductPrice" type="number" step="0.1" class="form-control" id="exampleInputEmail0" placeholder="@Model.ProductPrice">
                         </div>
 
                         <div class="form-group">
                             <label asp-for="@Model.UnitsInStock" for="exampleInputEmail1">Units In Stock:</label>
-                            <input asp-for="@Model.UnitsInStock" type="number" class="form-control" id="exampleInputEmail1" placeholder="@Model.UnitsInStock">
+                            <input asp-for="@Model.UnitsInStock" type="number" step="0.1" class="form-control" id="exampleInputEmail1" placeholder="@Model.UnitsInStock">
                         </div>
                         
                         <div class="form-group">

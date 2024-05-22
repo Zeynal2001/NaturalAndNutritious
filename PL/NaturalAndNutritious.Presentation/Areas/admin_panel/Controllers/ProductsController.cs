@@ -277,7 +277,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                 throw new ArgumentException($"The id '{productId}' is not a valid GUID.", nameof(productId));
             }
 
-            var product = await _productRepository.GetByIdAsync(guidId);
+            var product = await _productRepository.Table.Include(p => p.Discount).FirstOrDefaultAsync(p => p.Id == guidId);
             if (product == null)
             {
                 var error = new ErrorModel { ErrorMessage = "Product is not found!" };

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NaturalAndNutritious.Business.Abstractions;
 using NaturalAndNutritious.Business.Abstractions.AdminPanelAbstractions;
 using NaturalAndNutritious.Business.Dtos.AdminPanelDtos;
@@ -30,7 +31,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                 throw new ArgumentException($"The id '{productId}' is not a valid GUID.", nameof(productId));
             }
 
-            var product = await _productRepository.GetByIdAsync(Id);
+            var product = await _productRepository.Table.Include(p => p.Discount).FirstOrDefaultAsync(p => p.Id == Id);
             if (product == null)
             {
                 var error = new ErrorModel { ErrorMessage = "Product is not found!" };

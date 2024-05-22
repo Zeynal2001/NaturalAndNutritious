@@ -61,7 +61,47 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             return View(vm);
         }
 
-        public async Task<IActionResult> GetComfirmedOrders(int page = 1, int pageSize = 5)
+        public async Task<IActionResult> GetUnconfirmedOrders(int page = 1, int pageSize = 5)
+        {
+            var ordersAsQueryable = await _orderRepository.FilterWithPagination(page, pageSize);
+
+            var orders = await ordersAsQueryable
+                .Include(o => o.OrderDetails)
+                .Where(o => o.Confirmed == false)
+                .OrderByDescending(o => o.CreatedAt)
+                .Select(o => new AllOrdersDto()
+                {
+                    Id = o.Id.ToString(),
+                    UserName = o.AppUser.FullName,
+                    ShipName = o.Shipper.CompanyName,
+                    OrderDate = o.OrderDate,
+                    ShippedDate = o.ShippedDate,
+                    RequiredDate = o.RequiredDate,
+                    Freight = o.Freight,
+                    ShipAddress = o.ShipAddress,
+                    ShipCity = o.ShipCity,
+                    ShipRegion = o.ShipRegion,
+                    ShipPostalCode = o.ShipPostalCode,
+                    ShipCountry = o.ShipCountry,
+                    Confirmed = o.Confirmed,
+                    CreatedAt = o.CreatedAt,
+                    UpdatedAt = o.UpdatedAt,
+                }).ToListAsync();
+
+            var totalOrders = await _orderService.TotalOrders();
+
+            var vm = new GetAllOrdersVm()
+            {
+                Orders = orders,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling(totalOrders / (double)pageSize),
+                PageSize = pageSize
+            };
+
+            return View(vm);
+        }
+
+        public async Task<IActionResult> GetConfirmedOrders(int page = 1, int pageSize = 5)
         {
             var ordersAsQueryable = await _orderRepository.FilterWithPagination(page, pageSize);
 
@@ -99,6 +139,125 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             };
 
             return View(vm);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> AssumingDeleted(string Id)
+        {
+            if (!Guid.TryParse(Id, out var guidId))
+            {
+                throw new ArgumentException($"The id '{Id}' is not a valid GUID.", nameof(Id));
+            }
+            var order = await _orderRepository.GetByIdAsync(guidId);
+
+            if (order == null)
+            {
+                var errorModel = new ErrorModel();
+                errorModel.ErrorMessage = "There isn't such order.";
+
+                return View("AdminError", errorModel);
+            }
+            order.IsDeleted = true;
+
+            var isUpdated = await _orderRepository.UpdateAsync(order);
+            await _orderRepository.SaveChangesAsync();
+
+            if (isUpdated == false)
+            {
+                var errorModel = new ErrorModel();
+                errorModel.ErrorMessage = "Order not updated.";
+
+                return View("AdminError", errorModel);
+            }
+
+            return RedirectToAction(nameof(GetAllOrders));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(string Id)
+        {
+            if (!Guid.TryParse(Id, out var guidId))
+            {
+                throw new ArgumentException($"The id '{Id}' is not a valid GUID.", nameof(Id));
+            }
+
+            var isDeleted = await _orderRepository.DeleteAsync(guidId);
+            await _orderRepository.SaveChangesAsync();
+
+            if (isDeleted == false)
+            {
+                var errorModel = new ErrorModel();
+                errorModel.ErrorMessage = "There isn't such order.";
+
+                return View("AdminError", errorModel);
+            }
+
+            return RedirectToAction(nameof(GetAllOrders));
+        }
+
+        [HttpPost]
+        public async Task <IActionResult> ConfirmOrder(string Id)
+        {
+            if (!Guid.TryParse(Id, out var guidId))
+            {
+                throw new ArgumentException($"The id '{Id}' is not a valid GUID.", nameof(Id));
+            }
+            var order = await _orderRepository.GetByIdAsync(guidId);
+
+            if (order == null)
+            {
+                var errorModel = new ErrorModel();
+                errorModel.ErrorMessage = "There isn't such order.";
+
+                return View("AdminError", errorModel);
+            }
+            order.Confirmed = true;
+
+            var isUpdated = await _orderRepository.UpdateAsync(order);
+            await _orderRepository.SaveChangesAsync();
+
+            if (isUpdated == false)
+            {
+                var errorModel = new ErrorModel();
+                errorModel.ErrorMessage = "Order not updated.";
+
+                return View("AdminError", errorModel);
+            }
+
+            return RedirectToAction(nameof(GetConfirmedOrders));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UnconfirmOrder(string Id)
+        {
+            if (!Guid.TryParse(Id, out var guidId))
+            {
+                throw new ArgumentException($"The id '{Id}' is not a valid GUID.", nameof(Id));
+            }
+            var order = await _orderRepository.GetByIdAsync(guidId);
+
+            if (order == null)
+            {
+                var errorModel = new ErrorModel();
+                errorModel.ErrorMessage = "There isn't such order.";
+
+                return View("AdminError", errorModel);
+            }
+            order.Confirmed = false;
+
+            var isUpdated = await _orderRepository.UpdateAsync(order);
+            await _orderRepository.SaveChangesAsync();
+
+            if (isUpdated == false)
+            {
+                var errorModel = new ErrorModel();
+                errorModel.ErrorMessage = "Order not updated.";
+
+                return View("AdminError", errorModel);
+            }
+
+            return RedirectToAction(nameof(GetUnconfirmedOrders));
         }
     }
 }

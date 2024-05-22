@@ -1,6 +1,6 @@
-﻿@model GetAllSubCategoriesVm
+﻿@model GetAllOrdersVm
 @{
-    ViewData["Title"] = "GetAllSubCategories";
+    ViewData["Title"] = "GetConfirmedOrders";
 }
 @{
     var prevPage = Model.CurrentPage - 1;
@@ -12,23 +12,23 @@
             <div class="card-body">
                 <div class="row align-items-center justify-content-between">
                     <div class="col-lg-6">
-                        <h2 class="card-title">All Subcategories</h2>
+                        <h2 class="card-title">All Confirmed Orders</h2>
                     </div>
                     <div class="col-lg-2">
                         <div class="btn-group" role="group" aria-label="Basic example">
-                            <a class="btn btn-outline-secondary" asp-action="GetAllSubcategories" asp-route-pageSize="@Model.PageSize"> &lt;&lt; </a>
+                            <a class="btn btn-outline-secondary" asp-action="GetConfirmedOrders" asp-route-pageSize="@Model.PageSize"> &lt;&lt; </a>
                             @if (prevPage > 0)
                             {
-                                <a class="btn btn-outline-secondary" asp-action="GetAllSubcategories" asp-route-page="@prevPage" asp-route-pageSize="@Model.PageSize">@prevPage</a>
+                                <a class="btn btn-outline-secondary" asp-action="GetConfirmedOrders" asp-route-page="@prevPage" asp-route-pageSize="@Model.PageSize">@prevPage</a>
                             }
 
                             <a class="btn btn-primary active" style="color:honeydew">@Model.CurrentPage</a>
 
                             @if (nextPage <= Model.TotalPages)
                             {
-                                <a class="btn btn-outline-secondary" asp-action="GetAllSubcategories" asp-route-page="@nextPage" asp-route-pageSize="@Model.PageSize">@nextPage</a>
+                                <a class="btn btn-outline-secondary" asp-action="GetConfirmedOrders" asp-route-page="@nextPage" asp-route-pageSize="@Model.PageSize">@nextPage</a>
                             }
-                            <a class="btn btn-outline-secondary" asp-action="GetAllSubcategories" asp-route-page="@Model.TotalPages" asp-route-pageSize="@Model.PageSize"> &gt;&gt; </a>
+                            <a class="btn btn-outline-secondary" asp-action="GetConfirmedOrders" asp-route-page="@Model.TotalPages" asp-route-pageSize="@Model.PageSize"> &gt;&gt; </a>
                         </div>
                     </div>
 
@@ -59,7 +59,8 @@
                                     var modalId = $"exampleModal{count}";
                                     var targetId = $"#exampleModal{count}";
                                 }
-                                @foreach (var propertyInfo in typeof(AllSubCategoriesDto).GetProperties())
+
+                                @foreach (var propertyInfo in typeof(AllOrdersDto).GetProperties())
                                 {
                                     if (propertyInfo.Name == "Id")
                                     {
@@ -75,28 +76,83 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var subCategory in Model.SubCategories)
+                            @foreach (var order in Model.Orders)
                             {
                                 <tr>
-                                    @foreach (var prop in subCategory.GetType().GetProperties())
+                                    @foreach (var prop in order.GetType().GetProperties())
                                     {
                                         switch (prop.Name)
                                         {
                                             case "Id":
                                                 continue;
-                                            case "SubCategoryName":
+                                            case "UserName":
                                                 <td class="py-1">
-                                                    @prop.GetValue(subCategory)
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "OrderDate":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "ShippedDate":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "RequiredDate":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "Freight":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "ShipName":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "ShipAddress":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "ShipCity":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "ShipRegion":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "ShipCountry":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "Confirmed":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "CreatedAt":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
                                                 </td>
                                                 continue;
                                             case "UpdatedAt":
                                                 <td class="py-1">
-                                                    @prop.GetValue(subCategory)
+                                                    @prop.GetValue(order)
                                                 </td>
                                                 continue;
                                             default:
                                                 <td>
-                                                    @prop.GetValue(subCategory)
+                                                    @prop.GetValue(order)
                                                 </td>
                                                 break;
                                         }
@@ -119,21 +175,29 @@
                                                     <div class="modal-body">
                                                         <div class="row">
                                                             <div class="col-md-6">
-                                                                <a asp-action="Update" asp-controller="SubCategories" asp-route-Id="@subCategory.Id" class="btn btn-success btn-icon-text">
+                                                                <form method="post" asp-action="UnconfirmOrder" class="m-auto">
+                                                                    <input name="Id" id="Id" hidden value="@order.Id" />
+                                                                    <button type="submit" class="btn btn-warning btn-icon-text">
+                                                                        Unconfirm Order
+                                                                        <i class="mdi mdi-minus-circle btn-icon-append"></i>
+                                                                    </button>
+                                                                </form>
+
+                                                                <a asp-action="Update" asp-controller="Oders" asp-route-Id="@order.Id" class="btn btn-success btn-icon-text">
                                                                     Update
                                                                     <i class="mdi mdi-pencil-circle btn-icon-append"></i>
                                                                 </a>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                <form method="post" asp-action="AssumingDeleted" asp-controller="SubCategories" class="m-auto">
-                                                                    <input name="Id" id="Id" hidden value="@subCategory.Id" />
+                                                                <form method="post" asp-action="AssumingDeleted" class="m-auto">
+                                                                    <input name="Id" id="Id" hidden value="@order.Id" />
                                                                     <button type="submit" class="btn btn-warning btn-icon-text">
                                                                         Assuming deleted
                                                                         <i class="mdi mdi-delete btn-icon-append"></i>
                                                                     </button>
                                                                 </form>
-                                                                <form method="post" asp-action="Delete" asp-controller="SubCategories" class="m-auto">
-                                                                    <input name="Id" id="Id" hidden value="@subCategory.Id" />
+                                                                <form method="post" asp-action="Delete" class="m-auto">
+                                                                    <input name="Id" id="Id" hidden value="@order.Id" />
                                                                     <button type="submit" class="btn btn-danger btn-icon-text">
                                                                         Really delete
                                                                         <i class="mdi mdi-delete btn-icon-append"></i>
@@ -166,6 +230,6 @@
 
 
 
-@section GetAllSubCategoriesJs {
-    <script src="~/admin/js/subcategories-paginate.js"></script>
+@section GetAllOrders3Js {
+    <script src="~/admin/js/orders3-paginate.js"></script>
 }

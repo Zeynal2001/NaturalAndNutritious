@@ -39,11 +39,6 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                     return new DiscountServiceResult { Succeeded = false, IsNull = true, Message = "Product not found!" };
                 }
 
-                if (givenProduct.Discount != null)
-                {
-                    return new DiscountServiceResult { Succeeded = false, IsNull = true, Message = "The product already has a discount." };
-                }
-
                 var discount = new Discount
                 {
                     Id = Guid.NewGuid(),

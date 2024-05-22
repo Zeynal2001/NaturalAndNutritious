@@ -152,7 +152,8 @@
                         <div class="collapse" id="ui-orders">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item"> <a class="nav-link" asp-action="GetAllOrders" asp-controller="Orders">All Orders</a></li>
-                                <li class="nav-item"> <a class="nav-link" asp-action="GetComfirmedOrders" asp-controller="Orders">Comfirmed Orders</a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-action="GetUnconfirmedOrders" asp-controller="Orders">Unconfirmed Orders</a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-action="GetConfirmedOrders" asp-controller="Orders">Confirmed Orders</a></li>
                             </ul>
                         </div>
                     </li>
@@ -202,6 +203,9 @@
     <script src="~/admin/js/data-table.js"></script>
     <script src="~/admin/js/jquery.dataTables.js"></script>
     <script src="~/admin/js/dataTables.bootstrap4.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
 @*     @RenderSection("UserEditJs", false)
     @RenderSection("GetAllUsersJs", false)
     @RenderSection("ChangeRoleJs", false) *@
@@ -213,6 +217,7 @@
     @RenderSection("GetAllSuppliersJs", false)
     @RenderSection("GetAllOrdersJs", false)
     @RenderSection("GetAllOrders2Js", false)
+    @RenderSection("GetAllOrders3Js", false)
     @RenderSection("UserEditJs", false)
     <script src="js/jquery.cookie.js" type="text/javascript"></script>
 </body>
