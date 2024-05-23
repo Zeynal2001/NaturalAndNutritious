@@ -53,6 +53,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateDiscount(CreateDiscountDto model)
         {
             if (ModelState.IsValid)

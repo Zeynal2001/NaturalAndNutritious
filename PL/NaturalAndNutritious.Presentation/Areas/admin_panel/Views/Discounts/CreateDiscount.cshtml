@@ -6,7 +6,7 @@
     <input type="hidden" asp-for="ProductId" />
     <div class="form-group">
         <label asp-for="DiscountRate"></label>
-        <input asp-for="DiscountRate" class="form-control" />
+        <input asp-for="DiscountRate" class="form-control" oninput="validateDecimal(this)" />
     </div>
     <div class="form-group">
         <label asp-for="StartDate"></label>
@@ -25,3 +25,13 @@
     </div>
     <button type="submit" class="btn btn-primary">Create Discount</button>
 </form>
+
+@section Create2Js {
+    <script>
+        function validateDecimal(input) {
+            // Virgül yerine nokta kullanarak ondalık sayı kontrolü yap
+            input.value = input.value.replace('.', ',');
+        }
+    </script>
+}
+

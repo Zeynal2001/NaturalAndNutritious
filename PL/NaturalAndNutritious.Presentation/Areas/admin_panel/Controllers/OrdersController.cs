@@ -88,7 +88,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                     UpdatedAt = o.UpdatedAt,
                 }).ToListAsync();
 
-            var totalOrders = await _orderService.TotalOrders();
+            var totalOrders = await _orderService.TotalUnconfirmedOrders();
 
             var vm = new GetAllOrdersVm()
             {
@@ -128,7 +128,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                     UpdatedAt = o.UpdatedAt,
                 }).ToListAsync();
 
-            var totalOrders = await _orderService.TotalOrders();
+            var totalOrders = await _orderService.TotalConfirmedOrders();
 
             var vm = new GetAllOrdersVm()
             {

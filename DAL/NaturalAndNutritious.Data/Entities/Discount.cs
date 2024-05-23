@@ -1,5 +1,4 @@
-﻿using NaturalAndNutritious.Data.Enums;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NaturalAndNutritious.Data.Entities
 {

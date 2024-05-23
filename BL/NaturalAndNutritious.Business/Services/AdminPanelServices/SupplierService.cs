@@ -16,18 +16,18 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
 {
     public class SupplierService : ISupplierService
     {
-        public SupplierService(ISupplierRepository supplierRepository, AppDbContext context)
+        public SupplierService(ISupplierRepository supplierRepository)
         {
             _supplierRepository = supplierRepository;
-            _context = context;
         }
 
         private readonly ISupplierRepository _supplierRepository;
-        private readonly AppDbContext _context;
 
         public async Task<int> TotalSuppliers()
         {
-            return await _context.Suppliers.CountAsync();
+            return await _supplierRepository.Table
+                        .OrderByDescending(sc => sc.CreatedAt)
+                        .CountAsync();
         }
 
         public async Task<SupplierServiceResult> CreateSupplier(CreateSupplierDto model)

@@ -27,7 +27,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             var budget = products.Sum(p => p.ProductPrice);
             var views = products.Sum(p => p.ViewsCount);
 
-            var vm = new HomeVm()
+            var vm = new AdminHomeVm()
             {
                 TotalBudget = budget,
                 TotalViews = views,

@@ -17,14 +17,12 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
 {
     public class SubCategoryService : ISubCategoryService
     {
-        public SubCategoryService(AppDbContext context, ISubCategoryRepository subCategoryRepository, ICategoryRepository categoryRepository)
+        public SubCategoryService(ISubCategoryRepository subCategoryRepository, ICategoryRepository categoryRepository)
         {
-            _context = context;
             _subCategoryRepository = subCategoryRepository;
             _categoryRepository = categoryRepository;
         }
 
-        private readonly AppDbContext _context;
         private readonly ISubCategoryRepository _subCategoryRepository;
         private readonly ICategoryRepository _categoryRepository;
 
@@ -85,7 +83,9 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
 
         public async Task<int> TotalSubcategories()
         {
-            return await _context.SubCategories.CountAsync();
+            return await _subCategoryRepository.Table
+                        .OrderByDescending(sc => sc.CreatedAt)
+                        .CountAsync();
         }
     }
 }

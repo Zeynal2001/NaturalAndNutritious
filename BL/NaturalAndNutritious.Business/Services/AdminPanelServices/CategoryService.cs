@@ -16,18 +16,18 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
 {
     public class CategoryService : ICategoryService
     {
-        public CategoryService(AppDbContext context, ICategoryRepository categoryRepository)
+        public CategoryService(ICategoryRepository categoryRepository)
         {
-            _context = context;
             _categoryRepository = categoryRepository;
         }
 
-        private readonly AppDbContext _context;
         private readonly ICategoryRepository _categoryRepository;
 
         public async Task<int> TotalCategories()
         {
-            return await _context.Categories.CountAsync();
+            return await _categoryRepository.Table
+                .OrderByDescending(c => c.CreatedAt)
+                .CountAsync();
         }
 
         public async Task<CategoryServiceResult> CreateCategory(CreateCategoryDto model)

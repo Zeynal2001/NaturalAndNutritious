@@ -22,5 +22,6 @@ namespace NaturalAndNutritious.Business.Dtos.AdminPanelDtos
         public string Category { get; set; }
         public string SubCategory { get; set; }
         public double? Discount { get; set; }
+        public string? DiscountType { get; set; }
     }
 }

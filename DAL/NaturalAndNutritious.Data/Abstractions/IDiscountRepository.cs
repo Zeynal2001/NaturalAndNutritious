@@ -9,7 +9,7 @@ namespace NaturalAndNutritious.Data.Abstractions
 {
     public interface IDiscountRepository : IRepository<Discount>
     {
-        Task<IQueryable<Discount>> GetDiscountsByProductId(Guid productId);
+        Task<Discount> GetDiscountByProductId(Guid productId);
         Task<Product> GetProductByDiscountId(Guid discountId);
     }
 }

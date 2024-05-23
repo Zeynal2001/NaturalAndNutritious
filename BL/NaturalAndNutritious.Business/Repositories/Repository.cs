@@ -33,16 +33,31 @@ namespace NaturalAndNutritious.Business.Repositories
             //}
         }
 
+
         public async Task<IQueryable<T>> FilterWithPagination(int page, int size)
         {
-            if (page == 0 && size == 0)
-            {
-                return await Task.FromResult(Table.Where(c => c.IsDeleted == false));
-            }
+            if (page <= 0) page = 1;
+            if (size <= 0) size = 9; // Default size
 
-            return await Task.FromResult(Table.Skip((page - 1) * size).Take(size)
-                .Where(c => c.IsDeleted == false));
+            return await Task.Run(() =>
+            {
+                return Table.Where(c => !c.IsDeleted)
+                            .Skip((page - 1) * size)
+                            .Take(size)
+                            .AsQueryable();
+            });
         }
+
+        //public async Task<IQueryable<T>> FilterWithPagination(int page, int size)
+        //{
+        //    if (page == 0 && size == 0)
+        //    {
+        //        return await Task.FromResult(Table.Where(c => c.IsDeleted == false));
+        //    }
+
+        //    return await Task.FromResult(Table.Skip((page - 1) * size).Take(size)
+        //        .Where(c => c.IsDeleted == false));
+        //}
 
         public async Task<T?> GetByIdAsync(Guid id)
         {

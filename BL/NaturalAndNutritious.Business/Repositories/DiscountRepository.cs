@@ -19,10 +19,9 @@ namespace NaturalAndNutritious.Business.Repositories
 
         private readonly AppDbContext _context;
 
-        public async Task<IQueryable<Discount>> GetDiscountsByProductId(Guid productId)
+        public  async Task<Discount> GetDiscountByProductId(Guid productId)
         {
-            return await Task.Run(() => _context.Discounts
-                                        .Where(d => d.Product.Id == productId));
+            return await _context.Discounts.FirstOrDefaultAsync(d => d.Product.Id == productId);
         }
 
         public async Task<Product> GetProductByDiscountId(Guid discountId)

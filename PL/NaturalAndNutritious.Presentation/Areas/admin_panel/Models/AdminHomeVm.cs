@@ -1,6 +1,6 @@
 ﻿namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Models
 {
-    public class HomeVm
+    public class AdminHomeVm
     {
         public double TotalBudget { get; set; }
         public int TotalViews { get; set; }

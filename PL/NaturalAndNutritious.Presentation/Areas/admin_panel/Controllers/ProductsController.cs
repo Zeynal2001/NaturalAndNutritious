@@ -13,7 +13,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
     [Authorize(Roles = nameof(RoleTypes.Admin), AuthenticationSchemes = "AdminAuth")]
     public class ProductsController : Controller
     {
-        public ProductsController(IProductRepository productRepository, IProductService productService, ICategoryRepository categoryRepository, ISubCategoryRepository subCategoryRepository, ISupplierRepository supplierRepository, IDiscountRepository discountRepository, ILogger<ProductsController> logger)
+        public ProductsController(IProductRepository productRepository, IProductService productService, ICategoryRepository categoryRepository, ISubCategoryRepository subCategoryRepository, ISupplierRepository supplierRepository, IDiscountRepository discountRepository, ILogger<ProductsController> logger, IStorageService storageService)
         {
             _productRepository = productRepository;
             _productService = productService;
@@ -21,6 +21,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             _subCategoryRepository = subCategoryRepository;
             _supplierRepository = supplierRepository;
             _discountRepository = discountRepository;
+            _storageService = storageService;
             _logger = logger;
         }
 
@@ -30,6 +31,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         private readonly ISubCategoryRepository _subCategoryRepository;
         private readonly ISupplierRepository _supplierRepository;
         private readonly IProductService _productService;
+        private readonly IStorageService _storageService;
         private readonly ILogger<ProductsController> _logger;
 
         public async Task<IActionResult> GetAllProducts(int page = 1, int pageSize = 5)
@@ -158,6 +160,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                 return View(model);
             }
 
+            var productImageUrl = await _productService.CompleteFileOperations(model);
+
             product.ProductName = model.ProductName;
             product.ShortDescription = model.ShortDescription;
             product.Description = model.Description;
@@ -165,7 +169,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             product.UnitsInStock = model.UnitsInStock;
             product.ReorderLevel = model.ReorderLevel;
             product.UnitsOnOrder = model.UnitsOnOrder;
-            product.ProductImageUrl = model.ProductImageUrl;
+            product.ProductImageUrl = productImageUrl;
             product.UpdatedAt = DateTime.UtcNow;
 
             var isUpdated = await _productRepository.UpdateAsync(product);
