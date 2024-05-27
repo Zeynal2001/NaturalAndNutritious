@@ -16,5 +16,14 @@ namespace NaturalAndNutritious.Business.Abstractions
         Task<SearchDtoAsVm> ProductsForSearchFilter(string query, int page, int pageSize);
         Task<List<MainProductDto>> ProductsForBestsellerArea();
         Task<List<MainProductDto>> GetVegetablesForVegetablesArea();
+        Task<HomeFilterDtoAsVm> FilterProductsByCategories(string categoryFilter, int page, int pageSize);
+        Task<List<MainProductDto>> ProductsForProductsController(int page, int pageSize);
+        Task<int> TotalProductsForProductsController();
+        Task<List<MainProductDto>> FilterProductsByCategoriesProdcutsController(Guid categoryId, int page, int pageSize);
+        Task<List<MainProductDto>> GetAllDiscountedProducts();
+        Task<List<RelatedProductsDto>> GetRelateProducts(Product product);
+        Task<int> TotalProductsForProductsByCategory(Guid categoryId);
+        Task AddReviewAsync(ReviewDto reviewDto, AppUser user);
+        Task<IEnumerable<Product>> GetProductsByPriceAsync(double price);
     }
 }

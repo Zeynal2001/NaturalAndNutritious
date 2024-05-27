@@ -1,0 +1,51 @@
+﻿@{
+    Layout = null;
+}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Admin create page</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div asp-validation-summary="All"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h2 class="text-center text-dark mt-5">GameStore Admin Create</h2>
+                <div class="card my-5">
+                    <form class="card-body cardbody-color p-lg-5" method="post">
+
+                        <div class="text-center">
+                            <img src="https://cdn.pixabay.com/photo/2016/03/31/19/56/avatar-1295397__340.png" class="img-fluid profile-image-pic img-thumbnail rounded-circle my-3"
+                                 width="200" alt="profile">
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Enter passphrase for creating admin</label>
+                            <input type="password" class="form-control" placeholder="Passphrase" name="passphrase" id="passphrase">
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary px-5 mb-5 w-100">Create</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

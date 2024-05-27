@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using NaturalAndNutritious.Business.Abstractions;
 using NaturalAndNutritious.Business.Dtos;
 using NaturalAndNutritious.Business.Dtos.AdminPanelDtos;
@@ -11,7 +10,7 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
 {
     public class ProductService : IProductService
     {
-        public ProductService(IProductRepository productRepository, ICategoryRepository categoryRepository, ISubCategoryRepository subCategoryRepository, ISupplierRepository supplierRepository, IStorageService storageService, IDiscountRepository discountRepository)
+        public ProductService(IProductRepository productRepository, ICategoryRepository categoryRepository, ISubCategoryRepository subCategoryRepository, ISupplierRepository supplierRepository, IStorageService storageService, IDiscountRepository discountRepository, IReviewRepository reviewRepository)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
@@ -19,6 +18,7 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
             _supplierRepository = supplierRepository;
             _storageService = storageService;
             _discountRepository = discountRepository;
+            _reviewRepository = reviewRepository;
         }
 
         private readonly IProductRepository _productRepository;
@@ -27,6 +27,7 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
         private readonly ISupplierRepository _supplierRepository;
         private readonly IStorageService _storageService;
         private readonly IDiscountRepository _discountRepository;
+        private readonly IReviewRepository _reviewRepository;
 
         public async Task<List<AllProductsDto>> FilterProductsWithPagination(int page, int pageSize)
         {
@@ -37,9 +38,9 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
 
             var products = await _productRepository.Table
                 .Include(p => p.Discount)
-                .Where(p => p.IsDeleted == false)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
+                .Where(p => p.IsDeleted == false)
                 .OrderByDescending(p => p.CreatedAt)
                 .Select(p => new AllProductsDto()
                 {
@@ -126,6 +127,8 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                     ViewsCount = 0,
                     Discontinued = false,
                     UnitsInStock = model.UnitsInStock,
+                    UnitsOnOrder = model.UnitsOnOrder,
+                    ReorderLevel = model.ReorderLevel,
                     CreatedAt = DateTime.UtcNow,
                     IsDeleted = false,
                     CategoryId = selectedCategory.Id,
@@ -195,6 +198,8 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                 .Include(p => p.Category)
                 .Include(p => p.Reviews)
                 .Include(p => p.Discount)
+                .Take(8)
+                .Where(p => p.Category.IsDeleted == false)
                 .ToListAsync();
 
             var productDetailDtos = new List<MainProductDto>();
@@ -292,79 +297,294 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
             return sm;
         }
 
+        public async Task<HomeFilterDtoAsVm> FilterProductsByCategories(string categoryFilter, int page, int pageSize)
+        {
+            categoryFilter = categoryFilter.ToLower();
 
-        //public async Task<SearchDtoAsVm> ProductsForSearchFilter(string query, int page, int pageSize)
-        //{
-        //    if (page <= 0 || pageSize <= 0)
-        //    {
-        //        throw new ArgumentException("Page and pageSize must be greater than 0.");
-        //    }
+            var productsAsQueryable = _productRepository.Table
+                .Include(p => p.Category)
+                .Include(p => p.Discount)
+                .Where(p => !p.IsDeleted && 
+                            (p.Category.CategoryName == categoryFilter))
+                .OrderByDescending(p => p.CreatedAt);
 
-        //    var productsAsQueryable = await _productRepository.FilterWithPagination(page, pageSize);
+            var totalProducts = await productsAsQueryable.CountAsync();
 
-        //    query = query.ToLower();
+            var paginatedProducts = await productsAsQueryable
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
-        //    var filteredProductsQuery = productsAsQueryable
-        //        .Include(p => p.Category)
-        //        .Include(p => p.Discount)
-        //        .Where(p => !p.IsDeleted &&
-        //                    (p.ProductName.ToLower().Contains(query) ||
-        //                     p.ShortDescription.ToLower().Contains(query) ||
-        //                     p.Description.ToLower().Contains(query) ||
-        //                     p.Category.CategoryName.ToLower().Contains(query) ||
-        //                     p.SubCategory.SubCategoryName.ToLower().Contains(query)))
-        //        .OrderByDescending(p => p.CreatedAt)
-        //        .ThenByDescending(p => p.ViewsCount);
+            var productDetailDtos = new List<MainProductDto>();
 
-        //    var products = await filteredProductsQuery.ToListAsync();
-        //    var totalProducts = await filteredProductsQuery.CountAsync();
+            foreach (var product in paginatedProducts)
+            {
+                var discount = await _discountRepository.GetDiscountByProductId(product.Id);
+                double discountedPrice = product.ProductPrice;
 
-        //    var productDetailDtos = new List<MainProductDto>();
+                if (discount != null)
+                {
+                    discountedPrice = ApplyDiscount(product.ProductPrice, discount);
+                }
 
-        //    foreach (var product in products)
-        //    {
-        //        var discount = await _discountRepository.GetDiscountByProductId(product.Id);
-        //        double discountedPrice = product.ProductPrice;
+                var productDetailDto = new MainProductDto
+                {
+                    Id = product.Id,
+                    ProductName = product.ProductName,
+                    ProductImageUrl = product.ProductImageUrl,
+                    ShortDescription = product.ShortDescription,
+                    OriginalPrice = product.ProductPrice,
+                    DiscountedPrice = discountedPrice,
+                    CategoryName = product.Category.CategoryName,
+                };
 
-        //        if (discount != null)
-        //        {
-        //            discountedPrice = ApplyDiscount(product.ProductPrice, discount);
-        //        }
+                productDetailDtos.Add(productDetailDto);
+            }
 
-        //        var productDetailDto = new MainProductDto
-        //        {
-        //            Id = product.Id,
-        //            ProductName = product.ProductName,
-        //            ProductImageUrl = product.ProductImageUrl,
-        //            ShortDescription = product.ShortDescription,
-        //            OriginalPrice = product.ProductPrice,
-        //            DiscountedPrice = discountedPrice,
-        //            CategoryName = product.Category.CategoryName,
-        //        };
+            var categoriesAsQueryable = await _categoryRepository.GetAllAsync();
 
-        //        productDetailDtos.Add(productDetailDto);
-        //    }
+            var vm = new HomeFilterDtoAsVm()
+            {
+                Products = productDetailDtos,
+                CurrentFilter = categoryFilter,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling(totalProducts / (double)pageSize),
+                Categories = await categoriesAsQueryable
+                .Where(c => !c.IsDeleted)
+                .Select(c => new CategoryDto()
+                {
+                    Id = c.Id,
+                    CategoryName = c.CategoryName
+                }).ToListAsync(),
+            };
 
-        //    var sm = new SearchDtoAsVm()
-        //    {
-        //        FoundProducts = productDetailDtos,
-        //        CurrentPage = page,
-        //        TotalPages = (int)Math.Ceiling(totalProducts / (double)pageSize),
-        //        Query = query
-        //    };
+            return vm;
+        }
 
-        //    return sm;
-        //}
+        public async Task<List<MainProductDto>> FilterProductsByCategoriesProdcutsController(Guid categoryId, int page, int pageSize)
+        {
+            if (page <= 0 || pageSize <= 0)
+            {
+                throw new ArgumentException("Page and pageSize must be greater than 0.");
+            }
 
+            var productsAsQueryable = _productRepository.Table
+                                      .Include(p => p.Category)
+                                      .Include(p => p.Discount)
+                                      .Where(p => !p.IsDeleted && (p.Category.Id == categoryId))
+                .OrderByDescending(p => p.CreatedAt)
+                .ThenByDescending(p => p.ViewsCount);
+
+            var totalProducts = await productsAsQueryable.CountAsync();
+
+            var paginatedProducts = await productsAsQueryable
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var productDetailDtos = new List<MainProductDto>();
+
+            foreach (var product in paginatedProducts)
+            {
+                var discount = await _discountRepository.GetDiscountByProductId(product.Id);
+                double discountedPrice = product.ProductPrice;
+
+                if (discount != null)
+                {
+                    discountedPrice = ApplyDiscount(product.ProductPrice, discount);
+                }
+
+                var productDetailDto = new MainProductDto
+                {
+                    Id = product.Id,
+                    ProductName = product.ProductName,
+                    ProductImageUrl = product.ProductImageUrl,
+                    ShortDescription = product.ShortDescription,
+                    OriginalPrice = product.ProductPrice,
+                    DiscountedPrice = discountedPrice,
+                    CategoryName = product.Category.CategoryName,
+                };
+
+                productDetailDtos.Add(productDetailDto);
+            }
+
+            return productDetailDtos;
+        }
+
+        public async Task<int> TotalProductsForProductsByCategory(Guid categoryId)
+        {
+            var productsAsQueryable = _productRepository.Table
+                                      .Include(p => p.Category)
+                                      .Include(p => p.Discount)
+                                      .Where(p => !p.IsDeleted && (p.Category.Id == categoryId))
+            .OrderByDescending(p => p.CreatedAt)
+            .ThenByDescending(p => p.ViewsCount);
+
+            return await productsAsQueryable.CountAsync();
+        }
+
+        public async Task<List<MainProductDto>> ProductsForProductsController(int page, int pageSize)
+        {
+            if (page <= 0 || pageSize <= 0)
+            {
+                throw new ArgumentException("Page and pageSize must be greater than 0.");
+            }
+
+            var productsAsQueryable = _productRepository.Table
+                                      .Include(p => p.Category)
+                                      .Include(p => p.Discount)
+                                      .Where(p => !p.IsDeleted)
+                .OrderByDescending(p => p.CreatedAt)
+                .ThenByDescending(p => p.ViewsCount);
+
+            var totalProducts = await productsAsQueryable.CountAsync();
+
+            var paginatedProducts = await productsAsQueryable
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var productDetailDtos = new List<MainProductDto>();
+
+            foreach (var product in paginatedProducts)
+            {
+                var discount = await _discountRepository.GetDiscountByProductId(product.Id);
+                double discountedPrice = product.ProductPrice;
+
+                if (discount != null)
+                {
+                    discountedPrice = ApplyDiscount(product.ProductPrice, discount);
+                }
+
+                var productDetailDto = new MainProductDto
+                {
+                    Id = product.Id,
+                    ProductName = product.ProductName,
+                    ProductImageUrl = product.ProductImageUrl,
+                    ShortDescription = product.ShortDescription,
+                    OriginalPrice = product.ProductPrice,
+                    DiscountedPrice = discountedPrice,
+                    CategoryName = product.Category.CategoryName,
+                };
+
+                productDetailDtos.Add(productDetailDto);
+            }
+
+            return productDetailDtos;
+        }
+
+        public async Task<int> TotalProductsForProductsController()
+        {
+            var productsAsQueryable = _productRepository.Table
+            .Include(p => p.Category)
+            .Include(p => p.Discount)
+            .Where(p => !p.IsDeleted)
+            .OrderByDescending(p => p.CreatedAt)
+            .ThenByDescending(p => p.ViewsCount);
+
+            return await productsAsQueryable.CountAsync();
+        }
 
         public Task<List<MainProductDto>> ProductsForBestsellerArea()
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<MainProductDto>> GetVegetablesForVegetablesArea()
+        public async Task<List<MainProductDto>> GetVegetablesForVegetablesArea()
         {
-            throw new NotImplementedException();
+            var vegetables = await _productRepository.Table
+                .Include(p => p.Category)
+                .Include(p => p.Category)
+                .Include(p => p.Discount)
+                .Where(p => p.Category.CategoryName == "Vegetable" && (!p.IsDeleted))
+                .Take(8)
+                .Select(p => new MainProductDto()
+                {
+                    Id = p.Id,
+                    CategoryName = p.Category.CategoryName,
+                    ProductName = p.ProductName,
+                    ProductImageUrl = p.ProductImageUrl,
+                    ShortDescription = p.ShortDescription,
+                    OriginalPrice = p.ProductPrice,
+                }).ToListAsync();
+
+            return vegetables;
+        }
+
+        public async Task<List<MainProductDto>> GetAllDiscountedProducts()
+        {
+            var discountedProducts = new List<MainProductDto>();
+
+            var featuredProducts = await _productRepository.Table
+                .Include(p => p.Category)
+                .Include(p => p.Discount)
+                .Include(p => p.Reviews)
+                .ThenInclude(reviews => reviews.AppUser)
+                .Where(p => p.Discount != null && !p.IsDeleted)
+                .Take(6)
+                .ToListAsync();
+
+            discountedProducts = featuredProducts.Select(p => new MainProductDto()
+            {
+                Id = p.Id,
+                ProductName = p.ProductName,
+                ShortDescription = p.ShortDescription,
+                ProductImageUrl = p.ProductImageUrl,
+                CategoryName = p.Category.CategoryName,
+                OriginalPrice = p.ProductPrice,
+                DiscountedPrice = ApplyDiscount(p.ProductPrice, p.Discount),
+                Star = (int?)(p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : 0)
+            }).ToList();
+
+            return discountedProducts;
+        }
+
+        public async Task<List<RelatedProductsDto>> GetRelateProducts(Product product)
+        {
+            var relatedProducts = new List<RelatedProductsDto>();
+
+            var related = await _productRepository.Table
+                .Include(p => p.Category)
+                .Take(8)
+                .Where(p => p.Category.CategoryName == product.Category.CategoryName && product.Id != p.Id && !p.IsDeleted)
+                .Select(p => new RelatedProductsDto()
+                {
+                    Id = p.Id,
+                    ProductName = p.ProductName,
+                    ShortDescription = p.ShortDescription,
+                    ProductPrice = p.ProductPrice,
+                    ProductImageUrl = p.ProductImageUrl,
+                    CategoryName = p.Category.CategoryName
+                })
+                .ToListAsync();
+
+            relatedProducts.AddRange(related);
+            return relatedProducts;
+        }
+
+
+        public async Task AddReviewAsync(ReviewDto reviewDto, AppUser user)
+        {
+            var review = new Review
+            {
+                ProductId = reviewDto.ProductId,
+                AppUser = user,
+                ReviewText = reviewDto.ReviewText,
+                Rating = reviewDto.Rating,
+                ReviewDate = DateTime.UtcNow
+            };
+
+          await _reviewRepository.CreateAsync(review);
+          await _reviewRepository.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Product>> GetProductsByPriceAsync(double price)
+        {
+            return await _productRepository.Table
+                .Include(p => p.Category)
+                .Include(p => p.Discount)
+                                 .Where(p => p.ProductPrice <= price && !p.IsDeleted)
+                                 .ToListAsync();
         }
 
         //3)/ 66 - 33 = discountedPrice(33)   2)// originalPrice(66) * 0,5 = 33    1)//DiscountRate(50) / 100 = 0,5

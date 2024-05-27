@@ -48,6 +48,7 @@ namespace NaturalAndNutritious.Business.Services
                     Succeeded = true,
                     ProfileIndexModel = new Dtos.ProfileIndexDto()
                     {
+                        Id = user.Id,
                         FullName = user.FullName,
                         DateOfBirth = user.BirthDate,
                         Email = user.Email,

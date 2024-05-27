@@ -24,13 +24,7 @@ namespace NaturalAndNutritious.Business.Repositories
 
         public async Task<IQueryable<T>> GetAllAsync()
         {
-            return await Task.FromResult(Table);
-            //return await Task.Run(() => Table);
-
-            //if (entity == null)
-            //{
-            //    Enumerable.Empty<T>();
-            //}
+            return await Task.FromResult(Table.Where(p => p.IsDeleted == false));
         }
 
 

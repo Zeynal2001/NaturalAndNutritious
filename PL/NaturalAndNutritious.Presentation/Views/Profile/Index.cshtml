@@ -45,7 +45,44 @@
         </div>
         <div class="profile-actions">
             <a asp-action="Edit" class="btn btn-outline-success" style="color: rgba(255,181,36,255)">Edit</a>
-            <a href="#" class="btn btn-danger">Delete Account</a>
+            <div class="modal fade" id="deleteAccountModal" tabindex="-1" role="dialog" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteAccountModalLabel">Do You Want to Delete Your Account?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Deleting your account is permanent and all your data will be erased.
+                                You cannot undo this process</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" style="color:honeydew" data-dismiss="modal">Cancel</button>
+                            <form method="post" asp-action="Delete" asp-controller="Auth" class="m-auto">
+                                <input name="userId" id="userId" hidden value="@Model.Id" />
+                                <button type="submit" class="btn btn-danger" id="deleteAccountButton">Delete Account</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteAccountModal">Delete Account</button>
+
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+            <script>
+                $(document).ready(function () {
+                    $("#deleteAccountButton").click(function () {
+                        // Add your logic to delete the account here
+                        // This could involve sending an AJAX request to your server
+                        console.log("Delete account button clicked!");
+                    });
+                });
+            </script>
+
         </div>
     </div>
 </div>
