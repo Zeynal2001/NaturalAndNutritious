@@ -43,8 +43,16 @@ builder.Services.AddScoped<IStorageService, LocalStorageService>();
 //Services.AddSingleton<IStorageService, LocalStorageService>();
 builder.Services.RegisterServices();
 
+// LoggerFactory oluþturun ve ILoggerFactory'e ekleyin
+builder.Logging.AddConsole();
+builder.Logging.AddFile("Logs/logs-{Date}.txt");
 
 var app = builder.Build();
+
+// ILoggerFactory'i kullanarak ILogger oluþturun
+var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
+var logger = loggerFactory.CreateLogger<Program>();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -68,5 +76,7 @@ app.MapControllerRoute(name: "area",
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+logger.LogInformation("Launching the app...");
 
 app.Run();

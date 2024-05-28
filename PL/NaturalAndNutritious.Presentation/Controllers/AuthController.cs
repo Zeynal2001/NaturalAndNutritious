@@ -76,7 +76,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             {
                 ViewData["hasError"] = true;
                 ModelState.AddModelError("loginErors", result.Message);
-                _logger.LogError("Login failed: {Message}", result.Message);
+                _logger.LogError("Login failed: {ErrorMessage}", result.Message);
                 return View(model);
             }
 
@@ -84,7 +84,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             {
                 ViewData["hasError"] = true;
                 ModelState.AddModelError("loginErors", result.Message);
-                _logger.LogError("Login failed: {Message}", result.Message);
+                _logger.LogError("Login failed: {ErrorMessage}", result.Message);
                 return View(model);
             }
 
@@ -118,7 +118,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             {
                 ViewData["hasError"] = true;
                 ModelState.AddModelError("registerErrors", result.Message);
-                _logger.LogError("Registration failed: {Message}", result.Message);
+                _logger.LogError("Registration failed: {ErrorMessage}", result.Message);
                 return View(model);
             }
 
@@ -139,7 +139,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             if (currentUserId == null)
             {
                 ViewData["msg"] = "You are not logged in!";
-                _logger.LogError("Delete failed: User is not logged in.");
+                _logger.LogError("Delete failed: {ErrorMessage}", "User is not logged in.");
                 return View("Error");
             }
 
@@ -150,14 +150,14 @@ namespace NaturalAndNutritious.Presentation.Controllers
             if (result.IsNull)
             {
                 ViewData["msg"] = result.Message;
-                _logger.LogError("Delete failed: {Message}", result.Message);
+                _logger.LogError("Delete failed: {ErrorMessage}", result.Message);
                 return View("Error");
             }
 
             if (!result.IsDeleted)
             {
                 ViewData["msg"] = result.Message;
-                _logger.LogError("Delete failed: {Message}", result.Message);
+                _logger.LogError("Delete failed: {ErrorMessage}", result.Message);
                 return View("Error");
             }
 

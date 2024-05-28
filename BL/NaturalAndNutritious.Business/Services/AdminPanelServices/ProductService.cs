@@ -50,10 +50,10 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
 
             var products = await _productRepository.Table
                 .Include(p => p.Discount)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
                 .Where(p => p.IsDeleted == false)
                 .OrderByDescending(p => p.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .Select(p => new AllProductsDto()
                 {
                     Id = p.Id.ToString(),
@@ -210,8 +210,8 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                 .Include(p => p.Category)
                 .Include(p => p.Reviews)
                 .Include(p => p.Discount)
-                .Take(8)
                 .Where(p => p.Category.IsDeleted == false)
+                .Take(8)
                 .ToListAsync();
 
             var productDetailDtos = new List<MainProductDto>();
@@ -609,8 +609,8 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
 
             var related = await _productRepository.Table
                 .Include(p => p.Category)
-                .Take(8)
                 .Where(p => p.Category.CategoryName == product.Category.CategoryName && product.Id != p.Id && !p.IsDeleted)
+                .Take(8)
                 .Select(p => new RelatedProductsDto()
                 {
                     Id = p.Id,

@@ -38,7 +38,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
                 return RedirectToAction(nameof(OrderResult));
             }
 
-            _logger.LogError("Error processing order: {Message}", message);
+            _logger.LogError("Error processing order: {ErrorMessage}", message);
             ViewData["msg"] = message;
             return View("Error");
         }

@@ -2,11 +2,6 @@
 using NaturalAndNutritious.Data.Abstractions;
 using NaturalAndNutritious.Data.Data;
 using NaturalAndNutritious.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NaturalAndNutritious.Business.Repositories
 {
@@ -21,7 +16,7 @@ namespace NaturalAndNutritious.Business.Repositories
 
         public  async Task<Discount> GetDiscountByProductId(Guid productId)
         {
-            return await _context.Discounts.FirstOrDefaultAsync(d => d.Product.Id == productId);
+            return await _context.Discounts.FirstOrDefaultAsync(d => d.Product.Id == productId && !d.IsDeleted);
         }
 
         public async Task<Product> GetProductByDiscountId(Guid discountId)
