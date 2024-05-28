@@ -1,7 +1,9 @@
-﻿using NaturalAndNutritious.Business.Dtos;
+﻿using Microsoft.AspNetCore.Http;
+using NaturalAndNutritious.Business.Dtos;
 using NaturalAndNutritious.Business.Dtos.AdminPanelDtos;
 using NaturalAndNutritious.Business.Services.Results;
 using NaturalAndNutritious.Data.Entities;
+using System.Security.Claims;
 
 namespace NaturalAndNutritious.Business.Abstractions
 {
@@ -25,5 +27,7 @@ namespace NaturalAndNutritious.Business.Abstractions
         Task<int> TotalProductsForProductsByCategory(Guid categoryId);
         Task AddReviewAsync(ReviewDto reviewDto, AppUser user);
         Task<IEnumerable<Product>> GetProductsByPriceAsync(double price);
+        Task<(bool success, string message)> ProcessOrderAsync(CheckoutDto model, ClaimsPrincipal userPrincipal, ISession session);
+        Task<DiscountedProductsDtoAsVm> GetDiscountedProducts(int page, int pageSize);
     }
 }

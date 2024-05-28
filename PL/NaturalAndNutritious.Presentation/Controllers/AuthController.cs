@@ -8,21 +8,25 @@ namespace NaturalAndNutritious.Presentation.Controllers
 {
     public class AuthController : Controller
     {
-        public AuthController(IAuthService authService, IStorageService storageService, IUsersService usersService)
+        public AuthController(IAuthService authService, IStorageService storageService, IUsersService usersService, ILogger<AuthController> logger)
         {
             _authService = authService;
             _storageService = storageService;
             _usersService = usersService;
+            _logger = logger;
         }
 
         private readonly IAuthService _authService;
         private readonly IStorageService _storageService;
         private readonly IUsersService _usersService;
+        private readonly ILogger<AuthController> _logger;
 
         public IActionResult Login(string? returnUrl)
         {
             ViewData["title"] = "Login";
             ViewData["hasError"] = false;
+
+            _logger.LogInformation("Login page accessed.");
 
             return View();
         }
@@ -32,12 +36,22 @@ namespace NaturalAndNutritious.Presentation.Controllers
             ViewData["title"] = "Register";
             ViewData["hasError"] = false;
 
+            _logger.LogInformation("Register page accessed.");
+
             return View();
         }
 
         public async Task<IActionResult> LogOut()
         {
-            await _authService.LogOut();
+            try
+            {
+                await _authService.LogOut();
+                _logger.LogInformation("User logged out successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while logging out: {ErrorMessage}", ex.Message);
+            }
 
             return RedirectToAction("Index", "Home");
         }
@@ -47,6 +61,8 @@ namespace NaturalAndNutritious.Presentation.Controllers
         public async Task<IActionResult> Login(LoginDto model, string? returnUrl)
         {
             ViewData["hasError"] = false;
+
+            _logger.LogInformation("Login attempt.");
 
             if (!ModelState.IsValid)
             {
@@ -60,6 +76,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             {
                 ViewData["hasError"] = true;
                 ModelState.AddModelError("loginErors", result.Message);
+                _logger.LogError("Login failed: {Message}", result.Message);
                 return View(model);
             }
 
@@ -67,14 +84,17 @@ namespace NaturalAndNutritious.Presentation.Controllers
             {
                 ViewData["hasError"] = true;
                 ModelState.AddModelError("loginErors", result.Message);
+                _logger.LogError("Login failed: {Message}", result.Message);
                 return View(model);
             }
 
             if (returnUrl != null)
             {
+                _logger.LogInformation("User logged in successfully.");
                 return Redirect(returnUrl);
             }
 
+            _logger.LogInformation("User logged in successfully.");
             return RedirectToAction("Index", "Home");
         }
 
@@ -83,6 +103,8 @@ namespace NaturalAndNutritious.Presentation.Controllers
         public async Task<IActionResult> Register(RegisterDto model)
         {
             ViewData["hasError"] = false;
+
+            _logger.LogInformation("Registration attempt.");
 
             if (!ModelState.IsValid)
             {
@@ -96,12 +118,14 @@ namespace NaturalAndNutritious.Presentation.Controllers
             {
                 ViewData["hasError"] = true;
                 ModelState.AddModelError("registerErrors", result.Message);
+                _logger.LogError("Registration failed: {Message}", result.Message);
                 return View(model);
             }
 
             if (result.Succeeded)
             {
                 TempData["successMsg"] = result.Message;
+                _logger.LogInformation("User registered successfully.");
                 return RedirectToAction(nameof(Login));
             }
 
@@ -115,7 +139,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             if (currentUserId == null)
             {
                 ViewData["msg"] = "You are not logged in!";
-
+                _logger.LogError("Delete failed: User is not logged in.");
                 return View("Error");
             }
 
@@ -126,17 +150,18 @@ namespace NaturalAndNutritious.Presentation.Controllers
             if (result.IsNull)
             {
                 ViewData["msg"] = result.Message;
-
+                _logger.LogError("Delete failed: {Message}", result.Message);
                 return View("Error");
             }
 
             if (!result.IsDeleted)
             {
                 ViewData["msg"] = result.Message;
-
+                _logger.LogError("Delete failed: {Message}", result.Message);
                 return View("Error");
             }
 
+            _logger.LogInformation("User deleted successfully.");
             return RedirectToAction(nameof(Login));
         }
     }

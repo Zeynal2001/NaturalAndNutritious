@@ -69,7 +69,9 @@ namespace NaturalAndNutritious.Business.Repositories
         public async Task<IQueryable<Product>> GetProductsWithDiscounts()
         {
             return await Task.Run(() => _context.Products
-                .Include(p => p.Discount));
+                .Include(p => p.Discount)
+                .Include(p => p.Category)
+                .Where(p => p.Discount != null));
             //.Where(p => p.Discount != null)
         }
 

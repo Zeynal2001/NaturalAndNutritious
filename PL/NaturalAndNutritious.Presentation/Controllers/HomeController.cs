@@ -28,41 +28,54 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
         public async Task<IActionResult> Index()
         {
-            ViewData["title"] = "Home";
-            var totalproducts = await _productRepository.GetAllAsync();
-            var totoalusers = await _userRepository.GetAllUsers();
-
-            var products = await _productService.GetProductsForHomePageAsync();
-            var vegetables = await _productService.GetVegetablesForVegetablesArea();
-            var categoriesAsQueryable = await _categoryRepository.GetAllAsync();
-
-            var categories = await categoriesAsQueryable.Select(c => new CategoryDto()
+            try
             {
-                Id = c.Id,
-                CategoryName = c.CategoryName
-            }).ToListAsync();
+                ViewData["title"] = "Home";
+                var totalproducts = await _productRepository.GetAllAsync();
+                var totoalusers = await _userRepository.GetAllUsers();
 
-            var vm = new HomeVm()
-            {
-                Categories = categories,
-                FilterProductsByCategories = products,
-                Vegetables = vegetables,
-                TotalCustomers = totoalusers.Count(),
-                TotalProducts = totalproducts.Count(),
-                Reviews = _reviewRepository.Table.Select(r => new ReviewDto
+                var products = await _productService.GetProductsForHomePageAsync();
+                var vegetables = await _productService.GetVegetablesForVegetablesArea();
+                var categoriesAsQueryable = await _categoryRepository.GetAllAsync();
+
+                var categories = await categoriesAsQueryable.Select(c => new CategoryDto()
                 {
-                    ReviewText = r.ReviewText,
-                    Rating = r.Rating,
-                    ReviewDate = r.ReviewDate,
-                    User = new AppUserDto
-                    {
-                        FullName = r.AppUser.FullName,
-                        ProfilePhotoUrl = r.AppUser.ProfilePhotoUrl
-                    }
-                }).ToList(),
-            };
+                    Id = c.Id,
+                    CategoryName = c.CategoryName
+                }).ToListAsync();
 
-            return View(vm);
+                var vm = new HomeVm()
+                {
+                    Categories = categories,
+                    FilterProductsByCategories = products,
+                    Vegetables = vegetables,
+                    TotalCustomers = totoalusers.Count(),
+                    TotalProducts = totalproducts.Count(),
+                    Reviews = _reviewRepository.Table
+                    .Where(r => r.Rating == 5 || r.Rating == 4)
+                    .Select(r => new ReviewDto
+                    {
+                        ReviewText = r.ReviewText,
+                        Rating = r.Rating,
+                        ReviewDate = r.ReviewDate,
+                        User = new AppUserDto
+                        {
+                            FullName = r.AppUser.FullName,
+                            ProfilePhotoUrl = r.AppUser.ProfilePhotoUrl
+                        }
+                    }).ToList(),
+                };
+
+                _logger.LogInformation("Home page loaded successfully.");
+
+                return View(vm);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while loading home page.");
+                ViewData["title"] = "Error";
+                return View("Error");
+            }
         }
 
         public IActionResult Privacy()
@@ -74,17 +87,29 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
         public async Task<IActionResult> Search(string query, int page = 1)
         {
-            ViewData["title"] = "Search";
-
-            if (query == null)
+            try
             {
-                ViewData["msg"] = "Query cant't be empity.";
+                ViewData["title"] = "Search";
+
+                if (query == null)
+                {
+                    ViewData["msg"] = "Query can't be empty.";
+                    _logger.LogError("Query is empity.");
+                    return View("Error");
+                }
+
+                var searchVm = await _productService.ProductsForSearchFilter(query, page, 9);
+
+                _logger.LogInformation("Search page loaded successfully.");
+
+                return View(searchVm);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while loading search page.");
+                ViewData["title"] = "Error";
                 return View("Error");
             }
-
-            var searchVm = await _productService.ProductsForSearchFilter(query, page, 9);
-
-            return View(searchVm);
         }
 
         public IActionResult Contact()
@@ -97,17 +122,29 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
         public async Task<IActionResult> FilterByCategories(string categoryFilter, int page = 1)
         {
-            ViewData["title"] = "Products By Category";
-
-            if (string.IsNullOrWhiteSpace(categoryFilter))
+            try
             {
-                ViewData["msg"] = "Category filter cannot be null or empty.";
+                ViewData["title"] = "Products By Category";
+
+                if (string.IsNullOrWhiteSpace(categoryFilter))
+                {
+                    ViewData["msg"] = "Category filter cannot be null or empty.";
+                    _logger.LogError("Category filter is null or empity.");
+                    return View("Error");
+                }
+
+                var products = await _productService.FilterProductsByCategories(categoryFilter, page, 8);
+
+                _logger.LogInformation("Filtered products by category loaded successfully.");
+
+                return View(products);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while filtering products by category.");
+                ViewData["title"] = "Error";
                 return View("Error");
             }
-
-            HomeFilterDtoAsVm products = await _productService.FilterProductsByCategories(categoryFilter, page, 8);
-
-            return View(products);
         }
 
         //[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

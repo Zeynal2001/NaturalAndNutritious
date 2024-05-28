@@ -1,4 +1,8 @@
 ﻿@using System.Security.Claims
+@using SessionMapper
+@{
+    var checkouts = this.Context.Session.Get<List<CheckoutModel>>("checkouts");
+ }
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,6 +29,7 @@
     <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
     @RenderSection("ProfileCss", false)
     @RenderSection("ProfileEditCss", false)
+    @RenderSection("SpecialCss", false)
 
 
     <!-- Customized Bootstrap Stylesheet -->
@@ -82,14 +87,14 @@
                             <a asp-controller="Products" asp-action="Index" class="nav-item nav-link">Products</a>
                         }
 
-                        @if (Context.Request.Path == "/Blogs")
+                        @* @if (Context.Request.Path == "/Blogs")
                         {
                             <a asp-controller="Blogs" asp-action="Index" class="nav-item nav-link active">Blogs</a>
                         }
                         else
                         {
                             <a asp-controller="Blogs" asp-action="Index" class="nav-item nav-link">Blogs</a>
-                        }
+                        } *@
 
                         @if (Context.Request.Path == "/Home/Contact")
                         {
@@ -119,7 +124,15 @@
                         <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
                         <a asp-action="Index" asp-controller="Cart" class="position-relative me-4 my-auto">
                             <i class="fa fa-shopping-bag fa-2x"></i>
-                            <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">3</span>
+                            @{
+                                if (checkouts is not null)
+                                {
+                                    foreach (var checkout in checkouts)
+                                    {
+                                        <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">@checkout.Quantity</span>
+                                    }
+                                }
+                            }
                         </a>
 
                         @{
@@ -300,6 +313,7 @@
     <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
     @RenderSection("ProfileEditJs", false)
     @RenderSection("FilterJs", false)
+    @RenderSection("Scripts", false)
     <!-- Template Javascript -->
     <script src="~/js/main.js"></script>
 </body>

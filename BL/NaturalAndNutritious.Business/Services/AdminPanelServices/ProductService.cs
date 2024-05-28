@@ -1,16 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using NaturalAndNutritious.Business.Abstractions;
 using NaturalAndNutritious.Business.Dtos;
 using NaturalAndNutritious.Business.Dtos.AdminPanelDtos;
 using NaturalAndNutritious.Business.Services.Results;
 using NaturalAndNutritious.Data.Abstractions;
 using NaturalAndNutritious.Data.Entities;
+using SessionMapper;
+using System.Security.Claims;
 
 namespace NaturalAndNutritious.Business.Services.AdminPanelServices
 {
     public class ProductService : IProductService
     {
-        public ProductService(IProductRepository productRepository, ICategoryRepository categoryRepository, ISubCategoryRepository subCategoryRepository, ISupplierRepository supplierRepository, IStorageService storageService, IDiscountRepository discountRepository, IReviewRepository reviewRepository)
+        public ProductService(IProductRepository productRepository, ICategoryRepository categoryRepository, ISubCategoryRepository subCategoryRepository, ISupplierRepository supplierRepository, IStorageService storageService, IDiscountRepository discountRepository, IReviewRepository reviewRepository, IShipperRepository shipperRepository, IOrderRepository orderRepository, IOrderRepository @object, IOrderDetailRepository orderDetailRepository, UserManager<AppUser> userManager)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
@@ -19,15 +23,23 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
             _storageService = storageService;
             _discountRepository = discountRepository;
             _reviewRepository = reviewRepository;
+            _shipperRepository = shipperRepository;
+            _orderRepository = orderRepository;
+            _orderDetailRepository = orderDetailRepository;
+            _userManager = userManager;
         }
 
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly ISubCategoryRepository _subCategoryRepository;
         private readonly ISupplierRepository _supplierRepository;
-        private readonly IStorageService _storageService;
         private readonly IDiscountRepository _discountRepository;
+        private readonly IStorageService _storageService;
         private readonly IReviewRepository _reviewRepository;
+        private readonly IShipperRepository _shipperRepository;
+        private readonly IOrderRepository _orderRepository;
+        private readonly IOrderDetailRepository _orderDetailRepository;
+        private readonly UserManager<AppUser> _userManager;
 
         public async Task<List<AllProductsDto>> FilterProductsWithPagination(int page, int pageSize)
         {
@@ -69,8 +81,8 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
             return await _productRepository.Table
                         .Include(p => p.Discount)
                         .Where(p => p.IsDeleted == false)
-                        .OrderByDescending(p => p.CreatedAt)
-                        .CountAsync();
+            .OrderByDescending(p => p.CreatedAt)
+            .CountAsync();
         }
 
         public async Task<ProductServiceResult> CreateProduct(CreateProductDto model, string dirPath)
@@ -295,6 +307,58 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
             };
 
             return sm;
+        }
+
+        public async Task<DiscountedProductsDtoAsVm> GetDiscountedProducts(int page, int pageSize)
+        {
+            if (page <= 0 || pageSize <= 0)
+            {
+                throw new ArgumentException("Page and pageSize must be greater than 0.");
+            }
+
+            var discountedProductsAsQueryable = await _productRepository.GetProductsWithDiscounts();
+                                                
+            var totalProducts = await discountedProductsAsQueryable.CountAsync();
+
+            var paginatedProducts = await discountedProductsAsQueryable
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var productDetailDtos = new List<MainProductDto>();
+
+            foreach (var product in paginatedProducts)
+            {
+                var discount = await _discountRepository.GetDiscountByProductId(product.Id);
+                double discountedPrice = product.ProductPrice;
+
+                if (discount != null)
+                {
+                    discountedPrice = ApplyDiscount(product.ProductPrice, discount);
+                }
+
+                var productDetailDto = new MainProductDto
+                {
+                    Id = product.Id,
+                    ProductName = product.ProductName,
+                    ProductImageUrl = product.ProductImageUrl,
+                    ShortDescription = product.ShortDescription,
+                    OriginalPrice = product.ProductPrice,
+                    DiscountedPrice = discountedPrice,
+                    CategoryName = product.Category.CategoryName,
+                };
+
+                productDetailDtos.Add(productDetailDto);
+            }
+
+            var vm = new DiscountedProductsDtoAsVm()
+            {
+                DiscountedProducts = productDetailDtos,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling(totalProducts / (double)pageSize),
+            };
+
+            return vm;
         }
 
         public async Task<HomeFilterDtoAsVm> FilterProductsByCategories(string categoryFilter, int page, int pageSize)
@@ -587,7 +651,94 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                                  .ToListAsync();
         }
 
-        //3)/ 66 - 33 = discountedPrice(33)   2)// originalPrice(66) * 0,5 = 33    1)//DiscountRate(50) / 100 = 0,5
+        public async Task<(bool success, string message)> ProcessOrderAsync(CheckoutDto model, ClaimsPrincipal userPrincipal, ISession session)
+        {
+            var checkouts = session.Get<List<CheckoutModel>>("checkouts");
+            var shipper = await _shipperRepository.Table.FirstOrDefaultAsync(sh => sh.CompanyName == "YasabKargo");
+            var user = await _userManager.GetUserAsync(userPrincipal);
+
+            if (user == null)
+            {
+                return (false, "Unauthorized");
+            }
+
+            if (checkouts == null || !checkouts.Any() || shipper == null)
+            {
+                return (false, "Order failed due to missing data.");
+            }
+
+            var totalSum = 0.0;
+            var discountedPrices = new Dictionary<Guid, double>();
+
+            foreach (var checkoutItem in checkouts)
+            {
+                var product = await _productRepository.GetByIdAsync(checkoutItem.ProductId);
+
+                if (product == null)
+                {
+                    return (false, $"Order failed because product with ID {checkoutItem.ProductId} was not found.");
+                }
+
+                var discount = await _discountRepository.GetDiscountByProductId(product.Id);
+                var discountedPrice = ApplyDiscount(checkoutItem.Price, discount);
+                discountedPrices[product.Id] = discountedPrice;
+
+                totalSum += discountedPrice * checkoutItem.Quantity;
+            }
+
+            var order = new Order
+            {
+                Id = Guid.NewGuid(),
+                AppUser = user,
+                Shipper = shipper,
+                Freight = totalSum,
+                OrderDate = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow,
+                ShipAddress = model.ShipAddress,
+                ShipCity = model.ShipCity,
+                ShipRegion = model.ShipRegion,
+                ShipPostalCode = model.ShipPostalCode,
+                ShipCountry = model.ShipCountry,
+                CashOnDelivery = model.CashOnDelivery,
+                Confirmed = false,
+                IsDeleted = false
+            };
+
+            await _orderRepository.CreateAsync(order);
+
+            foreach (var orderItem in checkouts)
+            {
+                var product = await _productRepository.GetByIdAsync(orderItem.ProductId);
+                var discountedPrice = discountedPrices[orderItem.ProductId];
+
+                var orderDetail = new OrderDetail
+                {
+                    Id = Guid.NewGuid(),
+                    ProductId = orderItem.ProductId,
+                    Quantity = orderItem.Quantity,
+                    UnitPrice = discountedPrice,
+                    CreatedAt = DateTime.UtcNow,
+                    OrderId = order.Id,
+                    Product = product,
+                    IsDeleted = false
+                };
+
+                await _orderDetailRepository.CreateAsync(orderDetail);
+            }
+
+            await _orderRepository.SaveChangesAsync();
+            await _orderDetailRepository.SaveChangesAsync();
+
+            var myOrder = await _orderRepository.GetByIdAsync(order.Id);
+
+            if (myOrder.Confirmed == false)
+            {
+                return (true, "The order has been successfully processed, but it needs to be confirmed.");
+            }
+
+            return (true, "The order has been successfully processed and confirmed.");
+        }
+        
         public double ApplyDiscount(double originalPrice, Discount discount)
         {
             if (discount == null) return originalPrice;
@@ -604,3 +755,5 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
         }
     }
 }
+
+        //3)/ 66 - 33 = discountedPrice(33)   2)// originalPrice(66) * 0,5 = 33    1)//DiscountRate(50) / 100 = 0,5

@@ -22,6 +22,6 @@ namespace NaturalAndNutritious.Business.Dtos
         public string ConfirmPassword { get; set; }
         [Required]
         [FileValidator(AcceptedTypes = ".png, .jpg, .jpeg, .svg")]
-        public IFormFile ProfilePhoto { get; set; }
+        public IFormFile? ProfilePhoto { get; set; }
     }
 }

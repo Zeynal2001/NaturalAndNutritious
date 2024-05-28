@@ -16,6 +16,7 @@ namespace NaturalAndNutritious.Data.Entities
         public string ShipPostalCode { get; set; }
         public string ShipCountry { get; set; }
         public bool Confirmed { get; set; }
+        public bool CashOnDelivery { get; set; }
 
         public Shipper Shipper { get; set; }
         public AppUser AppUser { get; set; }
