@@ -3,12 +3,8 @@ using Moq;
 using NaturalAndNutritious.Business.Abstractions;
 using NaturalAndNutritious.Business.Dtos;
 using NaturalAndNutritious.Business.Services;
-using NaturalAndNutritious.Business.Services.Results;
 using NaturalAndNutritious.Data.Abstractions;
 using NaturalAndNutritious.Data.Entities;
-using System.IO;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace NaturalAndNutritious.Tests
 {
@@ -117,6 +113,7 @@ namespace NaturalAndNutritious.Tests
             Assert.Equal("existingPhotoUrl.jpg", result);
         }
 
+        //Duzgun yazilmali olan
         [Fact]
         public async Task CompleteFileOperations_ProfilePhotoIsNotNull_DeletesOldAndUploadsNewPhoto()
         {
@@ -139,6 +136,7 @@ namespace NaturalAndNutritious.Tests
             Assert.Equal("uploads/newPhoto.jpg", result);
         }
 
+        //Duzgun yazilmali olan
         [Fact]
         public async Task EditUserDetails_ValidData_UpdatesUserDetails()
         {
@@ -189,6 +187,7 @@ namespace NaturalAndNutritious.Tests
             Assert.Equal("Something went wrong", result.Message);
         }
 
+        //Duzgun yazilmali olan
         //[Fact]
         //public async Task ChangeUserPasswordAsync_ValidData_ChangesPassword()
         //{

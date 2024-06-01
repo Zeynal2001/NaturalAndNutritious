@@ -25,4 +25,5 @@ addBtn.addEventListener('click', (ev) => {
             localStorage.setItem('cartProducts', JSON.stringify(prodArr));
         }
     }
+    alert("Product added to the cart");
 });

@@ -31,4 +31,8 @@
     <ProjectReference Include="..\..\PL\NaturalAndNutritious.Presentation\NaturalAndNutritious.Presentation.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="AdminPanelServices\" />
+  </ItemGroup>
+
 </Project>

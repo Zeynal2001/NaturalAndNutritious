@@ -11,5 +11,6 @@
         public double OriginalPrice { get; set; }
         public double? DiscountedPrice { get; set; }
         public int? Star { get; set; }
+        public int? TotalSold { get; set; }
     }
 }

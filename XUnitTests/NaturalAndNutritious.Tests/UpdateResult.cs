@@ -2,7 +2,7 @@
 
 namespace NaturalAndNutritious.Tests
 {
-    internal class UpdateResult : IdentityResult
+    public class UpdateResult : IdentityResult
     {
         public bool Succeeded { get; set; }
     }

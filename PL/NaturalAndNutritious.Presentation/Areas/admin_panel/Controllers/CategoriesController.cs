@@ -22,7 +22,6 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         private readonly ICategoryRepository _categoryRepository;
         private readonly ICategoryService _categoryService;
 
-
         public async Task<IActionResult> GetAllCategories(int page = 1, int pageSize = 5)
         {
             var categoriesQueryable = await _categoryRepository.FilterWithPagination(page, pageSize);

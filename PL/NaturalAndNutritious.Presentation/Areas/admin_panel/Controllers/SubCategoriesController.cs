@@ -29,11 +29,13 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             var subCategoriesQueryable = await _subCategoryRepository.FilterWithPagination(page, pageSize);
 
             var subCategories = await subCategoriesQueryable
+                .Include(sc => sc.Category)
                 .OrderByDescending(sc => sc.CreatedAt)
                 .Select(sc => new AllSubCategoriesDto()
                 {
                     Id = sc.Id.ToString(),
                     SubCategoryName = sc.SubCategoryName,
+                    CategoryName = sc.Category.CategoryName,
                     CreatedAt = sc.CreatedAt,
                     UpdatedAt = sc.UpdatedAt,
                 }).ToListAsync();

@@ -1,13 +1,13 @@
-﻿
+﻿let baseUrl = window.location.origin;
 async function getData(ids) {
-    const promises = ids.map((id) => fetch(`https://localhost:7032/Products/GetProductsByIds?id=${id}`))
+    const promises = ids.map((id) => fetch(`${baseUrl}/Products/GetProductsByIds?id=${id}`))
     const datas =  await Promise.all(promises).then(responses => Promise.all(responses.map(r => r.json())))
     return datas
 }
 
 function sendData(data)
 {
-    fetch(`https://localhost:7032/Cart/ProceedCheckout`,
+    fetch(`${baseUrl}/Cart/ProceedCheckout`,
         {
             method: 'POST',
             headers: {
@@ -17,7 +17,7 @@ function sendData(data)
         })
         .then(dt => dt.json()).then((dt) => {
             if (dt.succeeded) {
-                window.location.href = 'https://localhost:7032/Checkout';
+                window.location.href = `${baseUrl}/Checkout`;
             }
         })
         .catch(err => console.log(err));
@@ -25,20 +25,31 @@ function sendData(data)
 
 function removeProduct(productId) {
     // LocalStorage'dan ürünleri alın
-    let products = JSON.parse(localStorage.getItem('products')) || [];
+    let products = JSON.parse(localStorage.getItem('cartProducts')) || [];
 
     // Ürünü diziden kaldırın
-    products = products.filter(product => product.id !== productId);
+    let newPRoducts = products.filter(product => product.id !== productId);
 
     // Güncellenmiş ürün dizisini tekrar LocalStorage'a kaydedin
-    localStorage.setItem('products', JSON.stringify(products));
+    localStorage.setItem('cartProducts', JSON.stringify(newPRoducts));
 
     // Kullanıcıya bir bildirim gösterebilirsiniz veya ürün listesini güncelleyebilirsiniz
-    alert("Product deleted from the cart");
+    renderProducts().then(() => {
+        renderTotal();
+        alert("Product deleted from the cart");
+    });
 }
 
 window.addEventListener('DOMContentLoaded',async () => {
 
+    await renderProducts();
+    renderTotal();
+    setEventListeners();
+}
+);
+
+
+async function renderProducts() {
     let storage = localStorage.getItem('cartProducts');
     if (!storage)
         return;
@@ -47,7 +58,7 @@ window.addEventListener('DOMContentLoaded',async () => {
 
     const ids = cartProducts.map((prod) => prod.id)
     const myCardPorducts = await getData(ids)
-    
+
 
     const productsBody = document.getElementById('products-body');
     productsBody.innerHTML = '';
@@ -93,9 +104,8 @@ window.addEventListener('DOMContentLoaded',async () => {
                     </tr>
         `
     });
-    setEventListeners();
+
 }
-);
 
 
 
@@ -130,13 +140,16 @@ function calculateTotal(id)
     let price = parseInt(document.getElementById(`price_${prodId}`).innerText);
     let total = quantity * price;
     document.getElementById(`total_${prodId}`).innerText = `${total}$`;
+    renderTotal();
+}
+
+function renderTotal() {
     let priceSum = 0;
     document.querySelectorAll('.totalPrice').forEach(tp => {
-        priceSum += parseInt(tp.innerText)
+        priceSum += parseFloat(tp.innerText)
     });
     document.getElementById('priceSum').innerText = `${priceSum}$`;
 }
-
 function proceedCheckout() {
     let productDatas = document.querySelectorAll('.product-data');
     let products = [];

@@ -24,8 +24,11 @@ namespace NaturalAndNutritious.Business.Dtos.AdminPanelDtos
         [Required]
         public int ReorderLevel { get; set; }
 
+        [Required]
         public string Supplier { get; set; }
+        [Required]
         public string Category { get; set; }
+        [Required]
         public string SubCategory { get; set; }
     }
 }

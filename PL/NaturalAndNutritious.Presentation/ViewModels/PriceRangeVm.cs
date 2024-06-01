@@ -1,5 +1,4 @@
 ﻿using NaturalAndNutritious.Business.Dtos;
-using System.ComponentModel.DataAnnotations;
 
 namespace NaturalAndNutritious.Presentation.ViewModels
 {

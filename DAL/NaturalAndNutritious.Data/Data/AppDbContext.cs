@@ -2,12 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using NaturalAndNutritious.Data.Entities;
 using NaturalAndNutritious.Data.Seedings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace NaturalAndNutritious.Data.Data
 {
     public class AppDbContext : IdentityDbContext<AppUser>
@@ -27,6 +21,7 @@ namespace NaturalAndNutritious.Data.Data
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Territory> Territories { get; set; }
         public DbSet<Blog> Blogs { get; set; }
+        public DbSet<Subscriber> Subscribers { get; set; }
 
 
 

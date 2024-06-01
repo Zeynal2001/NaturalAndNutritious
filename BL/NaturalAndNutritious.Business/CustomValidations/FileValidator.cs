@@ -14,12 +14,12 @@ namespace NaturalAndNutritious.Business.CustomValidations
 
         public override bool IsValid(object? value)
         {
-            if (string.IsNullOrWhiteSpace(AcceptedTypes))
-            {
-                return true;
-            }
-
-            if (value != null && value is IFormFile file)
+            //if (string.IsNullOrWhiteSpace(AcceptedTypes))
+            //{
+            //    return true;
+            //}
+            //value != null &&
+            if (value is IFormFile file)
             {
                 var extension = Path.GetExtension(file.FileName);
                 var accepteds = AcceptedTypes.Split(',');
@@ -31,6 +31,10 @@ namespace NaturalAndNutritious.Business.CustomValidations
                         return true;
                     }
                 }
+            }
+            else
+            {
+                return true;
             }
 
             return false;

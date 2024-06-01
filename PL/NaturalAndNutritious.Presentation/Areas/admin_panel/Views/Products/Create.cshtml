@@ -74,7 +74,7 @@
                                 <option selected>--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</option>
                                 @foreach (var subcategory in subCategories)
                                 {
-                                    <option value="@subcategory.Id">@subcategory.SubCategoryName</option>
+                                    <option value="@subcategory.Id">@subcategory.SubCategoryName (@subcategory.Category.CategoryName)</option>
                                 }
                             </select>
                         </div>

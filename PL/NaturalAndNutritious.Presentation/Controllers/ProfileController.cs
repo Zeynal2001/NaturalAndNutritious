@@ -4,7 +4,6 @@ using NaturalAndNutritious.Business.Abstractions;
 using NaturalAndNutritious.Business.Dtos;
 using NaturalAndNutritious.Data.Enums;
 using NaturalAndNutritious.Presentation.ViewModels;
-using SessionMapper;
 using System.Security.Claims;
 
 namespace NaturalAndNutritious.Presentation.Controllers
@@ -126,6 +125,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
                 if (!ModelState.IsValid)
                 {
+                    _logger.LogWarning("ModelState is invalid");
                     ViewData["hasError"] = true;
                     return View(vm);
                 }
@@ -181,6 +181,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
                 if (!ModelState.IsValid)
                 {
+                    _logger.LogWarning("ModelState is invalid");
                     ViewData["hasError"] = true;
                     return View(model);
                 }

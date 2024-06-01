@@ -36,112 +36,167 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
 
         public async Task<IActionResult> GetAllProducts(int page = 1, int pageSize = 5)
         {
-            var products = await _productService.FilterProductsWithPagination(page, pageSize);
+            _logger.LogInformation("GetAllProducts action called with page: {Page}, pageSize: {PageSize}", page, pageSize);
 
-            var totalProducts = await _productService.TotalProducts();
-
-            var vm = new GetAllProductsVm()
+            try
             {
-                Products = products,
-                CurrentPage = page,
-                TotalPages = (int)Math.Ceiling(totalProducts / (double)pageSize),
-                PageSize = pageSize
-            };
+                var products = await _productService.FilterProductsWithPagination(page, pageSize);
+                var totalProducts = await _productService.TotalProducts();
 
-            return View(vm);
+                var vm = new GetAllProductsVm()
+                {
+                    Products = products,
+                    CurrentPage = page,
+                    TotalPages = (int)Math.Ceiling(totalProducts / (double)pageSize),
+                    PageSize = pageSize
+                };
+
+                _logger.LogInformation("GetAllProducts action completed successfully for page: {Page}", page);
+
+                return View(vm);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting products for page: {Page}", page);
+                return View("Error");
+            }
         }
 
         public async Task<IActionResult> Create()
         {
-            var categoriesAsQueryable = await _categoryRepository.GetAllAsync();
-            var categories = await categoriesAsQueryable
-               .Where(c => c.IsDeleted == false)
-               .ToListAsync();
+            _logger.LogInformation("Create action called");
 
-            var subCategoriesAsQueryable = await _subCategoryRepository.GetAllAsync();
-            var subCategories = await subCategoriesAsQueryable
-               .Where(c => c.IsDeleted == false)
-               .ToListAsync();
+            try
+            {
+                var categoriesAsQueryable = await _categoryRepository.GetAllAsync();
+                var categories = await categoriesAsQueryable
+                   .Where(c => c.IsDeleted == false)
+                   .ToListAsync();
 
-            var suppliersAsQueryable = await _supplierRepository.GetAllAsync();
-            var suppliers = await suppliersAsQueryable
-               .Where(c => c.IsDeleted == false)
-               .ToListAsync();
+                var subCategoriesAsQueryable = await _subCategoryRepository.GetAllAsync();
+                var subCategories = await subCategoriesAsQueryable
+                    .Include(c => c.Category)
+                   .Where(c => c.IsDeleted == false)
+                   .ToListAsync();
 
-            ViewData["categories"] = categories;
-            ViewData["subcategories"] = subCategories;
-            ViewData["suppliers"] = suppliers;
+                var suppliersAsQueryable = await _supplierRepository.GetAllAsync();
+                var suppliers = await suppliersAsQueryable
+                   .Where(c => c.IsDeleted == false)
+                   .ToListAsync();
 
-            return View();
+                ViewData["categories"] = categories;
+                ViewData["subcategories"] = subCategories;
+                ViewData["suppliers"] = suppliers;
+
+                _logger.LogInformation("Create action completed successfully");
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while loading the Create view");
+                return View("Error");
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateProductDto model)
         {
+            _logger.LogInformation("Create POST action called");
+
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("ModelState is invalid");
                 return View(model);
             }
 
-            var result = await _productService.CreateProduct(model, "product-images");
-
-            if (result.IsNull)
+            try
             {
-                var error = new ErrorModel { ErrorMessage = result.Message };
-                return View("AdminError", error);
-            }
+                var result = await _productService.CreateProduct(model, "product-images");
 
-            if (!result.Succeeded)
+                if (result.IsNull)
+                {
+                    var error = new ErrorModel { ErrorMessage = result.Message };
+                    _logger.LogWarning("Product creation failed: {Message}", result.Message);
+                    return View("AdminError", error);
+                }
+
+                if (!result.Succeeded)
+                {
+                    var error = new ErrorModel { ErrorMessage = result.Message };
+                    _logger.LogWarning("Product creation failed: {Message}", result.Message);
+                    return View("AdminError", error);
+                }
+
+                _logger.LogInformation("Product created successfully");
+                return RedirectToAction(nameof(GetAllProducts));
+            }
+            catch (Exception ex)
             {
-                var error = new ErrorModel { ErrorMessage = result.Message };
-                return View("AdminError", error);
+                _logger.LogError(ex, "An error occurred while creating the product");
+                return View("Error");
             }
-
-            return RedirectToAction(nameof(GetAllProducts));
         }
 
         public async Task<IActionResult> Update(string Id)
         {
+            _logger.LogInformation("Update action called with Id: {Id}", Id);
+
             if (!Guid.TryParse(Id, out var guidId))
             {
-                throw new ArgumentException($"The id '{Id}' is not a valid GUID.", nameof(Id));
+                var errorMsg = $"The id '{Id}' is not a valid GUID.";
+                _logger.LogWarning(errorMsg);
+                throw new ArgumentException(errorMsg, nameof(Id));
             }
 
-            var product = await _productRepository.GetByIdAsync(guidId);
-
-            if (product == null)
+            try
             {
-                var errorModel = new ErrorModel()
+                var product = await _productRepository.GetByIdAsync(guidId);
+
+                if (product == null)
                 {
-                    ErrorMessage = "There isn't such product"
+                    var errorModel = new ErrorModel()
+                    {
+                        ErrorMessage = "There isn't such product"
+                    };
+                    _logger.LogWarning("Product not found for Id: {Id}", Id);
+                    return View("AdminError", errorModel);
+                }
+
+                //TODO: Sonra burada product un kategoriya, subcat, supplier ini de update etmeyi yaz.
+                var productDetails = new UpdateProductDto()
+                {
+                    Id = product.Id.ToString(),
+                    ProductName = product.ProductName,
+                    ShortDescription = product.ShortDescription,
+                    Description = product.Description,
+                    ProductPrice = product.ProductPrice,
+                    UnitsInStock = product.UnitsInStock,
+                    ReorderLevel = product.ReorderLevel,
+                    UnitsOnOrder = product.UnitsOnOrder,
+                    ProductImageUrl = product.ProductImageUrl
                 };
 
-                return View("AdminError", errorModel);
+                _logger.LogInformation("Product found for Id: {Id}", Id);
+                return View(productDetails);
             }
-             //TODO: Sonra burada product un kategoriya, subcat, supplier ini de update etmeyi yaz.
-            var productDetails = new UpdateProductDto()
+            catch (Exception ex)
             {
-                Id = product.Id.ToString(),
-                ProductName = product.ProductName,
-                ShortDescription = product.ShortDescription,
-                Description = product.Description,
-                ProductPrice = product.ProductPrice,
-                UnitsInStock = product.UnitsInStock,
-                ReorderLevel = product.ReorderLevel,
-                UnitsOnOrder = product.UnitsOnOrder,
-                ProductImageUrl = product.ProductImageUrl
-            };
-
-            return View(productDetails);
+                _logger.LogError(ex, "An error occurred while updating the product with Id: {Id}", Id);
+                return View("Error");
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(UpdateProductDto model)
         {
+            _logger.LogInformation("Update action called with model: {@model}", model);
+
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Model state is invalid for model: {@model}", model);
                 return View(model);
             }
 
@@ -149,163 +204,247 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
 
             if (!Guid.TryParse(model.Id, out var guidId))
             {
-                throw new ArgumentException($"The id '{model.Id}' is not a valid GUID.", nameof(model.Id));
+                var errorMsg = $"The id '{model.Id}' is not a valid GUID.";
+                _logger.LogError(errorMsg);
+                throw new ArgumentException(errorMsg, nameof(model.Id));
             }
 
-            var product = await _productRepository.GetByIdAsync(guidId);
-
-            if (product == null)
+            try
             {
-                ModelState.AddModelError("editError", "There isn't such product.");
-                return View(model);
+                var product = await _productRepository.GetByIdAsync(guidId);
+
+                if (product == null)
+                {
+                    _logger.LogWarning("Product not found for Id: {Id}", model.Id);
+                    ModelState.AddModelError("editError", "There isn't such product.");
+                    return View(model);
+                }
+
+                var productImageUrl = await _productService.CompleteFileOperations(model);
+
+                product.ProductName = model.ProductName;
+                product.ShortDescription = model.ShortDescription;
+                product.Description = model.Description;
+                product.ProductPrice = model.ProductPrice;
+                product.UnitsInStock = model.UnitsInStock;
+                product.ReorderLevel = model.ReorderLevel;
+                product.UnitsOnOrder = model.UnitsOnOrder;
+                product.ProductImageUrl = productImageUrl;
+                product.UpdatedAt = DateTime.UtcNow;
+
+                var isUpdated = await _productRepository.UpdateAsync(product);
+                affected = await _productRepository.SaveChangesAsync();
+
+                if (!isUpdated && affected == 0)
+                {
+                    _logger.LogWarning("Product update failed for Id: {Id}", model.Id);
+                    ModelState.AddModelError("updateError", "Product not updated.");
+                    return View(model);
+                }
+
+                _logger.LogInformation("Product successfully updated for Id: {Id}", model.Id);
+                return RedirectToAction(nameof(GetAllProducts));
             }
-
-            var productImageUrl = await _productService.CompleteFileOperations(model);
-
-            product.ProductName = model.ProductName;
-            product.ShortDescription = model.ShortDescription;
-            product.Description = model.Description;
-            product.ProductPrice = model.ProductPrice;
-            product.UnitsInStock = model.UnitsInStock;
-            product.ReorderLevel = model.ReorderLevel;
-            product.UnitsOnOrder = model.UnitsOnOrder;
-            product.ProductImageUrl = productImageUrl;
-            product.UpdatedAt = DateTime.UtcNow;
-
-            var isUpdated = await _productRepository.UpdateAsync(product);
-            affected = await _productRepository.SaveChangesAsync();
-
-            if (isUpdated == false && affected == 0)
+            catch (Exception ex)
             {
-                ModelState.AddModelError("updateError", "Subcategory not updated.");
-
-                return View(model);
+                _logger.LogError(ex, "An error occurred while updating the product with Id: {Id}", model.Id);
+                return View("Error");
             }
-
-            return RedirectToAction(nameof(GetAllProducts));
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(string productId)
         {
+            _logger.LogInformation("Delete action called with productId: {productId}", productId);
+
             if (!Guid.TryParse(productId, out var guidId))
             {
-                throw new ArgumentException($"The id '{productId}' is not a valid GUID.", nameof(productId));
+                var errorMsg = $"The id '{productId}' is not a valid GUID.";
+                _logger.LogWarning(errorMsg);
+                throw new ArgumentException(errorMsg, nameof(productId));
             }
 
-            var isDeleted = await _productRepository.DeleteAsync(guidId);
-            await _productRepository.SaveChangesAsync();
-
-            if (isDeleted == false)
+            try
             {
-                var errorModel = new ErrorModel();
-                errorModel.ErrorMessage = "There isn't such product.";
+                var isDeleted = await _productRepository.DeleteAsync(guidId);
+                await _productRepository.SaveChangesAsync();
 
-                return View("AdminError", errorModel);
+                if (!isDeleted)
+                {
+                    var errorModel = new ErrorModel
+                    {
+                        ErrorMessage = "There isn't such product."
+                    };
+
+                    _logger.LogWarning("Product deletion failed for productId: {productId}", productId);
+                    return View("AdminError", errorModel);
+                }
+
+                _logger.LogInformation("Product successfully deleted for productId: {productId}", productId);
+                return RedirectToAction(nameof(GetAllProducts));
             }
-
-            return RedirectToAction(nameof(GetAllProducts));
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while deleting the product with productId: {productId}", productId);
+                return View("Error");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> AssumingDeleted(string productId)
         {
+            _logger.LogInformation("AssumingDeleted action called with productId: {productId}", productId);
+
             if (!Guid.TryParse(productId, out var guidId))
             {
-                throw new ArgumentException($"The id '{productId}' is not a valid GUID.", nameof(productId));
+                var errorMsg = $"The id '{productId}' is not a valid GUID.";
+                _logger.LogWarning(errorMsg);
+                throw new ArgumentException(errorMsg, nameof(productId));
             }
+
             var product = await _productRepository.GetByIdAsync(guidId);
 
             if (product == null)
             {
-                var errorModel = new ErrorModel();
-                errorModel.ErrorMessage = "There isn't such product.";
+                var errorModel = new ErrorModel
+                {
+                    ErrorMessage = "There isn't such product."
+                };
 
+                _logger.LogWarning("Product not found for productId: {productId}", productId);
                 return View("AdminError", errorModel);
             }
 
             product.IsDeleted = true;
 
-            var isUpdated = await _productRepository.UpdateAsync(product);
-            await _productRepository.SaveChangesAsync();
-
-            if (isUpdated == false)
+            try
             {
-                var errorModel = new ErrorModel();
-                errorModel.ErrorMessage = "Product not updated.";
+                var isUpdated = await _productRepository.UpdateAsync(product);
+                await _productRepository.SaveChangesAsync();
 
-                return View("AdminError", errorModel);
+                if (!isUpdated)
+                {
+                    var errorModel = new ErrorModel
+                    {
+                        ErrorMessage = "Product not updated."
+                    };
+
+                    _logger.LogWarning("Product update failed for productId: {productId}", productId);
+                    return View("AdminError", errorModel);
+                }
+
+                _logger.LogInformation("Product marked as deleted for productId: {productId}", productId);
+                return RedirectToAction(nameof(GetAllProducts));
             }
-
-            return RedirectToAction(nameof(GetAllProducts));
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating the product with productId: {productId}", productId);
+                return View("Error");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Discontinued(string productId)
         {
+            _logger.LogInformation("Discontinued action called with productId: {productId}", productId);
+
             if (!Guid.TryParse(productId, out var guidId))
             {
-                throw new ArgumentException($"The id '{productId}' is not a valid GUID.", nameof(productId));
+                var errorMsg = $"The id '{productId}' is not a valid GUID.";
+                _logger.LogWarning(errorMsg);
+                throw new ArgumentException(errorMsg, nameof(productId));
             }
+
             var product = await _productRepository.GetByIdAsync(guidId);
 
             if (product == null)
             {
-                var errorModel = new ErrorModel();
-                errorModel.ErrorMessage = "There isn't such product.";
+                var errorModel = new ErrorModel
+                {
+                    ErrorMessage = "There isn't such product."
+                };
 
+                _logger.LogWarning("Product not found for productId: {productId}", productId);
                 return View("AdminError", errorModel);
             }
 
             product.Discontinued = true;
 
-            var isDiscontinued = await _productRepository.UpdateAsync(product);
-            await _productRepository.SaveChangesAsync();
-
-            if (isDiscontinued == false)
+            try
             {
-                var errorModel = new ErrorModel();
-                errorModel.ErrorMessage = "Product not updated.";
+                var isDiscontinued = await _productRepository.UpdateAsync(product);
+                await _productRepository.SaveChangesAsync();
 
-                return View("AdminError", errorModel);
+                if (!isDiscontinued)
+                {
+                    var errorModel = new ErrorModel
+                    {
+                        ErrorMessage = "Product not updated."
+                    };
+
+                    _logger.LogWarning("Product update failed for productId: {productId}", productId);
+                    return View("AdminError", errorModel);
+                }
+
+                _logger.LogInformation("Product marked as discontinued for productId: {productId}", productId);
+                return RedirectToAction(nameof(GetAllProducts));
             }
-
-            return RedirectToAction(nameof(GetAllProducts));
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating the product with productId: {productId}", productId);
+                return View("Error");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> RemoveDiscount(string productId)
         {
+            _logger.LogInformation("RemoveDiscount action called with productId: {productId}", productId);
+
             if (!Guid.TryParse(productId, out var guidId))
             {
-                throw new ArgumentException($"The id '{productId}' is not a valid GUID.", nameof(productId));
+                var errorMsg = $"The id '{productId}' is not a valid GUID.";
+                _logger.LogWarning(errorMsg);
+                throw new ArgumentException(errorMsg, nameof(productId));
             }
 
-            var product = await _productRepository.Table.Include(p => p.Discount).FirstOrDefaultAsync(p => p.Id == guidId);
-            if (product == null)
+            try
             {
-                var error = new ErrorModel { ErrorMessage = "Product is not found!" };
-                return View("AdminError", error);
+                var product = await _productRepository.Table.Include(p => p.Discount).FirstOrDefaultAsync(p => p.Id == guidId);
+                if (product == null)
+                {
+                    var error = new ErrorModel { ErrorMessage = "Product is not found!" };
+                    _logger.LogWarning("Product not found for productId: {productId}", productId);
+                    return View("AdminError", error);
+                }
+
+                var discount = product.Discount;
+
+                if (discount == null)
+                {
+                    var error = new ErrorModel { ErrorMessage = "The product doesn't have a discount." };
+                    _logger.LogWarning("Product doesn't have a discount for productId: {productId}", productId);
+                    return View("AdminError", error);
+                }
+
+                var isDeleted = await _discountRepository.DeleteAsync(discount.Id);
+                await _discountRepository.SaveChangesAsync();
+
+                if (!isDeleted)
+                {
+                    var errorModel = new ErrorModel { ErrorMessage = "Discount could not be deleted." };
+                    _logger.LogWarning("Discount could not be deleted for productId: {productId}", productId);
+                    return View("AdminError", errorModel);
+                }
+
+                _logger.LogInformation("Discount removed successfully for productId: {productId}", productId);
+                return RedirectToAction(nameof(GetAllProducts));
             }
-
-            var discount = product.Discount;
-
-            if (discount == null)
+            catch (Exception ex)
             {
-                var error = new ErrorModel { ErrorMessage = "The product doesn't have a discount." };
-                return View("AdminError", error);
+                _logger.LogError(ex, "An error occurred while removing the discount for productId: {productId}", productId);
+                return View("Error");
             }
-
-            var isDeleted = await _discountRepository.DeleteAsync(discount.Id);
-            await _discountRepository.SaveChangesAsync();
-
-            if (!isDeleted)
-            {
-                var errorModel = new ErrorModel { ErrorMessage = "Discount could not be deleted." };
-                return View("AdminError", errorModel);
-            }
-
-            return RedirectToAction(nameof(GetAllProducts));
         }
     }
 }

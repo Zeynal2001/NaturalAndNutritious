@@ -34,8 +34,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label asp-for="ProductPrice" for="exampleInputEmail0">ProductPrice:</label>
-                            <input asp-for="ProductPrice" type="text" class="form-control" id="exampleInputEmail0" placeholder="@Model.ProductPrice" oninput="validateDecimal(this)">
+                            <label asp-for="ProductPrice"></label>
+                            <input asp-for="ProductPrice" class="form-control"/>
                         </div>
 
                         <div class="form-group">
@@ -69,10 +69,11 @@
 
 @section UserEditJs {
     <script src="~/admin/js/user-edit.js"></script>
-    <script>
+    @* <script>
         function validateDecimal(input) {
             // Virgül yerine nokta kullanarak ondalık sayı kontrolü yap
-            input.value = input.value.replace('.', ',');
+            console.log(input.value)
+            // input.value = +input.value.replace(",",".");
         }
-    </script>
+    </script> *@
 }

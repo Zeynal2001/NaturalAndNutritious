@@ -16,12 +16,12 @@ namespace NaturalAndNutritious.Business.Abstractions
         double ApplyDiscount(double originalPrice, Discount discount);
         Task<List<MainProductDto>> GetProductsForHomePageAsync();
         Task<SearchDtoAsVm> ProductsForSearchFilter(string query, int page, int pageSize);
-        Task<List<MainProductDto>> ProductsForBestsellerArea();
+        Task<List<MainProductDto>> GetBestSellers(int topN);
         Task<List<MainProductDto>> GetVegetablesForVegetablesArea();
         Task<HomeFilterDtoAsVm> FilterProductsByCategories(string categoryFilter, int page, int pageSize);
         Task<List<MainProductDto>> ProductsForProductsController(int page, int pageSize);
         Task<int> TotalProductsForProductsController();
-        Task<List<MainProductDto>> FilterProductsByCategoriesProdcutsController(Guid categoryId, int page, int pageSize);
+        Task<List<MainProductDto>> FilterProductsByCategoriesProductsController(Guid categoryId, int page, int pageSize);
         Task<List<MainProductDto>> GetAllDiscountedProducts();
         Task<List<RelatedProductsDto>> GetRelateProducts(Product product);
         Task<int> TotalProductsForProductsByCategory(Guid categoryId);

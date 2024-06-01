@@ -108,6 +108,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("ModelState is invalid");
                 ViewData["hasError"] = true;
                 return View(model);
             }

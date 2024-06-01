@@ -87,7 +87,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                     Id = Guid.NewGuid().ToString(),
                     FName = "admin",
                     LName = "admin",
-                    Email = "admin@mail.com",
+                    Email = "admin@gmail.com",
                     BirthDate = DateTime.UtcNow,
                     ProfilePhotoUrl = "",
                     UserName = "admin",

@@ -35,6 +35,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
                 var totoalusers = await _userRepository.GetAllUsers();
 
                 var products = await _productService.GetProductsForHomePageAsync();
+                var bestsellers = await _productService.GetBestSellers(10);
                 var vegetables = await _productService.GetVegetablesForVegetablesArea();
                 var categoriesAsQueryable = await _categoryRepository.GetAllAsync();
 
@@ -48,6 +49,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
                 {
                     Categories = categories,
                     FilterProductsByCategories = products,
+                    BestsellerProducts = bestsellers,
                     Vegetables = vegetables,
                     TotalCustomers = totoalusers.Count(),
                     TotalProducts = totalproducts.Count(),
@@ -125,6 +127,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             try
             {
                 ViewData["title"] = "Products By Category";
+                ViewData["filter"] = categoryFilter;
 
                 if (string.IsNullOrWhiteSpace(categoryFilter))
                 {

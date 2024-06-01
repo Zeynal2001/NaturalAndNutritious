@@ -44,12 +44,20 @@ namespace NaturalAndNutritious.Business.Services
 
         public async Task<ServiceResult> Register(RegisterDto model, string dirPath)
         {
-            var uploaded = await _storageService.UploadFileAsync(dirPath, model.ProfilePhoto);
-            var profilePhoto = uploaded.FullPath;
-
-            if (_storageService is LocalStorageService)
+            var profilePhoto = "";
+            if (model.ProfilePhoto == null)
             {
-                profilePhoto = $"uploads/{profilePhoto}";
+                profilePhoto = "img/userr=.png";
+            }
+            else
+            {
+                var uploaded = await _storageService.UploadFileAsync(dirPath, model.ProfilePhoto);
+                profilePhoto = uploaded.FullPath;
+
+                if (_storageService is LocalStorageService)
+                {
+                    profilePhoto = $"uploads/{profilePhoto}";
+                }
             }
 
             var user = new AppUser()
@@ -83,9 +91,10 @@ namespace NaturalAndNutritious.Business.Services
             {
                 var errors = roleRes.Errors.ErrorsToString();
 
-                return new ServiceResult { Succeeded = false, IsNull = false, Message = errors};
+                return new ServiceResult { Succeeded = false, IsNull = false, Message = errors };
             }
         }
+
 
         public async Task LogOut()
         {

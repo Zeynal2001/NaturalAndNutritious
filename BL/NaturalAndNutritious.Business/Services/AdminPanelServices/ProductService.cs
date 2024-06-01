@@ -4,8 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using NaturalAndNutritious.Business.Abstractions;
 using NaturalAndNutritious.Business.Dtos;
 using NaturalAndNutritious.Business.Dtos.AdminPanelDtos;
+using NaturalAndNutritious.Business.Enums;
 using NaturalAndNutritious.Business.Services.Results;
 using NaturalAndNutritious.Data.Abstractions;
+using NaturalAndNutritious.Data.Data;
 using NaturalAndNutritious.Data.Entities;
 using SessionMapper;
 using System.Security.Claims;
@@ -40,6 +42,8 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderDetailRepository _orderDetailRepository;
         private readonly UserManager<AppUser> _userManager;
+        private IOrderDetailRepository @object;
+        private AppDbContext object1;
 
         public async Task<List<AllProductsDto>> FilterProductsWithPagination(int page, int pageSize)
         {
@@ -425,7 +429,7 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
             return vm;
         }
 
-        public async Task<List<MainProductDto>> FilterProductsByCategoriesProdcutsController(Guid categoryId, int page, int pageSize)
+        public async Task<List<MainProductDto>> FilterProductsByCategoriesProductsController(Guid categoryId, int page, int pageSize)
         {
             if (page <= 0 || pageSize <= 0)
             {
@@ -540,19 +544,81 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
         public async Task<int> TotalProductsForProductsController()
         {
             var productsAsQueryable = _productRepository.Table
-            .Include(p => p.Category)
-            .Include(p => p.Discount)
-            .Where(p => !p.IsDeleted)
+                                    .Include(p => p.Category)
+                                    .Include(p => p.Discount)
+                                    .Where(p => !p.IsDeleted)
             .OrderByDescending(p => p.CreatedAt)
             .ThenByDescending(p => p.ViewsCount);
 
             return await productsAsQueryable.CountAsync();
         }
 
-        public Task<List<MainProductDto>> ProductsForBestsellerArea()
+        public async Task<List<MainProductDto>> GetBestSellers(int topN)
         {
-            throw new NotImplementedException();
+            var bestSellersWithRelations = await _orderDetailRepository.Table
+                .Where(od => !od.Product.IsDeleted)
+                .Include(od => od.Product.Reviews)
+                .Include(od => od.Product.Discount)
+                .ToListAsync(); // Here we finish the database query and get the result to memory/RAM.
+
+            var groupedBestSellingProducts = bestSellersWithRelations
+                .GroupBy(od => od.Product) // We group products individually.
+                .Select(g => new
+                {
+                    Product = g.Key,
+                    TotalSold = g.Sum(od => od.Quantity),
+                    AverageRating = g.Key.Reviews.Any() ? (int?)g.Key.Reviews.Average(r => r.Rating) : null
+                })
+                .OrderByDescending(s => s.TotalSold)
+                .Take(topN)
+                .ToList();
+
+            // Apply discount and create MainProductDto objects
+            var mainProductDtos = groupedBestSellingProducts.Select(seller => new MainProductDto
+            {
+                Id = seller.Product.Id,
+                ProductName = seller.Product.ProductName,
+                ShortDescription = seller.Product.ShortDescription,
+                ProductImageUrl = seller.Product.ProductImageUrl,
+                OriginalPrice = seller.Product.ProductPrice,
+                DiscountedPrice = seller.Product.Discount != null ? ApplyDiscount(seller.Product.ProductPrice, seller.Product.Discount) : (double?)null,
+                Star = seller.AverageRating.HasValue ? seller.AverageRating.Value : null,
+                TotalSold = seller.TotalSold
+            }).ToList();
+            
+            return mainProductDtos;
         }
+
+        #region 2 ci variant
+        /*
+        var bestSellers = await _orderDetailRepository.Table
+            .Where(od => !od.Product.IsDeleted)
+        .Include(od => od.Product)
+            .ThenInclude(p => p.Category)
+        .Include(od => od.Product)
+            .ThenInclude(p => p.Reviews)
+        .Include(od => od.Product)
+            .ThenInclude(p => p.Discount)
+        .GroupBy(od => od.Product)
+        .Select(g => new MainProductDto
+        {
+            Id = g.Key.Id,
+            ProductName = g.Key.ProductName,
+            ShortDescription = g.Key.ShortDescription,
+            ProductImageUrl = g.Key.ProductImageUrl,
+            CategoryName = g.Key.Category != null ? g.Key.Category.CategoryName : null,
+            OriginalPrice = g.Key.ProductPrice,
+            DiscountedPrice = g.Key.Discount != null ? ApplyDiscount(g.Key.ProductPrice, g.Key.Discount) : (double?)null,
+            Star = g.Key.Reviews.Any() ? (int?)g.Key.Reviews.Average(r => r.Rating) : null,
+            TotalSold = g.Sum(od => od.Quantity)
+        })
+        .OrderByDescending(p => p.TotalSold)
+        .Take(topN)
+        .ToListAsync();
+
+        return bestSellers;
+        */
+        #endregion
 
         public async Task<List<MainProductDto>> GetVegetablesForVegetablesArea()
         {
@@ -645,10 +711,10 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
         public async Task<IEnumerable<Product>> GetProductsByPriceAsync(double price)
         {
             return await _productRepository.Table
-                .Include(p => p.Category)
-                .Include(p => p.Discount)
-                                 .Where(p => p.ProductPrice <= price && !p.IsDeleted)
-                                 .ToListAsync();
+                                           .Include(p => p.Category)
+                                           .Include(p => p.Discount)
+                .Where(p => p.ProductPrice <= price && !p.IsDeleted)
+                .ToListAsync();
         }
 
         public async Task<(bool success, string message)> ProcessOrderAsync(CheckoutDto model, ClaimsPrincipal userPrincipal, ISession session)
@@ -700,6 +766,7 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                 ShipPostalCode = model.ShipPostalCode,
                 ShipCountry = model.ShipCountry,
                 CashOnDelivery = model.CashOnDelivery,
+                OrderStatus = nameof(StatusType.Pending),
                 Confirmed = false,
                 IsDeleted = false
             };
@@ -738,7 +805,8 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
 
             return (true, "The order has been successfully processed and confirmed.");
         }
-        
+
+        //3)/ 66 - 33 = discountedPrice(33)   2)// originalPrice(66) * 0,5 = 33    1)//DiscountRate(50) / 100 = 0,5
         public double ApplyDiscount(double originalPrice, Discount discount)
         {
             if (discount == null) return originalPrice;
@@ -755,5 +823,3 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
         }
     }
 }
-
-        //3)/ 66 - 33 = discountedPrice(33)   2)// originalPrice(66) * 0,5 = 33    1)//DiscountRate(50) / 100 = 0,5

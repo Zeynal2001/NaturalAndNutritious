@@ -88,7 +88,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
                 }
 
                 var totalProducts = await _productService.TotalProductsForProductsByCategory(Id);
-                var products = await _productService.FilterProductsByCategoriesProdcutsController(Id, page, 9);
+                var products = await _productService.FilterProductsByCategoriesProductsController(Id, page, 9);
 
                 var categoriesAsQueryable = await _categoryRepository.GetAllAsync();
 
