@@ -47,7 +47,12 @@ namespace NaturalAndNutritious.Business.Repositories
 
         public async Task<AppUser> GetUserByIdAsync(string userId)
         {
-            return await _userManager.FindByIdAsync(userId);
+            //if (user == null)
+            //{
+            //    throw new ArgumentNullException(nameof(user));
+            //}
+            
+            return await _userManager.FindByIdAsync(userId); ;
         }
 
         public async Task<IdentityResult> UpdateUserAsync(AppUser user)

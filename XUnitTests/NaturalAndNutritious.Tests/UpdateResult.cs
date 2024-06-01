@@ -2,8 +2,8 @@
 
 namespace NaturalAndNutritious.Tests
 {
-    public class UpdateResult : IdentityResult
-    {
-        public bool Succeeded { get; set; }
-    }
+    //public class UpdateResult : IdentityResult
+    //{
+    //    public bool Succeeded { get; set; }
+    //}
 }

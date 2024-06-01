@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Moq;
+﻿using Moq;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using NaturalAndNutritious.Business.Abstractions;
 using NaturalAndNutritious.Business.Dtos;
 using NaturalAndNutritious.Business.Services;
@@ -10,16 +11,16 @@ namespace NaturalAndNutritious.Tests
 {
     public class ProfileServiceTests
     {
-        private readonly Mock<IUserRepository> _userRepositoryMock;
-        private readonly Mock<IStorageService> _storageServiceMock;
-        private readonly ProfileService _profileService;
-
         public ProfileServiceTests()
         {
             _userRepositoryMock = new Mock<IUserRepository>();
             _storageServiceMock = new Mock<IStorageService>();
             _profileService = new ProfileService(_userRepositoryMock.Object, _storageServiceMock.Object);
         }
+
+        private readonly Mock<IUserRepository> _userRepositoryMock;
+        private readonly Mock<IStorageService> _storageServiceMock;
+        private readonly ProfileService _profileService;
 
         [Fact]
         public async Task GetUserByIdAsync_UserExists_ReturnsUser()
@@ -118,25 +119,26 @@ namespace NaturalAndNutritious.Tests
         public async Task CompleteFileOperations_ProfilePhotoIsNotNull_DeletesOldAndUploadsNewPhoto()
         {
             // Arrange
+            var mockFile = new Mock<IFormFile>();
             var model = new ProfileEditDto
             {
-                ProfilePhoto = new Mock<IFormFile>().Object,
-                ProfilePhotoUrl = "profile-photos/oldPhoto.jpg"
+                ProfilePhoto = mockFile.Object,
+                ProfilePhotoUrl = "uploads/profile-photos/oldPhoto.jpg"
             };
 
-            _storageServiceMock.Setup(s => s.HasFile("profile-photos", "oldPhoto.jpg")).Returns(true);
-            _storageServiceMock.Setup(s => s.DeleteFileAsync("profile-photos", "oldPhoto.jpg")).Returns(Task.CompletedTask);
+            var photoName = Path.GetFileName(model.ProfilePhotoUrl);
+            _storageServiceMock.Setup(s => s.HasFile("profile-photos", photoName)).Returns(true);
+            _storageServiceMock.Setup(s => s.DeleteFileAsync("profile-photos", photoName)).Returns(Task.CompletedTask);
             _storageServiceMock.Setup(s => s.UploadFileAsync("profile-photos", model.ProfilePhoto))
-                               .ReturnsAsync(new UploadFileDto { FullPath = "newPhoto.jpg" });
+                               .ReturnsAsync(new UploadFileDto { FullPath = "profile-photos/newPhoto.jpg" });
 
             // Act
             var result = await _profileService.CompleteFileOperations(model);
 
             // Assert
-            Assert.Equal("uploads/newPhoto.jpg", result);
+            Assert.Equal("profile-photos/newPhoto.jpg", result);
         }
 
-        //Duzgun yazilmali olan
         [Fact]
         public async Task EditUserDetails_ValidData_UpdatesUserDetails()
         {
@@ -149,10 +151,12 @@ namespace NaturalAndNutritious.Tests
                 LastName = "NewLastName",
                 Email = "newemail@example.com",
                 NickName = "NewNickName",
-                BirthDate = new System.DateTime(1990, 1, 1)
+                BirthDate = new DateTime(1990, 1, 1)
             };
 
-            _userRepositoryMock.Setup(repo => repo.UpdateUserAsync(user)).ReturnsAsync(new UpdateResult { Succeeded = true });
+            var updateResult = IdentityResult.Success;
+
+            _userRepositoryMock.Setup(repo => repo.UpdateUserAsync(It.IsAny<AppUser>())).ReturnsAsync(updateResult);
 
             // Act
             var result = await _profileService.EditUserDetails(user, profilePhotoUrl, model);
@@ -175,7 +179,7 @@ namespace NaturalAndNutritious.Tests
                 LastName = "NewLastName",
                 Email = "newemail@example.com",
                 NickName = "NewNickName",
-                BirthDate = new System.DateTime(1990, 1, 1)
+                BirthDate = new DateTime(1990, 1, 1)
             };
 
             // Act
@@ -187,45 +191,55 @@ namespace NaturalAndNutritious.Tests
             Assert.Equal("Something went wrong", result.Message);
         }
 
-        //Duzgun yazilmali olan
-        //[Fact]
-        //public async Task ChangeUserPasswordAsync_ValidData_ChangesPassword()
-        //{
-        //    // Arrange
-        //    var user = new AppUser { Id = "testId" };
-        //    var currentPassword = "currentPassword";
-        //    var newPassword = "newPassword";
+        [Fact]
+        public async Task ChangeUserPasswordAsync_ValidData_ChangesPassword()
+        {
+            // Arrange
+            var user = new AppUser { Id = "testId" };
+            var currentPassword = "currentPassword";
+            var newPassword = "newPassword";
 
-        //    _userRepositoryMock.Setup(repo => repo.ChangeUserPasswordAsync(user, currentPassword, newPassword))
-        //                       .ReturnsAsync(new ChangePasswordResult { Succeeded = true });
+            //var updateResult = IdentityResult.Success;
+            var changeResult = IdentityResult.Success;
 
-        //    // Act
-        //    var result = await _profileService.ChangeUserPasswordAsync(user, currentPassword, newPassword);
+            //_userRepositoryMock.Setup(repo => repo.UpdateUserAsync(It.IsAny<AppUser>())).ReturnsAsync(updateResult);
 
-        //    // Assert
-        //    Assert.True(result.Succeeded);
-        //    Assert.False(result.IsNull);
-        //    Assert.Equal("Password successfully changed, Profile successfully updated.", result.Message);
-        //}
+            _userRepositoryMock.Setup(repo => repo.ChangeUserPasswordAsync(It.IsAny<AppUser>(), currentPassword, newPassword))
+                               .ReturnsAsync(changeResult);
+            //_userRepositoryMock.Setup(repo => repo.ChangeUserPasswordAsync(user, currentPassword, newPassword))
+            //                   .ReturnsAsync(new ChangePasswordResult { Succeeded = true });
 
-        //[Fact]
-        //public async Task ChangeUserPasswordAsync_InvalidData_ReturnsError()
-        //{
-        //    // Arrange
-        //    var user = new AppUser { Id = "testId" };
-        //    var currentPassword = "currentPassword";
-        //    var newPassword = "newPassword";
+            // Act
+            var result = await _profileService.ChangeUserPasswordResultAsync(user, currentPassword, newPassword);
 
-        //    _userRepositoryMock.Setup(repo => repo.ChangeUserPasswordAsync(user, currentPassword, newPassword))
-        //                       .ReturnsAsync(new ChangePasswordResult { Succeeded = false, Errors = new[] { "Error changing password" } });
+            // Assert
+            Assert.True(result.Succeeded);
+            Assert.False(result.IsNull);
+            Assert.Equal("Password successfully changed, Profile successfully updated.", result.Message);
+        }
 
-        //    // Act
-        //    var result = await _profileService.ChangeUserPasswordAsync(user, currentPassword, newPassword);
+        [Fact]
+        public async Task ChangeUserPasswordAsync_InvalidData_ReturnsError()
+        {
+            // Arrange
+            var user = new AppUser { Id = "testId" };
+            var currentPassword = "currentPassword";
+            var newPassword = "newPassword";
 
-        //    // Assert
-        //    Assert.False(result.Succeeded);
-        //    Assert.True(result.IsNull);
-        //    Assert.Equal("Error changing password", result.Message);
-        //}
+            var changeResult = IdentityResult.Failed(new IdentityError { Description = "Error changing password" });
+
+            _userRepositoryMock.Setup(repo => repo.ChangeUserPasswordAsync(It.IsAny<AppUser>(), currentPassword, newPassword))
+                               .ReturnsAsync(changeResult);
+            //_userRepositoryMock.Setup(repo => repo.ChangeUserPasswordAsync(user, currentPassword, newPassword))
+            //                   .ReturnsAsync(new ChangePasswordResult { Succeeded = false, Errors = new[] { "Error changing password" } });
+
+            // Act
+            var result = await _profileService.ChangeUserPasswordResultAsync(user, currentPassword, newPassword);
+
+            // Assert
+            Assert.False(result.Succeeded);
+            Assert.True(result.IsNull);
+            Assert.Equal("Error changing password", result.Message);
+        }
     }
 }

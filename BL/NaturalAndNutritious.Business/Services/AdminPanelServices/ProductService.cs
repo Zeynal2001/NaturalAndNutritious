@@ -7,7 +7,6 @@ using NaturalAndNutritious.Business.Dtos.AdminPanelDtos;
 using NaturalAndNutritious.Business.Enums;
 using NaturalAndNutritious.Business.Services.Results;
 using NaturalAndNutritious.Data.Abstractions;
-using NaturalAndNutritious.Data.Data;
 using NaturalAndNutritious.Data.Entities;
 using SessionMapper;
 using System.Security.Claims;
@@ -16,7 +15,7 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
 {
     public class ProductService : IProductService
     {
-        public ProductService(IProductRepository productRepository, ICategoryRepository categoryRepository, ISubCategoryRepository subCategoryRepository, ISupplierRepository supplierRepository, IStorageService storageService, IDiscountRepository discountRepository, IReviewRepository reviewRepository, IShipperRepository shipperRepository, IOrderRepository orderRepository, IOrderRepository @object, IOrderDetailRepository orderDetailRepository, UserManager<AppUser> userManager)
+        public ProductService(IProductRepository productRepository, ICategoryRepository categoryRepository, ISubCategoryRepository subCategoryRepository, ISupplierRepository supplierRepository, IStorageService storageService, IDiscountRepository discountRepository, IReviewRepository reviewRepository, IShipperRepository shipperRepository, IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository, UserManager<AppUser> userManager)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
@@ -42,8 +41,6 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderDetailRepository _orderDetailRepository;
         private readonly UserManager<AppUser> _userManager;
-        private IOrderDetailRepository @object;
-        private AppDbContext object1;
 
         public async Task<List<AllProductsDto>> FilterProductsWithPagination(int page, int pageSize)
         {
@@ -587,38 +584,37 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
             }).ToList();
             
             return mainProductDtos;
+            #region 2 ci variant
+            /*
+            var bestSellers = await _orderDetailRepository.Table
+                .Where(od => !od.Product.IsDeleted)
+            .Include(od => od.Product)
+                .ThenInclude(p => p.Category)
+            .Include(od => od.Product)
+                .ThenInclude(p => p.Reviews)
+            .Include(od => od.Product)
+                .ThenInclude(p => p.Discount)
+            .GroupBy(od => od.Product)
+            .Select(g => new MainProductDto
+            {
+                Id = g.Key.Id,
+                ProductName = g.Key.ProductName,
+                ShortDescription = g.Key.ShortDescription,
+                ProductImageUrl = g.Key.ProductImageUrl,
+                CategoryName = g.Key.Category != null ? g.Key.Category.CategoryName : null,
+                OriginalPrice = g.Key.ProductPrice,
+                DiscountedPrice = g.Key.Discount != null ? ApplyDiscount(g.Key.ProductPrice, g.Key.Discount) : (double?)null,
+                Star = g.Key.Reviews.Any() ? (int?)g.Key.Reviews.Average(r => r.Rating) : null,
+                TotalSold = g.Sum(od => od.Quantity)
+            })
+            .OrderByDescending(p => p.TotalSold)
+            .Take(topN)
+            .ToListAsync();
+
+            return bestSellers;
+            */
+            #endregion
         }
-
-        #region 2 ci variant
-        /*
-        var bestSellers = await _orderDetailRepository.Table
-            .Where(od => !od.Product.IsDeleted)
-        .Include(od => od.Product)
-            .ThenInclude(p => p.Category)
-        .Include(od => od.Product)
-            .ThenInclude(p => p.Reviews)
-        .Include(od => od.Product)
-            .ThenInclude(p => p.Discount)
-        .GroupBy(od => od.Product)
-        .Select(g => new MainProductDto
-        {
-            Id = g.Key.Id,
-            ProductName = g.Key.ProductName,
-            ShortDescription = g.Key.ShortDescription,
-            ProductImageUrl = g.Key.ProductImageUrl,
-            CategoryName = g.Key.Category != null ? g.Key.Category.CategoryName : null,
-            OriginalPrice = g.Key.ProductPrice,
-            DiscountedPrice = g.Key.Discount != null ? ApplyDiscount(g.Key.ProductPrice, g.Key.Discount) : (double?)null,
-            Star = g.Key.Reviews.Any() ? (int?)g.Key.Reviews.Average(r => r.Rating) : null,
-            TotalSold = g.Sum(od => od.Quantity)
-        })
-        .OrderByDescending(p => p.TotalSold)
-        .Take(topN)
-        .ToListAsync();
-
-        return bestSellers;
-        */
-        #endregion
 
         public async Task<List<MainProductDto>> GetVegetablesForVegetablesArea()
         {
@@ -691,7 +687,6 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
             relatedProducts.AddRange(related);
             return relatedProducts;
         }
-
 
         public async Task AddReviewAsync(ReviewDto reviewDto, AppUser user)
         {

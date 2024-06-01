@@ -197,7 +197,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
                 var user = userResult.FoundUser;
 
-                var result = await _profileService.ChangeUserPasswordAsync(user, model.ChangeDetails.CurrentPassword, model.ChangeDetails.NewPassword);
+                var result = await _profileService.ChangeUserPasswordResultAsync(user, model.ChangeDetails.CurrentPassword, model.ChangeDetails.NewPassword);
                 if (result.Succeeded)
                 {
                     TempData["succesMsg"] = result.Message;
@@ -216,6 +216,5 @@ namespace NaturalAndNutritious.Presentation.Controllers
                 return View("Error");
             }
         }
-
     }
 }

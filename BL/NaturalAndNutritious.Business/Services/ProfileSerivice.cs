@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using NaturalAndNutritious.Business.Abstractions;
+﻿using NaturalAndNutritious.Business.Abstractions;
 using NaturalAndNutritious.Business.Dtos;
 using NaturalAndNutritious.Business.Extensions;
 using NaturalAndNutritious.Business.Services.Results;
@@ -139,7 +138,7 @@ namespace NaturalAndNutritious.Business.Services
             }
         }
 
-        public async Task<ChangePasswordResult> ChangeUserPasswordAsync(AppUser user, string currentPassword, string newPassword)
+        public async Task<ChangePasswordResult> ChangeUserPasswordResultAsync(AppUser user, string currentPassword, string newPassword)
         {
             if (user != null && currentPassword != null && newPassword != null)
             {

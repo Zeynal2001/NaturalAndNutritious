@@ -63,7 +63,7 @@ namespace NaturalAndNutritious.Business.Services.Results
         {
             IsNull = false; 
             Succeeded = true;
-            Message = "";
+            Message = string.Empty;
         }
     }
 
@@ -72,7 +72,7 @@ namespace NaturalAndNutritious.Business.Services.Results
         public bool IsNull { get; set; }
         public bool Succeeded { get; set; }
         public string Message { get; set; }
-        public string[] Errors { get; set; }
+        //public string[] Errors { get; set; }
 
         public ChangePasswordResult()
         {

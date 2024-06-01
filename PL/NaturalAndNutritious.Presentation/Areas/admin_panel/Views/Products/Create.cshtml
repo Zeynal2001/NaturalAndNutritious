@@ -39,7 +39,7 @@
 
                         <div class="form-group">
                             <label asp-for="ProductPrice" for="exampleInputTitle5">Product Price:</label>
-                            <input asp-for="ProductPrice" type="text" class="form-control" id="exampleInputTitle5" oninput="validateDecimal(this)">
+                            <input asp-for="ProductPrice" class="form-control" id="exampleInputTitle5">
                         </div>
 
                         <div class="form-group">
@@ -99,11 +99,11 @@
     </div>
 </div>
 
-@section CreateJs {
+@* @section CreateJs {
     <script>
         function validateDecimal(input) {
             // Virgül yerine nokta kullanarak ondalık sayı kontrolü yap
             input.value = input.value.replace('.', ',');
         }
     </script>
-}
+} *@

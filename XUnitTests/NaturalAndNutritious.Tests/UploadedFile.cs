@@ -2,7 +2,7 @@
 
 namespace NaturalAndNutritious.Tests
 {
-    internal class UploadedFile : UploadFileDto
+    public class UploadedFile : UploadFileDto
     {
         public string FullPath { get; set; }
     }
