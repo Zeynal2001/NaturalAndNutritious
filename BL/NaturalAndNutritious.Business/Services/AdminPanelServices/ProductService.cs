@@ -8,6 +8,7 @@ using NaturalAndNutritious.Business.Enums;
 using NaturalAndNutritious.Business.Services.Results;
 using NaturalAndNutritious.Data.Abstractions;
 using NaturalAndNutritious.Data.Entities;
+using NaturalAndNutritious.Data.Enums;
 using SessionMapper;
 using System.Security.Claims;
 
@@ -552,23 +553,19 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
 
         public async Task<List<MainProductDto>> GetBestSellers(int topN)
         {
-            var bestSellersWithRelations = await _orderDetailRepository.Table
+            var groupedBestSellingProducts = await _orderDetailRepository.Table
+                .Include(od => od.Product)
+                .ThenInclude(p => p.Discount)
                 .Where(od => !od.Product.IsDeleted)
-                .Include(od => od.Product.Reviews)
-                .Include(od => od.Product.Discount)
-                .ToListAsync(); // Here we finish the database query and get the result to memory/RAM.
-
-            var groupedBestSellingProducts = bestSellersWithRelations
-                .GroupBy(od => od.Product) // We group products individually.
+                .GroupBy(od => new { od.Product.Id, od.Product.ProductName, od.Product.ShortDescription, od.Product.ProductImageUrl, od.Product.ProductPrice, DiscountRate = od.Product.Discount != null ? od.Product.Discount.DiscountRate : 0.0, DiscountType = od.Product.Discount != null ? od.Product.Discount.DiscountType : nameof(DiscountType.None) }) // We group products individually.
                 .Select(g => new
                 {
                     Product = g.Key,
                     TotalSold = g.Sum(od => od.Quantity),
-                    AverageRating = g.Key.Reviews.Any() ? (int?)g.Key.Reviews.Average(r => r.Rating) : null
                 })
                 .OrderByDescending(s => s.TotalSold)
                 .Take(topN)
-                .ToList();
+                .ToListAsync();
 
             // Apply discount and create MainProductDto objects
             var mainProductDtos = groupedBestSellingProducts.Select(seller => new MainProductDto
@@ -578,43 +575,44 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                 ShortDescription = seller.Product.ShortDescription,
                 ProductImageUrl = seller.Product.ProductImageUrl,
                 OriginalPrice = seller.Product.ProductPrice,
-                DiscountedPrice = seller.Product.Discount != null ? ApplyDiscount(seller.Product.ProductPrice, seller.Product.Discount) : (double?)null,
-                Star = seller.AverageRating.HasValue ? seller.AverageRating.Value : null,
+                DiscountedPrice = seller.Product.DiscountRate != 0.0 ? ApplyDiscount(seller.Product.ProductPrice, new Discount { DiscountRate = seller.Product.DiscountRate, DiscountType = seller.Product.DiscountType}) : (double?)null,
+                Star = (int)_productRepository.GetReviewsByProductId(seller.Product.Id).Average(r => r.Rating),
                 TotalSold = seller.TotalSold
             }).ToList();
             
             return mainProductDtos;
-            #region 2 ci variant
-            /*
-            var bestSellers = await _orderDetailRepository.Table
-                .Where(od => !od.Product.IsDeleted)
-            .Include(od => od.Product)
-                .ThenInclude(p => p.Category)
-            .Include(od => od.Product)
-                .ThenInclude(p => p.Reviews)
-            .Include(od => od.Product)
-                .ThenInclude(p => p.Discount)
-            .GroupBy(od => od.Product)
-            .Select(g => new MainProductDto
-            {
-                Id = g.Key.Id,
-                ProductName = g.Key.ProductName,
-                ShortDescription = g.Key.ShortDescription,
-                ProductImageUrl = g.Key.ProductImageUrl,
-                CategoryName = g.Key.Category != null ? g.Key.Category.CategoryName : null,
-                OriginalPrice = g.Key.ProductPrice,
-                DiscountedPrice = g.Key.Discount != null ? ApplyDiscount(g.Key.ProductPrice, g.Key.Discount) : (double?)null,
-                Star = g.Key.Reviews.Any() ? (int?)g.Key.Reviews.Average(r => r.Rating) : null,
-                TotalSold = g.Sum(od => od.Quantity)
-            })
-            .OrderByDescending(p => p.TotalSold)
-            .Take(topN)
-            .ToListAsync();
-
-            return bestSellers;
-            */
-            #endregion
+    
         }
+        #region 2 ci variant
+        /*
+        var bestSellers = await _orderDetailRepository.Table
+            .Where(od => !od.Product.IsDeleted)
+        .Include(od => od.Product)
+            .ThenInclude(p => p.Category)
+        .Include(od => od.Product)
+            .ThenInclude(p => p.Reviews)
+        .Include(od => od.Product)
+            .ThenInclude(p => p.Discount)
+        .GroupBy(od => od.Product)
+        .Select(g => new MainProductDto
+        {
+            Id = g.Key.Id,
+            ProductName = g.Key.ProductName,
+            ShortDescription = g.Key.ShortDescription,
+            ProductImageUrl = g.Key.ProductImageUrl,
+            CategoryName = g.Key.Category != null ? g.Key.Category.CategoryName : null,
+            OriginalPrice = g.Key.ProductPrice,
+            DiscountedPrice = g.Key.Discount != null ? ApplyDiscount(g.Key.ProductPrice, g.Key.Discount) : (double?)null,
+            Star = g.Key.Reviews.Any() ? (int?)g.Key.Reviews.Average(r => r.Rating) : null,
+            TotalSold = g.Sum(od => od.Quantity)
+        })
+        .OrderByDescending(p => p.TotalSold)
+        .Take(topN)
+        .ToListAsync();
+
+        return bestSellers;
+        */
+        #endregion
 
         public async Task<List<MainProductDto>> GetVegetablesForVegetablesArea()
         {
@@ -762,6 +760,9 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                 ShipCountry = model.ShipCountry,
                 CashOnDelivery = model.CashOnDelivery,
                 OrderStatus = nameof(StatusType.Pending),
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                MobileNumber = model.MobileNumber,
                 Confirmed = false,
                 IsDeleted = false
             };

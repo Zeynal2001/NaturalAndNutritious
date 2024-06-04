@@ -64,7 +64,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
 
         public async Task<IActionResult> Create()
         {
-            _logger.LogInformation("Create action called");
+            _logger.LogInformation("Create GET action called");
 
             try
             {
@@ -88,7 +88,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                 ViewData["subcategories"] = subCategories;
                 ViewData["suppliers"] = suppliers;
 
-                _logger.LogInformation("Create action completed successfully");
+                _logger.LogInformation("Product Create Get action completed successfully");
 
                 return View();
             }
@@ -103,7 +103,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateProductDto model)
         {
-            _logger.LogInformation("Create POST action called");
+            _logger.LogInformation("Product Create POST action called");
 
             if (!ModelState.IsValid)
             {

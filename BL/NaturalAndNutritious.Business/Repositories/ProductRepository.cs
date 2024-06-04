@@ -82,13 +82,19 @@ namespace NaturalAndNutritious.Business.Repositories
         }
 
 
-        public async Task<Product> GetProductWithReviewsByProductId(Guid productId)
+        public IEnumerable<Review> GetReviewsByProductId(Guid productId)
         {
-            var product = await _context.Products
+            var product = _context.Products
                 .Include(p => p.Reviews)
-                .FirstOrDefaultAsync(p => p.Id == productId);
+                .FirstOrDefault(p => p.Id == productId);
 
-            return product;
+            if (product == null)
+                return new List<Review> { new() {Rating = 0 } };
+
+            if(product.Reviews.Count() == 0)
+                return new List<Review> { new() { Rating = 0 } };
+
+            return product.Reviews;
         }
 
         public Task<int> TotalProducts()

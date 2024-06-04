@@ -41,15 +41,24 @@ builder.Services.AddAuthentication()
 builder.Services.AddSession();
 builder.Services.AddScoped<IStorageService, LocalStorageService>();
 //Services.AddSingleton<IStorageService, LocalStorageService>();
+builder.Services.AddScoped<IEmailService, EmailService>(_ => new EmailService(new()
+{
+    Name = builder.Configuration["EmailCredentials:Gmail:Name"],
+    From = builder.Configuration["EmailCredentials:Gmail:From"],
+    Host = builder.Configuration["EmailCredentials:Gmail:Host"],
+    Port = Convert.ToInt32(builder.Configuration["EmailCredentials:Gmail:Port"] ?? "465"),
+    User = builder.Configuration["EmailCredentials:Gmail:User"],
+    Pass = builder.Configuration["EmailCredentials:Gmail:Pass"]
+}));
 builder.Services.RegisterServices();
 
-// LoggerFactory oluþturun ve ILoggerFactory'e ekleyin
+// Create a LoggerFactory and add it to the ILoggerFactory
 builder.Logging.AddConsole();
 builder.Logging.AddFile("Logs/logs-{Date}.txt");
 
 var app = builder.Build();
 
-// ILoggerFactory'i kullanarak ILogger oluþturun
+// Create an ILogger using ILoggerFactory
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
 var logger = loggerFactory.CreateLogger<Program>();
 

@@ -13,19 +13,23 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
     [Authorize(Roles = nameof(RoleTypes.Admin), AuthenticationSchemes = "AdminAuth")]
     public class SuppliersController : Controller
     {
-        public SuppliersController(ISupplierRepository supplierRepository, ISupplierService supplierService)
+        public SuppliersController(ISupplierRepository supplierRepository, ISupplierService supplierService, ILogger<SuppliersController> logger)
         {
             _supplierRepository = supplierRepository;
             _supplierService = supplierService;
+            _logger = logger;
         }
 
         private readonly ISupplierRepository _supplierRepository;
         private readonly ISupplierService _supplierService;
+        private readonly ILogger<SuppliersController> _logger;
 
         [Area("admin_panel")]
         [Authorize(Roles = nameof(RoleTypes.Admin), AuthenticationSchemes = "AdminAuth")]
         public async Task<IActionResult> GetAllSuppliers(int page = 1, int pageSize = 5)
         {
+            _logger.LogInformation("GetAllSuppliers action called with page: {Page} and pageSize: {PageSize}", page, pageSize);
+
             var suppliersQueryable = await _supplierRepository.FilterWithPagination(page, pageSize);
 
             var suppliers = await suppliersQueryable
@@ -56,12 +60,14 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                 PageSize = pageSize
             };
 
+            _logger.LogInformation("Retrieved {TotalSuppliers} suppliers.", totalSuppliers);
+
             return View(vm);
         }
 
-
         public IActionResult Create()
         {
+            _logger.LogInformation("Create GET action called.");
             return View();
         }
 
@@ -69,8 +75,11 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateSupplierDto model)
         {
+            _logger.LogInformation("Create POST action called.");
+
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("ModelState is invalid.");
                 return View(model);
             }
 
@@ -78,29 +87,32 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
 
             if (!result.Succeeded)
             {
+                _logger.LogWarning("Supplier creation failed: {Message}", result.Message);
                 var error = new ErrorModel { ErrorMessage = result.Message };
                 return View("AdminError", error);
             }
 
+            _logger.LogInformation("Supplier created successfully.");
             return RedirectToAction(nameof(GetAllSuppliers));
         }
 
         public async Task<IActionResult> Update(string Id)
         {
+            _logger.LogInformation("Update GET action called with supplierId: {Id}", Id);
+
             if (!Guid.TryParse(Id, out var guidId))
             {
-                throw new ArgumentException($"The id '{Id}' is not a valid GUID.", nameof(Id));
+                var errorMessage = $"The id '{Id}' is not a valid GUID.";
+                _logger.LogError(errorMessage);
+                throw new ArgumentException(errorMessage, nameof(Id));
             }
 
             var supplier = await _supplierRepository.GetByIdAsync(guidId);
 
             if (supplier == null)
             {
-                var errorModel = new ErrorModel()
-                {
-                    ErrorMessage = "There isn't such supplier"
-                };
-
+                var errorModel = new ErrorModel { ErrorMessage = "There isn't such supplier." };
+                _logger.LogWarning("Supplier with ID {Id} not found.", Id);
                 return View("AdminError", errorModel);
             }
 
@@ -120,6 +132,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                 Website = supplier.Website,
             };
 
+            _logger.LogInformation("Supplier details retrieved successfully for supplierId: {Id}", Id);
             ViewData["hasError"] = false;
 
             return View(supplierDetails);
@@ -129,22 +142,26 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(UpdateSupplierDto model)
         {
+            _logger.LogInformation("Update POST action called.");
+
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("ModelState is invalid.");
                 return View(model);
             }
 
-            int affected = 0;
-
             if (!Guid.TryParse(model.Id, out var guidId))
             {
-                throw new ArgumentException($"The id '{model.Id}' is not a valid GUID.", nameof(model.Id));
+                var errorMessage = $"The id '{model.Id}' is not a valid GUID.";
+                _logger.LogError(errorMessage);
+                throw new ArgumentException(errorMessage, nameof(model.Id));
             }
 
             var supplier = await _supplierRepository.GetByIdAsync(guidId);
 
             if (supplier == null)
             {
+                _logger.LogWarning("Supplier with ID {Id} not found.", model.Id);
                 ModelState.AddModelError("editError", "There isn't such supplier.");
                 return View(model);
             }
@@ -164,55 +181,63 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             supplier.UpdatedAt = DateTime.UtcNow;
 
             var isUpdated = await _supplierRepository.UpdateAsync(supplier);
-            affected = await _supplierRepository.SaveChangesAsync();
+            var affected = await _supplierRepository.SaveChangesAsync();
 
-            if (isUpdated == false && affected == 0)
+            if (!isUpdated || affected == 0)
             {
+                _logger.LogWarning("Supplier update failed for supplierId: {Id}", model.Id);
                 ModelState.AddModelError("updateError", "Supplier not updated.");
-
                 return View(model);
             }
 
+            _logger.LogInformation("Supplier updated successfully for supplierId: {Id}", model.Id);
             return RedirectToAction(nameof(GetAllSuppliers));
         }
-
 
         [HttpPost]
         public async Task<IActionResult> Delete(string Id)
         {
+            _logger.LogInformation("Delete POST action called with supplierId: {Id}", Id);
+
             if (!Guid.TryParse(Id, out var guidId))
             {
-                throw new ArgumentException($"The id '{Id}' is not a valid GUID.", nameof(Id));
+                var errorMessage = $"The id '{Id}' is not a valid GUID.";
+                _logger.LogError(errorMessage);
+                throw new ArgumentException(errorMessage, nameof(Id));
             }
 
             var isDeleted = await _supplierRepository.DeleteAsync(guidId);
             await _supplierRepository.SaveChangesAsync();
 
-            if (isDeleted == false)
+            if (!isDeleted)
             {
-                var errorModel = new ErrorModel();
-                errorModel.ErrorMessage = "There isn't such supplier.";
-
+                var errorModel = new ErrorModel { ErrorMessage = "There isn't such supplier." };
+                _logger.LogWarning("Supplier with ID {Id} not found for deletion.", Id);
                 return View("AdminError", errorModel);
             }
 
+            _logger.LogInformation("Supplier deleted successfully for supplierId: {Id}", Id);
             return RedirectToAction(nameof(GetAllSuppliers));
         }
 
         [HttpPost]
         public async Task<IActionResult> AssumingDeleted(string Id)
         {
+            _logger.LogInformation("AssumingDeleted POST action called with supplierId: {Id}", Id);
+
             if (!Guid.TryParse(Id, out var guidId))
             {
-                throw new ArgumentException($"The id '{Id}' is not a valid GUID.", nameof(Id));
+                var errorMessage = $"The id '{Id}' is not a valid GUID.";
+                _logger.LogError(errorMessage);
+                throw new ArgumentException(errorMessage, nameof(Id));
             }
+
             var supplier = await _supplierRepository.GetByIdAsync(guidId);
 
             if (supplier == null)
             {
-                var errorModel = new ErrorModel();
-                errorModel.ErrorMessage = "There isn't such supplier.";
-
+                var errorModel = new ErrorModel { ErrorMessage = "There isn't such supplier." };
+                _logger.LogWarning("Supplier with ID {Id} not found.", Id);
                 return View("AdminError", errorModel);
             }
 
@@ -221,14 +246,14 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             var isUpdated = await _supplierRepository.UpdateAsync(supplier);
             await _supplierRepository.SaveChangesAsync();
 
-            if (isUpdated == false)
+            if (!isUpdated)
             {
-                var errorModel = new ErrorModel();
-                errorModel.ErrorMessage = "Supplier not updated.";
-
+                var errorModel = new ErrorModel { ErrorMessage = "Supplier not updated." };
+                _logger.LogWarning("Supplier update to deleted failed for supplierId: {Id}", Id);
                 return View("AdminError", errorModel);
             }
 
+            _logger.LogInformation("Supplier marked as deleted successfully for supplierId: {Id}", Id);
             return RedirectToAction(nameof(GetAllSuppliers));
         }
     }

@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="JalilVerdiyev.SessionMapper" Version="1.0.4" />
+    <PackageReference Include="MailKit" Version="4.6.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.29">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

@@ -1,5 +1,7 @@
-﻿@model AdminHomeVm
-
+﻿@model EmailModel
+@{
+    var errrorCount = (int?)ViewData["hassErrors"];
+}
 <div class="row">
     <div class="col-md-12 grid-margin">
         <div class="d-flex justify-content-between flex-wrap">
@@ -12,18 +14,6 @@
                     <p class="text-muted mb-0 hover-cursor">&nbsp;/&nbsp;Dashboard&nbsp;</p>
                 </div>
             </div>
-            @*                                 <div class="d-flex justify-content-between align-items-end flex-wrap">
-            <button type="button" class="btn btn-light bg-white btn-icon me-3 d-none d-md-block ">
-            <i class="mdi mdi-download text-muted"></i>
-            </button>
-            <button type="button" class="btn btn-light bg-white btn-icon me-3 mt-2 mt-xl-0">
-            <i class="mdi mdi-clock-outline text-muted"></i>
-            </button>
-            <button type="button" class="btn btn-light bg-white btn-icon me-3 mt-2 mt-xl-0">
-            <i class="mdi mdi-plus text-muted"></i>
-            </button>
-            <button class="btn btn-primary mt-2 mt-xl-0">Generate report</button>
-            </div> *@
         </div>
     </div>
 </div>
@@ -52,28 +42,35 @@
                     <i class="mdi mdi-currency-usd me-3 icon-lg text-danger"></i>
                     <div class="d-flex flex-column justify-content-around">
                         <small class="mb-1 text-muted">Total Budget</small>
-                        <h5 class="me-2 mb-0">$@Model.TotalBudget</h5>
+                        <h5 class="me-2 mb-0">₼@ViewBag.totalBudget</h5>
+                    </div>
+                </div>
+                <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                    <i class="mdi mdi-currency-usd me-3 icon-lg text-danger"></i>
+                    <div class="d-flex flex-column justify-content-around">
+                        <small class="mb-1 text-muted">Total Revenue</small>
+                        <h5 class="me-2 mb-0">₼@ViewBag.totalRevenue</h5>
                     </div>
                 </div>
                 <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
                     <i class="mdi mdi-eye me-3 icon-lg text-success"></i>
                     <div class="d-flex flex-column justify-content-around">
                         <small class="mb-1 text-muted">Total Views</small>
-                        <h5 class="me-2 mb-0">@Model.TotalViews</h5>
+                        <h5 class="me-2 mb-0">@ViewBag.totalViews</h5>
                     </div>
                 </div>
                 <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
                     <i class="mdi mdi-package  me-3 icon-lg text-warning"></i>
                     <div class="d-flex flex-column justify-content-around">
                         <small class="mb-1 text-muted">Total Products</small>
-                        <h5 class="me-2 mb-0">@Model.TotalProducts</h5>
+                        <h5 class="me-2 mb-0">@ViewBag.totalProducts</h5>
                     </div>
                 </div>
                 <div class="d-flex py-3 border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
                     <i class="mdi mdi-account  me-3 icon-lg text-danger"></i>
                     <div class="d-flex flex-column justify-content-around">
                         <small class="mb-1 text-muted">Total Users/Customers</small>
-                        <h5 class="me-2 mb-0">@Model.TotalUsers</h5>
+                        <h5 class="me-2 mb-0">@ViewBag.totalUsers</h5>
                     </div>
                 </div>
             </div>
@@ -81,3 +78,83 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-title text-center py-2" style="text-transform:initial">
+                <h2>Send e-mail to a user</h2>
+            </div>
+            <div class="card-body">
+                @if (errrorCount > 0 || errrorCount != null)
+                {
+                    <div asp-validation-summary="All" class="alert alert-danger"></div>
+                }
+                <div class="d-flex justify-content-center align-items-center">
+                    <form method="post" asp-action="SendMailToUsers">
+                        <div class="form-group">
+                            <label asp-for="Recipient"></label>
+                            <span asp-validation-for="Recipient"></span>
+                            <input asp-for="Recipient" type="email" class="form-control" id="exampleInputPassword1">
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Subject"></label>
+                            <span asp-validation-for="Subject"></span>
+                            <input asp-for="Subject" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Message"></label>
+                            <span asp-validation-for="Message"></span>
+                            <textarea asp-for="Message" class="form-control" cols="50" rows="5"></textarea>
+                        </div>
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-primary" style="color:honeydew">Send Email</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-title text-center py-2" style="text-transform:initial">
+                <h2>Send e-mail to a subscriber</h2>
+            </div>
+            <div class="card-body">
+                @if (errrorCount > 0 || errrorCount != null)
+                {
+                    <div asp-validation-summary="All" class="alert alert-danger"></div>
+                }
+                <div class="d-flex justify-content-center align-items-center">
+                    <form method="post" asp-action="SendMailToSubscribers">
+                        <div class="form-group">
+                            <label asp-for="Recipient"></label>
+                            <span asp-validation-for="Recipient"></span>
+                            <input asp-for="Recipient" type="email" class="form-control" id="exampleInputPassword1">
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Subject"></label>
+                            <span asp-validation-for="Subject"></span>
+                            <input asp-for="Subject" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Message"></label>
+                            <span asp-validation-for="Message"></span>
+                            <textarea asp-for="Message" class="form-control" cols="50" rows="5"></textarea>
+                        </div>
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-primary" style="color:honeydew">Send Email</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* <div class="row">
+
+    <div class="col-md-12">
+
+    </div>
+
+</div> *@

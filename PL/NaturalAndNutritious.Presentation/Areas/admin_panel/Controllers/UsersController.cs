@@ -18,27 +18,26 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
     [Authorize(Roles = nameof(RoleTypes.Admin), AuthenticationSchemes = "AdminAuth")]
     public class UsersController : Controller
     {
-        public UsersController(IUsersService usersService, IAuthService authService, IUserRepository userRepository, UserManager<AppUser> userManager)
+        public UsersController(IUsersService usersService, IAuthService authService, IUserRepository userRepository, UserManager<AppUser> userManager, ILogger<UsersController> logger)
         {
             _usersService = usersService;
             _authService = authService;
             _userRepository = userRepository;
             _userManager = userManager;
+            _logger = logger;
         }
 
         private readonly IUsersService _usersService;
         private readonly IAuthService _authService;
         private readonly IUserRepository _userRepository;
         private readonly UserManager<AppUser> _userManager;
+        private readonly ILogger<UsersController> _logger;
 
         [Area("admin_panel")]
         [Authorize(Roles = nameof(RoleTypes.Admin), AuthenticationSchemes = "AdminAuth")]
         public async Task<IActionResult> GetAllUsers(int page = 1, int pageSize = 5)
         {
-            //var currentUserId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            //var currentUser = await _userManager.FindByIdAsync(currentUserId);
-
-            //ViewData["currentUser"] = currentUser;
+            _logger.LogInformation("GetAllUsers action called with page: {Page} and pageSize: {PageSize}", page, pageSize);
 
             var users = await _usersService.GetAllUsersWithPaginate(page, pageSize);
 
@@ -51,11 +50,16 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                 TotalPages = (int)Math.Ceiling(totalUsers / (double)pageSize),
                 PageSize = pageSize
             };
+
+            _logger.LogInformation("Retrieved {TotalUsers} users.", totalUsers);
+
             return View(vm);
         }
 
         public async Task<IActionResult> Edit(string userId)
         {
+            _logger.LogInformation("Edit GET action called with userId: {UserId}", userId);
+
             var user = await _usersService.GetUserByIdAsync(userId);
 
             if (user == null)
@@ -86,6 +90,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditUserDto model)
         {
+            _logger.LogInformation("Edit POST action called.");
+
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -116,12 +122,15 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                 return View(model);
             }
 
+            _logger.LogInformation("User details updated successfully for userId: {UserId}", model.Id);
             return RedirectToAction(nameof(GetAllUsers));
         }
 
 
         public async Task<IActionResult> ChangeRole(string Id)
         {
+            _logger.LogInformation("ChangeRole GET action called with userId: {UserId}", Id);
+
             var user = await _usersService.GetUserByIdAsync(Id);
 
             if (user == null)
@@ -154,6 +163,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangeRole(ChangeRoleVm model)
         {
+            _logger.LogInformation("ChangeRole POST action called.");
+
             var user = await _usersService.GetUserByIdAsync(model.Id);
 
             if (user == null)
@@ -182,7 +193,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             {
                 var errorModel = new ErrorModel()
                 {
-                    ErrorMessage = "The user is already has this role."
+                    ErrorMessage = "The user already has this role."
                 };
 
                 return View("AdminError", errorModel);
@@ -196,12 +207,15 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                 return View(model);
             }
 
+            _logger.LogInformation("Role changed successfully for userId: {UserId}", model.Id);
             return RedirectToAction(nameof(GetAllUsers));
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(string userId)
         {
+            _logger.LogInformation("Delete POST action called with userId: {UserId}", userId);
+
             var currentUserId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             if (currentUserId == null)
             {
@@ -229,11 +243,14 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                 return View("AdminError", errorModel);
             }
 
+            _logger.LogInformation("User deleted successfully for userId: {UserId}", userId);
             return RedirectToAction(nameof(GetAllUsers));
         }
 
         public IActionResult Create()
         {
+            _logger.LogInformation("Create GET action called.");
+
             ViewData["hasError"] = false;
 
             return View();
@@ -243,6 +260,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RegisterDto model)
         {
+            _logger.LogInformation("Create POST action called.");
+
             ViewData["hasError"] = false;
 
             if (!ModelState.IsValid)
@@ -263,6 +282,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             if (result.Succeeded)
             {
                 TempData["successMsg"] = result.Message;
+                _logger.LogInformation("User created successfully with email: {Email}", model.Email);
                 return RedirectToAction(nameof(GetAllUsers));
             }
 
@@ -271,6 +291,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
 
         public IActionResult GetBannedUsers()
         {
+            _logger.LogInformation("GetBannedUsers GET action called.");
+
             return View();
         }
     }

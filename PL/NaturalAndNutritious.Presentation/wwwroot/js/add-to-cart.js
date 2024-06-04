@@ -1,4 +1,4 @@
-const addBtn = document.getElementById('add-to-cart-btn');
+﻿const addBtn = document.getElementById('add-to-cart-btn');
 
 addBtn.addEventListener('click', (ev) => {
     ev.preventDefault();
@@ -25,5 +25,12 @@ addBtn.addEventListener('click', (ev) => {
             localStorage.setItem('cartProducts', JSON.stringify(prodArr));
         }
     }
-    alert("Product added to the cart");
+    /*alert("Product added to the cart");*/
+    Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Product added to the cart",
+        showConfirmButton: false,
+        timer: 1500
+    });
 });

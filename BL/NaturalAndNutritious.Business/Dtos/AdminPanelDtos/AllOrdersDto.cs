@@ -4,6 +4,7 @@
     {
         public string Id { get; set; }
         public string UserName { get; set; }
+        public string CustomerName { get; set; }
         public DateTime OrderDate { get; set; }
         public DateTime? ShippedDate { get; set; }
         public DateTime? RequiredDate { get; set; }

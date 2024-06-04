@@ -27,14 +27,14 @@
                     <div class="row">
                         <div class="col-md-12 col-lg-6">
                             <div class="form-item w-100">
-                                <label class="form-label my-3">First Name<sup>*</sup></label>
-                                <input type="text" class="form-control">
+                                <label asp-for="FirstName" class="form-label my-3">First Name<sup>*</sup></label>
+                                <input asp-for="FirstName" type="text" class="form-control">
                             </div>
                         </div>
                         <div class="col-md-12 col-lg-6">
                             <div class="form-item w-100">
-                                <label class="form-label my-3">Last Name<sup>*</sup></label>
-                                <input type="text" class="form-control">
+                                <label asp-for="LastName" class="form-label my-3">Last Name<sup>*</sup></label>
+                                <input asp-for="LastName" type="text" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -59,8 +59,8 @@
                         <input asp-for="ShipAddress" type="text" class="form-control" placeholder="House Number Street Name">
                     </div>
                     <div class="form-item">
-                        <label class="form-label my-3">Mobile<sup>*</sup></label>
-                        <input type="tel" class="form-control">
+                        <label asp-for="MobileNumber" class="form-label my-3">Mobile<sup>*</sup></label>
+                        <input asp-for="MobileNumber" type="tel" class="form-control">
                     </div>
                     <div class="form-item">
                         <label class="form-label my-3">Email Address<sup>*</sup></label>

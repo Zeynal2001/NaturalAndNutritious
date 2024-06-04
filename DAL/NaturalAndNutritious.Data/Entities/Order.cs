@@ -11,6 +11,9 @@ namespace NaturalAndNutritious.Data.Entities
         [NotMapped]
         public string ShipName { get => Shipper.CompanyName; }
         public string ShipAddress { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string MobileNumber { get; set; }
         public string ShipCity { get; set; }
         public string ShipRegion { get; set; }
         public string ShipPostalCode { get; set; }

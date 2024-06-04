@@ -10,6 +10,10 @@ namespace NaturalAndNutritious.Business.Services
     {
         public LocalStorageService(IWebHostEnvironment env)
         {
+            //if (env == null)
+            //{
+                
+            //}
             _storagePath = Path.Combine(env.WebRootPath, "uploads");
         }
         

@@ -36,7 +36,7 @@ function removeProduct(productId) {
     // Kullanıcıya bir bildirim gösterebilirsiniz veya ürün listesini güncelleyebilirsiniz
     renderProducts().then(() => {
         renderTotal();
-        alert("Product deleted from the cart");
+        /*alert("Product deleted from the cart");*/
     });
 }
 

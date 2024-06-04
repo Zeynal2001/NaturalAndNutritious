@@ -46,6 +46,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                     Confirmed = o.Confirmed,
                     CreatedAt = o.CreatedAt,
                     UpdatedAt = o.UpdatedAt,
+                    CustomerName = o.FirstName + " " + o.LastName
                 }).ToListAsync();
 
             var totalOrders = await _orderService.TotalOrders();
@@ -86,6 +87,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                     Confirmed = o.Confirmed,
                     CreatedAt = o.CreatedAt,
                     UpdatedAt = o.UpdatedAt,
+                    CustomerName = o.FirstName + " " + o.LastName
                 }).ToListAsync();
 
             var totalOrders = await _orderService.TotalUnconfirmedOrders();
@@ -126,6 +128,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                     Confirmed = o.Confirmed,
                     CreatedAt = o.CreatedAt,
                     UpdatedAt = o.UpdatedAt,
+                    CustomerName = o.FirstName + " " + o.LastName
                 }).ToListAsync();
 
             var totalOrders = await _orderService.TotalConfirmedOrders();

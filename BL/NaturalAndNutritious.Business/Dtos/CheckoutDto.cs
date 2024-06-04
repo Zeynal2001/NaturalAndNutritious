@@ -15,6 +15,12 @@ namespace NaturalAndNutritious.Business.Dtos
         public string ShipPostalCode { get; set; }
         [Required]
         public string ShipCountry { get; set; }
+        [Required]
+        public string FirstName { get; set; }
+        [Required]
+        public string LastName { get; set; }
+        [Required]
+        public string MobileNumber { get; set; }
         public bool CashOnDelivery { get; set; }
     }
 }

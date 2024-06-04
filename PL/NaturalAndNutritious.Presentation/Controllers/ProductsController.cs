@@ -141,11 +141,11 @@ namespace NaturalAndNutritious.Presentation.Controllers
                 ViewData["title"] = "Product Detail";
 
                 var product = await _productRepository.Table
-                    .Include(p => p.Category)
-                    .Include(p => p.SubCategory)
-                    .Include(p => p.Discount)
-                    .Include(p => p.Reviews)
-                    .ThenInclude(review => review.AppUser)
+                                    .Include(p => p.Category)
+                                    .Include(p => p.SubCategory)
+                                    .Include(p => p.Discount)
+                                    .Include(p => p.Reviews)
+                                    .ThenInclude(review => review.AppUser)
                     .FirstOrDefaultAsync(p => p.Id == Id && !p.IsDeleted);
 
                 if (product == null)
