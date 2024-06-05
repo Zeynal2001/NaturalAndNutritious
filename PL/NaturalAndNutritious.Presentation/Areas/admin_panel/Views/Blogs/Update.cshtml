@@ -1,0 +1,59 @@
+﻿@model UpdateBlogDto
+@{
+    ViewData["Title"] = "Update Blog";
+}
+<div class="">
+    <div class="col-md-12 grid-margin">
+        <div class="card">
+            <div asp-validation-summary="All"></div>
+            <h4 class="card-title">Update Blog Details</h4>
+            <div class="">
+                <div class="container mb-4">
+                    <img src="~/@Model.BlogPhotoUrl" id="profile-image-show" width="200" height="200" />
+                </div>
+                <div class="container">
+                    <form class="forms-sample" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label asp-for="BlogPhoto" class="form-label">Blog Photo:</label>
+                            <input asp-for="BlogPhoto" class="form-control" type="file" id="formFile">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Title" for="exampleInputNickName2">Title:</label>
+                            <input asp-for="Title" type="text" class="form-control" id="exampleInputNickName2" placeholder="@Model.Title">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ShortDescription" for="exampleInputUsername3">Short Description:</label>
+                            <input asp-for="ShortDescription" type="text" class="form-control" id="exampleInputUsername3" placeholder="@Model.ShortDescription">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Description" for="exampleInputUsername4">Description:</label>
+                            <textarea asp-for="Description" class="form-control" id="exampleInputUsername4" placeholder="@Model.Description"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <input asp-for="Id" type="text" class="form-control" id="exampleInputEmail1" hidden>
+                            <input asp-for="BlogPhotoUrl" type="text" class="form-control" hidden>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary me-2" style="color:honeydew;">Submit</button>
+                        <button asp-action="GetAllProducts" asp-controller="Products" class="btn btn-light">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section UpdateBlogtJs {
+    <script src="~/admin/js/user-edit.js"></script>
+    @* <script>
+        function validateDecimal(input) {
+            // Virgül yerine nokta kullanarak ondalık sayı kontrolü yap
+            console.log(input.value)
+            // input.value = +input.value.replace(",",".");
+        }
+    </script> *@
+}

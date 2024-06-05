@@ -1,4 +1,8 @@
-﻿<!-- Single Page Header start -->
+﻿@model MessageDto
+@{
+    var errorCount = (int?)ViewData["hasError"];
+}
+<!-- Single Page Header start -->
 <div class="container-fluid page-header py-5">
     <h1 class="text-center text-white display-6">Contact</h1>
     <ol class="breadcrumb justify-content-center mb-0">
@@ -25,11 +29,19 @@
                                 loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
                 </div>
+                @if (errorCount > 0)
+                {
+                    <div asp-validation-summary="All" class="alert alert-danger"></div>
+                }
+                @if (ViewData["successMsg"] != null)
+                {
+                    <div class="alert alert-success">@ViewData["successMsg"]</div>
+                }
                 <div class="col-lg-7">
-                    <form action="" class="">
-                        <input type="text" class="w-100 form-control border-0 py-3 mb-4" placeholder="Your Name">
-                        <input type="email" class="w-100 form-control border-0 py-3 mb-4" placeholder="Enter Your Email">
-                        <textarea class="w-100 form-control border-0 mb-4" rows="5" cols="10" placeholder="Your Message"></textarea>
+                    <form method="post" asp-action="AddMessage">
+                        <input asp-for="CustomerName" type="text" class="w-100 form-control border-0 py-3 mb-4" placeholder="Your Name">
+                        <input asp-for="CustomerEmailAddress" type="email" class="w-100 form-control border-0 py-3 mb-4" placeholder="Enter Your Email">
+                        <textarea asp-for="CustomerMessage" class="w-100 form-control border-0 mb-4" rows="5" cols="10" placeholder="Your Message"></textarea>
                         <button class="w-100 btn form-control border-secondary py-3 bg-white text-primary " type="submit">Submit</button>
                     </form>
                 </div>

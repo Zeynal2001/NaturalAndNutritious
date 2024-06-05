@@ -1,0 +1,53 @@
+﻿@model CreateBlogDto
+
+@{
+    ViewData["Title"] = "Create Blog";
+}
+
+<div class="">
+    <div class="col-md-12 grid-margin">
+        <div class="card">
+            <div asp-validation-summary="All"></div>
+            <h4 class="card-title">Create Blog</h4>
+            <div class="">
+
+                <div class="container">
+                    <form class="forms-sample" method="post" enctype="multipart/form-data">
+
+                        <div class="form-group">
+                            <label asp-for="BlogPhoto" for="exampleInputTitle4">Blog Photo:</label>
+                            <input asp-for="BlogPhoto" type="file" class="form-control" id="exampleInputTitle4">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Title" for="exampleInputTitle1">Title:</label>
+                            <input asp-for="Title" type="text" class="form-control" id="exampleInputTitle1">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ShortDescription" for="exampleInputTitle2">Short Description:</label>
+                            <input asp-for="ShortDescription" type="text" class="form-control" id="exampleInputTitle2">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Description" for="exampleInputTitle3">Description:</label>
+                            <textarea asp-for="Description" class="form-control" id="exampleInputTitle3"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary me-2" style="color:honeydew;">Create</button>
+                        <button asp-action="GetAllBlogs" asp-controller="Blogs" class="btn btn-light">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* @section CreateJs {
+    <script>
+        function validateDecimal(input) {
+            // Virgül yerine nokta kullanarak ondalık sayı kontrolü yap
+            input.value = input.value.replace('.', ',');
+        }
+    </script>
+} *@

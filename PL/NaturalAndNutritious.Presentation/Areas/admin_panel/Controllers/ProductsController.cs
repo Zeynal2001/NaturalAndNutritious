@@ -146,8 +146,12 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             if (!Guid.TryParse(Id, out var guidId))
             {
                 var errorMsg = $"The id '{Id}' is not a valid GUID.";
+                var errorModel = new ErrorModel()
+                {
+                    ErrorMessage = errorMsg
+                };
                 _logger.LogWarning(errorMsg);
-                throw new ArgumentException(errorMsg, nameof(Id));
+                return View("AdminError", errorModel);
             }
 
             try

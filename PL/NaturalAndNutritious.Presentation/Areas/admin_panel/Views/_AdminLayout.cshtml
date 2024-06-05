@@ -79,6 +79,34 @@
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item"> <a class="nav-link" asp-action="GetAllUsers" asp-controller="Users">All Users</a></li>
                                 <li class="nav-item"> <a class="nav-link" asp-action="Create" asp-controller="Users">Create Users</a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-action="SendBatchEmail" asp-controller="Users">Send Batch Email</a></li>
+                            </ul>
+                        </div>
+                    </li> 
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-subscribers" aria-expanded="false" aria-controls="ui-subscribers">
+                            <i class="mdi mdi-account menu-icon"></i>
+                            <span class="menu-title">Subscribers</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="ui-subscribers">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> <a class="nav-link" asp-action="GetAllSubscribers" asp-controller="Subscribers">All Subscribers</a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-action="Create" asp-controller="Subscribers">Create Subscribers</a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-action="SendBatchEmail" asp-controller="Subscribers">Send Batch Email</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-blogs" aria-expanded="false" aria-controls="ui-blogs">
+                            <i class="mdi mdi-newspaper menu-icon"></i>
+                            <span class="menu-title">Blogs</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="ui-blogs">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> <a class="nav-link" asp-action="GetAllBlogs" asp-controller="Blogs">All Blogs</a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-action="Create" asp-controller="Blogs">Create Blogs</a></li>
                             </ul>
                         </div>
                     </li>
@@ -92,6 +120,21 @@
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item"> <a class="nav-link" asp-action="GetAllProducts" asp-controller="Products">All Products</a></li>
                                 <li class="nav-item"> <a class="nav-link" asp-action="Create" asp-controller="Products">Create Products</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-orders" aria-expanded="false" aria-controls="ui-orders">
+                            <i class="mdi mdi-check-decagram menu-icon"></i>
+                            @*  *@
+                            <span class="menu-title">Orders</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="ui-orders">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> <a class="nav-link" asp-action="GetAllOrders" asp-controller="Orders">All Orders</a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-action="GetUnconfirmedOrders" asp-controller="Orders">Unconfirmed Orders</a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-action="GetConfirmedOrders" asp-controller="Orders">Confirmed Orders</a></li>
                             </ul>
                         </div>
                     </li>
@@ -134,21 +177,6 @@
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item"> <a class="nav-link" asp-action="GetAllSuppliers" asp-controller="Suppliers">All Suppliers</a></li>
                                 <li class="nav-item"> <a class="nav-link" asp-action="Create" asp-controller="Suppliers">Create Suppliers</a></li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-orders" aria-expanded="false" aria-controls="ui-orders">
-                            <i class="mdi mdi-pound-box menu-icon"></i>
-                            @*  *@
-                            <span class="menu-title">Orders</span>
-                            <i class="menu-arrow"></i>
-                        </a>
-                        <div class="collapse" id="ui-orders">
-                            <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"> <a class="nav-link" asp-action="GetAllOrders" asp-controller="Orders">All Orders</a></li>
-                                <li class="nav-item"> <a class="nav-link" asp-action="GetUnconfirmedOrders" asp-controller="Orders">Unconfirmed Orders</a></li>
-                                <li class="nav-item"> <a class="nav-link" asp-action="GetConfirmedOrders" asp-controller="Orders">Confirmed Orders</a></li>
                             </ul>
                         </div>
                     </li>
@@ -206,13 +234,16 @@
     @RenderSection("ChangeRoleJs", false) *@
     <!-- End custom js for this page-->
     @RenderSection("GetAllUsersJs", false)
+    @RenderSection("UpdateBlogtJs", false)
     @RenderSection("GetAllProductsJs", false)
     @RenderSection("GetAllCategoriesJs", false)
     @RenderSection("GetAllSubCategoriesJs", false)
+    @RenderSection("GetAllSubscribersJs", false)
     @RenderSection("GetAllSuppliersJs", false)
     @RenderSection("GetAllOrdersJs", false)
     @RenderSection("GetAllOrders2Js", false)
     @RenderSection("GetAllOrders3Js", false)
+    @RenderSection("GetAllBlogsJs", false)
     @RenderSection("UserEditJs", false)
 @*     @RenderSection("CreateJs", false)
     @RenderSection("Create2Js", false) *@

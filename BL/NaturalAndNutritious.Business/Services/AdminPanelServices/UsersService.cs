@@ -12,9 +12,9 @@ using System.Data;
 
 namespace NaturalAndNutritious.Business.Services.AdminPanelServices
 {
-    public class UsersService : IUsersService
+    public class UserService : IUserService
     {
-        public UsersService(AppDbContext context, UserManager<AppUser> userManager, IUserRepository userRepository, IStorageService storageService, RoleManager<IdentityRole> roleManager)
+        public UserService(AppDbContext context, UserManager<AppUser> userManager, IUserRepository userRepository, IStorageService storageService, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _userManager = userManager;

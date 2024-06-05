@@ -172,13 +172,13 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
             }
             else
             {
-                return new ProductServiceResult { Succeeded = false, IsNull = true, Message = "Model is null." };
+                return new ProductServiceResult { Succeeded = false, IsNull = true, Message = "Model or direction path is null." };
             }
         }
 
         public async Task<string> CompleteFileOperations(UpdateProductDto model)
         {
-            string productImageUrl = "";
+            string productImageUrl = string.Empty;
 
             if (model.ProductImage == null)
             {

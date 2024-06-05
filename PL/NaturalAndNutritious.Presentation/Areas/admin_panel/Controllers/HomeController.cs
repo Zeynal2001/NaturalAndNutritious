@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using NaturalAndNutritious.Business.Abstractions;
 using NaturalAndNutritious.Business.Dtos;
@@ -47,21 +46,6 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             ViewBag.totalViews = products.Sum(p => p.ViewsCount);
             ViewBag.totalBudget = products.Sum(p => p.ProductPrice);
             ViewBag.totalRevenue = orders.Sum(o => o.Freight);
-
-
-            //var budget = products.Sum(p => p.ProductPrice);
-            //var views = products.Sum(p => p.ViewsCount);
-
-            //var vm = new AdminHomeVm()
-            //{
-            //    TotalUsers = users.Count(),
-            //    TotalProducts = products.Count(),
-            //    TotalViews = views,
-            //    TotalBudget = budget
-            //};
-
-            //_logger.LogInformation("Prepared AdminHomeVm: TotalBudget={TotalBudget}, TotalViews={TotalViews}, TotalProducts={TotalProducts}, TotalUsers={TotalUsers}",
-            //    budget, views, products.Count(), users.Count());
 
             return View();
         }

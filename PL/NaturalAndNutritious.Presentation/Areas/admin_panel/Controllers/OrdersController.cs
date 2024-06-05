@@ -144,7 +144,6 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             return View(vm);
         }
 
-
         [HttpPost]
         public async Task<IActionResult> AssumingDeleted(string Id)
         {

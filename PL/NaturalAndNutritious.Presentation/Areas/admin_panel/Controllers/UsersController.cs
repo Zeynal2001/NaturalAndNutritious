@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MimeKit;
 using NaturalAndNutritious.Business.Abstractions;
 using NaturalAndNutritious.Business.Abstractions.AdminPanelAbstractions;
 using NaturalAndNutritious.Business.Dtos;
@@ -18,18 +19,20 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
     [Authorize(Roles = nameof(RoleTypes.Admin), AuthenticationSchemes = "AdminAuth")]
     public class UsersController : Controller
     {
-        public UsersController(IUsersService usersService, IAuthService authService, IUserRepository userRepository, UserManager<AppUser> userManager, ILogger<UsersController> logger)
+        public UsersController(IUserService usersService, IAuthService authService, IUserRepository userRepository, UserManager<AppUser> userManager, ILogger<UsersController> logger, IEmailService emailService)
         {
             _usersService = usersService;
             _authService = authService;
             _userRepository = userRepository;
             _userManager = userManager;
+            _emailService = emailService;
             _logger = logger;
         }
 
-        private readonly IUsersService _usersService;
+        private readonly IUserService _usersService;
         private readonly IAuthService _authService;
         private readonly IUserRepository _userRepository;
+        private readonly IEmailService _emailService;
         private readonly UserManager<AppUser> _userManager;
         private readonly ILogger<UsersController> _logger;
 
@@ -294,6 +297,40 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             _logger.LogInformation("GetBannedUsers GET action called.");
 
             return View();
+        }
+
+        public async Task<IActionResult> SendBatchEmail()
+        {
+            var usersAsQueryable = await _userRepository.GetAllUsers();
+            var users = usersAsQueryable.OrderBy(usr => usr.FName + " " + usr.FName).ToList();
+
+            ViewBag.Users = users;
+
+            return View();
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> SendBatchEmail(SendBatchEmailModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            foreach (var mail in model.Emails)
+            {
+                var dto = new MailDto()
+                {
+                    Addresses = new List<MailboxAddress>() { new MailboxAddress(mail.Split("@")[0], mail) },
+                    Subject = model.Subject,
+                    Content = model.Message
+                };
+
+                await _emailService.SendAsync(dto);
+            }
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

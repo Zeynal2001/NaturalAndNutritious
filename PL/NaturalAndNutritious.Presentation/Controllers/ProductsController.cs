@@ -67,7 +67,6 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
         }
 
-
         public async Task<IActionResult> ProductsByCategory(Guid Id, int page = 1)
         {
             try
@@ -199,7 +198,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
                 var relatedProducts = await _productService.GetRelateProducts(product);
                 //-----------------------------DiscountedProducts-----------------------------------
                 var discountedPoducts = await _productService.GetAllDiscountedProducts();
-                //-----------------------------GetAllCategories-------------------------------------
+                //-------------------------------GetAllCategories-----------------------------------
                 var categoriesAsQueryable = await _categoryRepository.GetAllAsync();
 
                 var vm = new ProductDetailVm()
@@ -226,7 +225,6 @@ namespace NaturalAndNutritious.Presentation.Controllers
                 return View("Error");
             }
         }
-
 
         [Authorize]
         [HttpPost]

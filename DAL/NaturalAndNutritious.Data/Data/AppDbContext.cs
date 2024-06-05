@@ -22,6 +22,7 @@ namespace NaturalAndNutritious.Data.Data
         public DbSet<Territory> Territories { get; set; }
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<Subscriber> Subscribers { get; set; }
+        public DbSet<ContactMessage> ContactMessages { get; set; }
 
 
 

@@ -24,16 +24,19 @@ namespace NaturalAndNutritious.Business.Extensions
             services.AddScoped<ISubscriberRepository, SubscriberRepository>();
             services.AddScoped<IDiscountRepository, DiscountRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IBlogRepository, BlogRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IProfileService, ProfileService>();
             services.AddScoped<IAdminAuthService, AdminAuthService>();
-            services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ISubCategoryService, SubCategoryService>();
             services.AddScoped<ISupplierService, SupplierService>();
             services.AddScoped<IDiscountService, DiscountService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IBlogService, BlogService>();
         }
     }
 }

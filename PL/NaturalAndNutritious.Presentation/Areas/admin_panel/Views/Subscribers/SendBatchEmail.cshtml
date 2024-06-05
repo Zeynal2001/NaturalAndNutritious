@@ -1,0 +1,64 @@
+﻿@model SendBatchEmailModel
+
+@{
+    var subscribers = (List<Subscriber>?)ViewBag.Subscribers;
+}
+
+@if (subscribers == null)
+{
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="alert alert-danger">There are no subscribers in the system</div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="card card-body">
+                <div class="d-flex justify-content-center align-items-center">
+                    <form method="post">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Emails"></label>
+                                    <span asp-validation-for="Emails"></span>
+                                    <select size="10" asp-for="Emails" multiple class="form-control">
+
+                                        @foreach (var subs in subscribers)
+                                        {
+                                            <option value="@subs.Email">@(subs.Email)</option>
+                                        }
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Subject"></label>
+                                    <span asp-validation-for="Subject"></span>
+                                    <input asp-for="Subject" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Message"></label>
+                                    <span asp-validation-for="Message"></span>
+                                    <textarea asp-for="Message" class="form-control" cols="50" rows="5"></textarea>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary" style="color:honeydew">Send Email</button>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+}

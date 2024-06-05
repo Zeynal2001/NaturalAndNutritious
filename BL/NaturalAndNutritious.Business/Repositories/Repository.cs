@@ -35,7 +35,7 @@ namespace NaturalAndNutritious.Business.Repositories
 
             return await Task.Run(() =>
             {
-                return Table.Where(c => !c.IsDeleted)
+                return Table.Where(x => !x.IsDeleted)
                             .Skip((page - 1) * size)
                             .Take(size)
                             .AsQueryable();

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NaturalAndNutritious.Business.Abstractions;
 using NaturalAndNutritious.Business.Dtos;
 using NaturalAndNutritious.Data.Abstractions;
+using NaturalAndNutritious.Data.Entities;
 using NaturalAndNutritious.Presentation.ViewModels;
 
 namespace NaturalAndNutritious.Presentation.Controllers
@@ -15,8 +16,9 @@ namespace NaturalAndNutritious.Presentation.Controllers
         private readonly ICategoryRepository _categoryRepository;
         private readonly IUserRepository _userRepository;
         private readonly IReviewRepository _reviewRepository;
+        private readonly IMessageRepository _messageRepository;
 
-        public HomeController(ILogger<HomeController> logger, IProductService productService, IProductRepository productRepository, ICategoryRepository categoryRepository, IUserRepository userRepository, IReviewRepository reviewRepository)
+        public HomeController(ILogger<HomeController> logger, IProductService productService, IProductRepository productRepository, ICategoryRepository categoryRepository, IUserRepository userRepository, IReviewRepository reviewRepository, IMessageRepository messageRepository)
         {
             _logger = logger;
             _productService = productService;
@@ -24,6 +26,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             _categoryRepository = categoryRepository;
             _userRepository = userRepository;
             _reviewRepository = reviewRepository;
+            _messageRepository = messageRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -75,16 +78,9 @@ namespace NaturalAndNutritious.Presentation.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while loading home page.");
-                ViewData["title"] = "Error";
+                ViewData["msg"] = "An unexpected error occurred.";
                 return View("Error");
             }
-        }
-
-        public IActionResult Privacy()
-        {
-            ViewData["title"] = "Privacy";
-
-            return View();
         }
 
         public async Task<IActionResult> Search(string query, int page = 1)
@@ -95,8 +91,8 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
                 if (query == null)
                 {
-                    ViewData["msg"] = "Query can't be empty.";
                     _logger.LogError("Query is empity.");
+                    ViewData["msg"] = "Query can't be empty.";
                     return View("Error");
                 }
 
@@ -109,18 +105,10 @@ namespace NaturalAndNutritious.Presentation.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while loading search page.");
-                ViewData["title"] = "Error";
+                ViewData["msg"] = "An unexpected error occurred.";
                 return View("Error");
             }
         }
-
-        public IActionResult Contact()
-        {
-            ViewData["title"] = "Contact";
-
-            return View();
-        }
-
 
         public async Task<IActionResult> FilterByCategories(string categoryFilter, int page = 1)
         {
@@ -131,8 +119,8 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
                 if (string.IsNullOrWhiteSpace(categoryFilter))
                 {
-                    ViewData["msg"] = "Category filter cannot be null or empty.";
                     _logger.LogError("Category filter is null or empity.");
+                    ViewData["msg"] = "Category filter cannot be null or empty.";
                     return View("Error");
                 }
 
@@ -145,9 +133,68 @@ namespace NaturalAndNutritious.Presentation.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while filtering products by category.");
-                ViewData["title"] = "Error";
+                ViewData["msg"] = "An unexpected error occurred.";
                 return View("Error");
             }
+        }
+
+        public IActionResult Contact()
+        {
+            ViewData["title"] = "Contact";
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddMessage(MessageDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogWarning("Model state is invalid. Error count: {ErrorCount}", ModelState.ErrorCount);
+                ViewData["hasError"] = ModelState.ErrorCount;
+                return View(dto);
+            }
+
+            var message = new ContactMessage()
+            {
+                Id = Guid.NewGuid(),
+                CustomerName = dto.CustomerName,
+                CustomerEmailAddress = dto.CustomerEmailAddress,
+                CustomerMessage = dto.CustomerMessage,
+                CreatedAt = DateTime.UtcNow,
+                IsDeleted = false
+            };
+
+            try
+            {
+                await _messageRepository.CreateAsync(message);
+                int affected = await _messageRepository.SaveChangesAsync();
+
+                if (affected <= 0)
+                {
+                    _logger.LogError("The message could not be saved. No rows affected.");
+                    ViewData["msg"] = "The message could not be saved.";
+                    return View("Error");
+                }
+
+                _logger.LogInformation("Message was successfully delivered with ID: {MessageId}", message.Id);
+                ViewData["successMsg"] = "The message was successfully delivered.";
+                return View(nameof(Contact));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while saving the message.");
+                ViewData["msg"] = "An unexpected error occurred.";
+                return View("Error");
+            }
+        }
+
+        public IActionResult Privacy()
+        {
+            ViewData["title"] = "Privacy";
+
+            return View();
         }
 
         //[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

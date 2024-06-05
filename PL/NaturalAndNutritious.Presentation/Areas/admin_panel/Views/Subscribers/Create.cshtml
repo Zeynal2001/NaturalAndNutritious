@@ -1,0 +1,27 @@
+﻿@model CreateSubscriberDto
+
+@{
+    ViewData["Title"] = "Create Subscriber";
+}
+<div class="">
+    <div class="col-md-12 grid-margin">
+        <div class="card">
+            <div asp-validation-summary="All"></div>
+            <h4 class="card-title">Create Subscriber</h4>
+            <div class="">
+                <div class="container">
+                    <form class="forms-sample" method="post" enctype="multipart/form-data">
+
+                        <div class="form-group">
+                            <label asp-for="SubscriberEmail" for="exampleInputTitle2">Subscriber Email:</label>
+                            <input asp-for="SubscriberEmail" type="text" class="form-control" id="exampleInputTitle2">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary me-2" style="color:honeydew;">Create</button>
+                        <button asp-action="GetAllSubscribers" asp-controller="Subscribers" class="btn btn-light">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

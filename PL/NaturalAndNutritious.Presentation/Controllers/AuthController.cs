@@ -8,7 +8,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
 {
     public class AuthController : Controller
     {
-        public AuthController(IAuthService authService, IStorageService storageService, IUsersService usersService, ILogger<AuthController> logger)
+        public AuthController(IAuthService authService, IStorageService storageService, IUserService usersService, ILogger<AuthController> logger)
         {
             _authService = authService;
             _storageService = storageService;
@@ -18,7 +18,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
         private readonly IAuthService _authService;
         private readonly IStorageService _storageService;
-        private readonly IUsersService _usersService;
+        private readonly IUserService _usersService;
         private readonly ILogger<AuthController> _logger;
 
         public IActionResult Login(string? returnUrl)

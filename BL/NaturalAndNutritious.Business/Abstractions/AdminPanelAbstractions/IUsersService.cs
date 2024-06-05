@@ -5,7 +5,7 @@ using NaturalAndNutritious.Data.Entities;
 
 namespace NaturalAndNutritious.Business.Abstractions.AdminPanelAbstractions
 {
-    public interface IUsersService
+    public interface IUserService
     {
         Task<AppUser> GetUserByIdAsync(string userId);
         Task<List<AllUsersDto>> GetAllUsersWithPaginate(int page = 0, int pageSize = 0);

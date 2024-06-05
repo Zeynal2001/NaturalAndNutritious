@@ -51,29 +51,29 @@ namespace NaturalAndNutritious.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a5153e77-cf11-464e-8b0d-f433b518498f",
-                            ConcurrencyStamp = "48825ae0-2132-4964-b3b3-3be915fa355f",
+                            Id = "fe3047f8-f51d-4a9c-91bb-ab8cfc10bb71",
+                            ConcurrencyStamp = "d24693f5-5b7f-435d-b4fe-1caad508df53",
                             Name = "None",
                             NormalizedName = "NONE"
                         },
                         new
                         {
-                            Id = "5680f5a2-0706-425a-9f79-7bbd7317a419",
-                            ConcurrencyStamp = "bfb008d6-dced-4498-9827-9f0751bf4222",
+                            Id = "1273a40a-6bb2-42c5-9a64-1603ed2f6b34",
+                            ConcurrencyStamp = "e593a1ca-7fb0-4a74-8bae-7d445d33ca51",
                             Name = "Admin",
                             NormalizedName = "ADMİN"
                         },
                         new
                         {
-                            Id = "f53e06f3-4a1d-4358-a060-819e196b9dac",
-                            ConcurrencyStamp = "f257fe6f-9b9d-4410-8456-3e5128bb1d71",
+                            Id = "b1c6b5e2-3938-4af1-9aa0-aa92e7c9c39c",
+                            ConcurrencyStamp = "01a8359f-6225-47fb-a7c5-7bfd3fa7233a",
                             Name = "Client",
                             NormalizedName = "CLİENT"
                         },
                         new
                         {
-                            Id = "f36112b5-767b-44ac-aa6d-3a981029a11c",
-                            ConcurrencyStamp = "92ffdf5f-64b6-4b0a-8b0a-6b30101e9ba7",
+                            Id = "348b860a-8e7d-49c9-bf0d-bc7572c75241",
+                            ConcurrencyStamp = "eb1bafcc-917a-45a4-bb3b-3107348aad2a",
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         });
@@ -277,7 +277,6 @@ namespace NaturalAndNutritious.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("BlogPhotoUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -331,6 +330,38 @@ namespace NaturalAndNutritious.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("NaturalAndNutritious.Data.Entities.ContactMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CustomerEmailAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerMessage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ContactMessages");
                 });
 
             modelBuilder.Entity("NaturalAndNutritious.Data.Entities.Discount", b =>
