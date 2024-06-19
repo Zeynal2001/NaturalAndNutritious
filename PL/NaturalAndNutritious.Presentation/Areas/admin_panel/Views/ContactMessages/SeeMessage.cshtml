@@ -1,0 +1,38 @@
+﻿@model SeeMessageModel
+
+@{
+    ViewData["title"] = "Message";
+}
+
+<div class="container my-5">
+    <div class="card shadow-sm p-4">
+        <div class="message-header d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <div class="row">
+                    <h2 class="profile-name" style="color:cornflowerblue">@Model.Name</h2>
+                    <p class="profile-email text-muted">
+                        <a href="mailto:@Model.EmailAddress">@Model.EmailAddress</a>
+                    </p>
+                </div>
+            </div>
+            <div>
+                <span class="badge bg-primary">@Model.MessageDate.ToString("dd/MM/yyyy")</span>
+            </div>
+        </div>
+        <div class="profile-details">
+            <div class="d-flex justify-content-center">
+                <div class="row">
+                    <h3 class="mb-3" style="color:cornflowerblue">Message Text:</h3>
+                    <p class="lead">@Model.MessageText</p>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end">
+            <a asp-action="ReplyToMessage" class="btn btn-primary" asp-route-Id="@Model.Id" style="color:honeydew">Reply To Message</a>
+        </div>
+    </div>
+</div>
+
+@section SeeMessageCss{
+    <link rel="stylesheet" href="~/admin/css/see-message.css">
+}

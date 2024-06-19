@@ -20,18 +20,23 @@
                         </div>
 
                         <div class="form-group">
+                            <label asp-for="AdditionalPhoto1" for="exampleInputTitle5">Additional Photo 1:</label>
+                            <input asp-for="AdditionalPhoto1" type="file" class="form-control" id="exampleInputTitle4">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="AdditionalPhoto2" for="exampleInputTitle6">Additional Photo 2:</label>
+                            <input asp-for="AdditionalPhoto2" type="file" class="form-control" id="exampleInputTitle4">
+                        </div>
+
+                        <div class="form-group">
                             <label asp-for="Title" for="exampleInputTitle1">Title:</label>
                             <input asp-for="Title" type="text" class="form-control" id="exampleInputTitle1">
                         </div>
 
                         <div class="form-group">
-                            <label asp-for="ShortDescription" for="exampleInputTitle2">Short Description:</label>
-                            <input asp-for="ShortDescription" type="text" class="form-control" id="exampleInputTitle2">
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="Description" for="exampleInputTitle3">Description:</label>
-                            <textarea asp-for="Description" class="form-control" id="exampleInputTitle3"></textarea>
+                            <label asp-for="Content" for="exampleInputTitle3">Description:</label>
+                            <textarea asp-for="Content" class="form-control" id="exampleInputTitle3"></textarea>
                         </div>
 
                         <button type="submit" class="btn btn-primary me-2" style="color:honeydew;">Create</button>

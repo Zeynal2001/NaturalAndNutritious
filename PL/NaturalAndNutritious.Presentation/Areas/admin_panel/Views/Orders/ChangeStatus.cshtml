@@ -1,0 +1,48 @@
+﻿@using NaturalAndNutritious.Business.Enums
+@model ChangeOrderStatusDto
+
+<h2>Change the order status</h2>
+<hr />
+
+<p>Current status: @Model.CurrentStatus</p>
+<div class="container">
+    <form asp-action="ChangeStatus" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="form-group">
+            <label asp-for="SelectedStatus">Selected Status</label>
+            <select asp-for="SelectedStatus" class="form-control">
+                @foreach (var status in Enum.GetValues(typeof(StatusType)))
+                {
+                    <option value="@status">@status</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Change Status</button>
+    </form>
+</div>
+
+
+
+@* @using NaturalAndNutritious.Business.Enums
+@model ChangeOrderStatusDto
+
+<h2>Changing the order status</h2>
+
+<p>Current status:  @Model.CurrentStatus</p>
+
+<form asp-action="ChangeStatus" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="SelectedStatus">Selected Status</label>
+        <select asp-for="SelectedStatus" class="form-control">
+            @foreach (var status in Enum.GetValues(typeof(StatusType)))
+            {
+                var selected = status.Equals(Model.CurrentStatus) ? "selected" : "";
+                <option value="@status" selected="@selected">@status</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Change Status</button>
+</form> *@

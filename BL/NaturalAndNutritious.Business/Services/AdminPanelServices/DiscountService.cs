@@ -3,11 +3,6 @@ using NaturalAndNutritious.Business.Dtos.AdminPanelDtos;
 using NaturalAndNutritious.Business.Services.Results;
 using NaturalAndNutritious.Data.Abstractions;
 using NaturalAndNutritious.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NaturalAndNutritious.Business.Services.AdminPanelServices
 {
@@ -77,7 +72,6 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
             {
                 return new DiscountServiceResult { Succeeded = false, IsNull = true, Message = "Model is null." };
             }
-
         }
     }
 }

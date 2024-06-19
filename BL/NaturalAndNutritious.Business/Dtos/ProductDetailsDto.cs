@@ -12,6 +12,7 @@ namespace NaturalAndNutritious.Business.Dtos
         public string? CategoryName { get; set; }
         public string? SubCategoryName { get; set; }
 
+        public bool TheUserHasOrder { get; set; }
         public double OriginalPrice { get; set; }
         public double? DiscountedPrice { get; set; }
         public int? AverageStar { get; set; }

@@ -7,5 +7,7 @@ namespace NaturalAndNutritious.Business.Abstractions.AdminPanelAbstractions
     {
         Task<ServiceResult> CreateBlog(CreateBlogDto model, string dirPath);
         Task<string> CompleteFileOperations(UpdateBlogDto model);
+        Task<string> CompleteFileOperations2(UpdateBlogDto model);
+        Task<string> CompleteFileOperations3(UpdateBlogDto model);
     }
 }

@@ -92,6 +92,5 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             _logger.LogInformation("Discount created successfully for productId: {ProductId}", model.ProductId);
             return RedirectToAction("GetAllProducts", "Products");
         }
-
     }
 }

@@ -23,12 +23,20 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
             int affected = 0;
             if (model != null && dirPath != null)
             {
-                var uploaded = await _storageService.UploadFileAsync(dirPath, model.BlogPhoto);
-                var blogPhotoUrl = uploaded.FullPath;
+                var uploaded1 = await _storageService.UploadFileAsync(dirPath, model.BlogPhoto);
+                var blogPhotoUrl = uploaded1.FullPath;
+
+                var uploaded2 = await _storageService.UploadFileAsync(dirPath, model.AdditionalPhoto2);
+                var additonalPhotoUrl1 = uploaded1.FullPath;
+                
+                var uploaded3 = await _storageService.UploadFileAsync(dirPath, model.AdditionalPhoto2);
+                var additonalPhotoUrl2 = uploaded1.FullPath;
 
                 if (_storageService is LocalStorageService)
                 {
                     blogPhotoUrl = $"uploads/{blogPhotoUrl}";
+                    additonalPhotoUrl1 = $"uploads/{additonalPhotoUrl1}";
+                    additonalPhotoUrl2 = $"uploads/{additonalPhotoUrl2}";
                 }
 
                 var product = new Blog()
@@ -36,8 +44,9 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                     Id = Guid.NewGuid(),
                     Title = model.Title,
                     BlogPhotoUrl = blogPhotoUrl,
-                    Description = model.Description,
-                    ShortDescription = model.ShortDescription,
+                    AdditionalPhotoUrl1 = additonalPhotoUrl1,
+                    AdditionalPhotoUrl2 = additonalPhotoUrl2,
+                    Content = model.Content,
                     ViewsCount = 0,
                     CreatedAt = DateTime.UtcNow,
                     IsDeleted = false,
@@ -95,6 +104,62 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
             }
 
             return blogPhotoUrl;
+        }
+
+        public async Task<string> CompleteFileOperations2(UpdateBlogDto model)
+        {
+            string additionalPhotoUrl1 = "";
+
+            if (model.BlogPhoto == null)
+            {
+                additionalPhotoUrl1 = model.AdditionalPhotoUrl1;
+            }
+            else
+            {
+                var photoName = Path.GetFileName(model.AdditionalPhotoUrl1);
+                if (_storageService.HasFile("blog-photos", photoName))
+                {
+                    await _storageService.DeleteFileAsync("blog-photos", photoName);
+                }
+
+                var dto = await _storageService.UploadFileAsync("blog-photos", model.AdditionalPhoto1);
+                additionalPhotoUrl1 = dto.FullPath;
+
+                if (_storageService is LocalStorageService)
+                {
+                    additionalPhotoUrl1 = $"uploads/{dto.FullPath}";
+                }
+            }
+
+            return additionalPhotoUrl1;
+        }
+
+        public async Task<string> CompleteFileOperations3(UpdateBlogDto model)
+        {
+            string additionalPhotoUrl2 = "";
+
+            if (model.BlogPhoto == null)
+            {
+                additionalPhotoUrl2 = model.AdditionalPhotoUrl2;
+            }
+            else
+            {
+                var photoName = Path.GetFileName(model.AdditionalPhotoUrl2);
+                if (_storageService.HasFile("blog-photos", photoName))
+                {
+                    await _storageService.DeleteFileAsync("blog-photos", photoName);
+                }
+
+                var dto = await _storageService.UploadFileAsync("blog-photos", model.AdditionalPhoto2);
+                additionalPhotoUrl2 = dto.FullPath;
+
+                if (_storageService is LocalStorageService)
+                {
+                    additionalPhotoUrl2 = $"uploads/{dto.FullPath}";
+                }
+            }
+
+            return additionalPhotoUrl2;
         }
     }
 }

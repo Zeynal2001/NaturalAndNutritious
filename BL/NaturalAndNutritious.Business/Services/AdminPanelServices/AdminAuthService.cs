@@ -1,14 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using NaturalAndNutritious.Business.Abstractions.AdminPanelAbstractions;
 using NaturalAndNutritious.Business.Dtos.AdminPanelDtos;
 using NaturalAndNutritious.Business.Services.Results;
 using NaturalAndNutritious.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NaturalAndNutritious.Business.Services.AdminPanelServices
 {

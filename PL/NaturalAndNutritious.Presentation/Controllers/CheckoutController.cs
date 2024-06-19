@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NaturalAndNutritious.Business.Abstractions;
+using NaturalAndNutritious.Business.Abstractions.AdminPanelAbstractions;
 using NaturalAndNutritious.Business.Dtos;
 
 namespace NaturalAndNutritious.Presentation.Controllers
@@ -8,13 +9,15 @@ namespace NaturalAndNutritious.Presentation.Controllers
     [Authorize]
     public class CheckoutController : Controller
     {
-        public CheckoutController(IProductService productService, ILogger<CheckoutController> logger)
+        public CheckoutController(IProductService productService, ILogger<CheckoutController> logger, IOrderService orderService)
         {
             _productService = productService;
             _logger = logger;
+            _orderService = orderService;
         }
 
         private readonly IProductService _productService;
+        private readonly IOrderService _orderService;
         private readonly ILogger<CheckoutController> _logger;
 
         public IActionResult Index()
@@ -29,7 +32,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
         {
             _logger.LogInformation("Checkout process started with the following data: {CheckoutDto}", model);
 
-            var (success, message) = await _productService.ProcessOrderAsync(model, User, HttpContext.Session);
+            var (success, message) = await _orderService.ProcessOrderAsync(model, User, HttpContext.Session);
 
             if (success)
             {

@@ -38,7 +38,7 @@ namespace NaturalAndNutritious.Business.Repositories
                 return Table.Where(x => !x.IsDeleted)
                             .Skip((page - 1) * size)
                             .Take(size)
-                            .AsQueryable();
+                            /*.AsQueryable()*/;
             });
         }
 

@@ -70,18 +70,15 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             {
                 var categoriesAsQueryable = await _categoryRepository.GetAllAsync();
                 var categories = await categoriesAsQueryable
-                   .Where(c => c.IsDeleted == false)
                    .ToListAsync();
 
                 var subCategoriesAsQueryable = await _subCategoryRepository.GetAllAsync();
                 var subCategories = await subCategoriesAsQueryable
                     .Include(c => c.Category)
-                   .Where(c => c.IsDeleted == false)
-                   .ToListAsync();
+                    .ToListAsync();
 
                 var suppliersAsQueryable = await _supplierRepository.GetAllAsync();
                 var suppliers = await suppliersAsQueryable
-                   .Where(c => c.IsDeleted == false)
                    .ToListAsync();
 
                 ViewData["categories"] = categories;
@@ -196,7 +193,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(UpdateProductDto model)
         {
-            _logger.LogInformation("Update action called with model: {@model}", model);
+            _logger.LogInformation("Update product action called with model: {@model}", model);
 
             if (!ModelState.IsValid)
             {

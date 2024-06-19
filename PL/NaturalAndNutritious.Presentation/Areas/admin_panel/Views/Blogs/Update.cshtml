@@ -17,6 +17,16 @@
                             <label asp-for="BlogPhoto" class="form-label">Blog Photo:</label>
                             <input asp-for="BlogPhoto" class="form-control" type="file" id="formFile">
                         </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="AdditionalPhoto1" class="form-label">Additional Photo 1:</label>
+                            <input asp-for="AdditionalPhoto1" class="form-control" type="file" id="formFile">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="AdditionalPhoto2" class="form-label">Additional Photo 2:</label>
+                            <input asp-for="AdditionalPhoto2" class="form-control" type="file" id="formFile">
+                        </div>
 
                         <div class="form-group">
                             <label asp-for="Title" for="exampleInputNickName2">Title:</label>
@@ -24,22 +34,22 @@
                         </div>
 
                         <div class="form-group">
-                            <label asp-for="ShortDescription" for="exampleInputUsername3">Short Description:</label>
-                            <input asp-for="ShortDescription" type="text" class="form-control" id="exampleInputUsername3" placeholder="@Model.ShortDescription">
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="Description" for="exampleInputUsername4">Description:</label>
-                            <textarea asp-for="Description" class="form-control" id="exampleInputUsername4" placeholder="@Model.Description"></textarea>
+                            <label asp-for="Content" for="exampleInputUsername4">Content:</label>
+                            <textarea asp-for="Content" class="form-control" id="exampleInputUsername4" placeholder="@Model.Content"></textarea>
                         </div>
 
                         <div class="form-group">
                             <input asp-for="Id" type="text" class="form-control" id="exampleInputEmail1" hidden>
                             <input asp-for="BlogPhotoUrl" type="text" class="form-control" hidden>
+                        </div> 
+
+                        <div class="form-group">
+                            <input asp-for="AdditionalPhotoUrl1" type="text" class="form-control" hidden>
+                            <input asp-for="AdditionalPhotoUrl2" type="text" class="form-control" hidden>
                         </div>
 
                         <button type="submit" class="btn btn-primary me-2" style="color:honeydew;">Submit</button>
-                        <button asp-action="GetAllProducts" asp-controller="Products" class="btn btn-light">Cancel</button>
+                        <button asp-action="GetAllBlogs" asp-controller="Blogs" class="btn btn-light">Cancel</button>
                     </form>
                 </div>
             </div>

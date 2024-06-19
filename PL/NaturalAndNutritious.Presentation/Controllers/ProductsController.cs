@@ -16,16 +16,18 @@ namespace NaturalAndNutritious.Presentation.Controllers
         private readonly IProductService _productService;
         private readonly IProductRepository _productRepository;
         private readonly IDiscountRepository _discountRepository;
+        private readonly IOrderRepository _orderRepository;
         private readonly UserManager<AppUser> _userManager;
         private readonly ILogger<ProductsController> _logger;
 
-        public ProductsController(ICategoryRepository categoryRepository, IProductService productService, IProductRepository productRepository, IDiscountRepository discountRepository, UserManager<AppUser> userManager, ILogger<ProductsController> logger)
+        public ProductsController(ICategoryRepository categoryRepository, IProductService productService, IProductRepository productRepository, IDiscountRepository discountRepository, UserManager<AppUser> userManager, ILogger<ProductsController> logger, IOrderRepository orderRepository)
         {
             _categoryRepository = categoryRepository;
             _productService = productService;
             _productRepository = productRepository;
             _discountRepository = discountRepository;
             _userManager = userManager;
+            _orderRepository = orderRepository;
             _logger = logger;
         }
 
@@ -135,9 +137,10 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
         public async Task<IActionResult> Detail(Guid Id)
         {
+            var theUserHasOrder = false;
             try
             {
-                ViewData["title"] = "Product Detail";
+                ViewData["title"] = "Product Details";
 
                 var product = await _productRepository.Table
                                     .Include(p => p.Category)
@@ -165,10 +168,20 @@ namespace NaturalAndNutritious.Presentation.Controllers
                     discountedPrice = _productService.ApplyDiscount(product.ProductPrice, discount);
                 }
 
+                //-------------We check whether the specific product is included in the user's orders.--------------
+                var currentUserPrincipal = User;
+                var user = await _userManager.GetUserAsync(currentUserPrincipal);
+
+                var ordersAsQueryable = await _orderRepository.GetOrdersByUserId(user.Id);
+
+                theUserHasOrder = ordersAsQueryable.Any(o => o.OrderDetails.Any(od => od.ProductId == product.Id));
+                //--------------------------------------------------------------------------------------------------
+
                 var details = new ProductDetailsDto()
                 {
                     Id = product.Id,
                     ProductName = product.ProductName,
+                    TheUserHasOrder = theUserHasOrder,
                     ShortDescription = product.ShortDescription,
                     Description = product.Description,
                     OriginalPrice = product.ProductPrice,
@@ -207,7 +220,6 @@ namespace NaturalAndNutritious.Presentation.Controllers
                     RelatedProducts = relatedProducts,
                     FeaturedPproducts = discountedPoducts,
                     Categories = await categoriesAsQueryable
-                    .Where(c => !c.IsDeleted)
                     .Select(c => new CategoryDto()
                     {
                         Id = c.Id,
@@ -231,6 +243,28 @@ namespace NaturalAndNutritious.Presentation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddReview(ReviewDto reviewDto)
         {
+            //TODO: Details dakı review elave etmek formunu partial view a cixart
+
+            _logger.LogInformation("AddReview POST action called");
+
+            if (reviewDto.ProductId == null)
+            {
+                ViewData["msg"] = "Product Id is required";
+                return View("Error");
+            }
+
+            if (reviewDto.Rating == null || reviewDto.Rating > 5 || reviewDto.Rating < 1)
+            {
+                ViewData["msg"] = "Rating must be between 1 and 5 stars.";
+                return View("Error");
+            }
+
+            if (reviewDto.ReviewText == null)
+            {
+                ViewData["msg"] = "Review text is required";
+                return View("Error");
+            }
+
             try
             {
                 var user = await _userManager.GetUserAsync(User);

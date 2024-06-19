@@ -1,6 +1,6 @@
 ﻿@model GetAllOrdersVm
 @{
-    ViewData["Title"] = "GetConfirmedOrders";
+    ViewData["Title"] = "GetAllConfirmedOrders";
 }
 @{
     var prevPage = Model.CurrentPage - 1;
@@ -90,7 +90,17 @@
                                                     @prop.GetValue(order)
                                                 </td>
                                                 continue;
-                                            case "CustomerName":
+                                            case "RecipientName":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "MobileNumber":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "OrderStatus":
                                                 <td class="py-1">
                                                     @prop.GetValue(order)
                                                 </td>
@@ -180,6 +190,22 @@
                                                     <div class="modal-body">
                                                         <div class="row">
                                                             <div class="col-md-6">
+
+                                                                <a asp-action="OrderDetails" asp-route-Id="@order.Id" class="btn btn-success btn-icon-text">
+                                                                    Order Details
+                                                                    <i class="mdi mdi-arrow-right-bold-circle btn-icon-append"></i>
+                                                                </a>
+
+                                                                <a asp-action="Update" asp-route-Id="@order.Id" class="btn btn-info btn-icon-text">
+                                                                    Update
+                                                                    <i class="mdi mdi-pencil-circle btn-icon-append"></i>
+                                                                </a>
+
+                                                                <a asp-action="ChangeStatus" asp-route-Id="@order.Id" class="btn btn-success btn-icon-text">
+                                                                    Change Status
+                                                                    <i class="mdi mdi-pencil-circle btn-icon-append"></i>
+                                                                </a>
+
                                                                 <form method="post" asp-action="UnconfirmOrder" class="m-auto">
                                                                     <input name="Id" id="Id" hidden value="@order.Id" />
                                                                     <button type="submit" class="btn btn-warning btn-icon-text">
@@ -187,11 +213,6 @@
                                                                         <i class="mdi mdi-minus-circle btn-icon-append"></i>
                                                                     </button>
                                                                 </form>
-
-                                                                <a asp-action="Update" asp-controller="Oders" asp-route-Id="@order.Id" class="btn btn-success btn-icon-text">
-                                                                    Update
-                                                                    <i class="mdi mdi-pencil-circle btn-icon-append"></i>
-                                                                </a>
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <form method="post" asp-action="AssumingDeleted" class="m-auto">

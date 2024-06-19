@@ -10,8 +10,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Natural & Nutritious - @ViewData["Title"]</title>
     <!-- plugins:css -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="~/admin/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="~/admin/vendors/base/vendor.bundle.base.css">
+    @RenderSection("SeeMessageCss", false)
+    @RenderSection("MyOrderDetailsCss", false)
     <!-- endinject -->
     <!-- plugin css for this page -->
     <link rel="stylesheet" href="~/admin/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
@@ -98,6 +101,18 @@
                         </div>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-messages" aria-expanded="false" aria-controls="ui-messages">
+                            <i class="mdi mdi-message-processing menu-icon"></i>
+                            <span class="menu-title">Contact Messages</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="ui-messages">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> <a class="nav-link" asp-action="GetAllMessages" asp-controller="ContactMessages">All Messages</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#ui-blogs" aria-expanded="false" aria-controls="ui-blogs">
                             <i class="mdi mdi-newspaper menu-icon"></i>
                             <span class="menu-title">Blogs</span>
@@ -180,6 +195,20 @@
                             </ul>
                         </div>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-shippers" aria-expanded="false" aria-controls="ui-shippers">
+                            <i class="mdi mdi-truck menu-icon"></i>
+                            @*  *@
+                            <span class="menu-title">Shippers</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="ui-shippers">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> <a class="nav-link" asp-action="GetAllShippers" asp-controller="Shippers">All Shippers</a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-action="Create" asp-controller="Shippers">Create Shippers</a></li>
+                            </ul>
+                        </div>
+                    </li>
                     @* <li class="nav-item">
                     <a class="nav-link" href="documentation/documentation.html">
                     <i class="mdi mdi-file-document-box-outline menu-icon"></i>
@@ -244,6 +273,8 @@
     @RenderSection("GetAllOrders2Js", false)
     @RenderSection("GetAllOrders3Js", false)
     @RenderSection("GetAllBlogsJs", false)
+    @RenderSection("GetAllMessagesJs", false)
+    @RenderSection("ProfileEditJs", false)
     @RenderSection("UserEditJs", false)
 @*     @RenderSection("CreateJs", false)
     @RenderSection("Create2Js", false) *@

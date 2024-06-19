@@ -83,6 +83,22 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
         }
 
+        /*
+        public async Task<IActionResult> Search(string search, int page = 1)
+        {
+            int TotalCount = _context.Books.Where(x => !x.IsDeleted && x.Name.Trim().ToLower().Contains(search.Trim().ToLower())).Count();
+            ViewBag.TotalPage = (int)Math.Ceiling((decimal)TotalCount / 3);
+            ViewBag.CurrentPage = page;
+
+            List<Book> books = await _context.Books.Where(x => !x.IsDeleted && x.Name.Trim().ToLower().Contains(search.Trim().ToLower()))
+                    //.Include(x => x.BookLanguages)
+                    //.ThenInclude(x => x.Language)
+                    .Skip((page - 1) * 3).Take(3)
+                .ToListAsync();
+            return Json(books);
+        }
+        */
+
         public async Task<IActionResult> Search(string query, int page = 1)
         {
             try
@@ -163,6 +179,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
                 CustomerEmailAddress = dto.CustomerEmailAddress,
                 CustomerMessage = dto.CustomerMessage,
                 CreatedAt = DateTime.UtcNow,
+                IsAnswered = false,
                 IsDeleted = false
             };
 

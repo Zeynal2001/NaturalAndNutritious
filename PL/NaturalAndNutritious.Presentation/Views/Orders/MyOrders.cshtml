@@ -1,0 +1,128 @@
+﻿@model List<OrdersModel>
+
+<!-- Single Page Header start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">@ViewData["title"]</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a asp-action="MyOrders">Orders</a></li>
+    </ol>
+</div>
+<!-- Single Page Header End -->
+@{
+    if (Model != null)
+    {
+        foreach (var order in Model)
+        {
+            <section class="h-100 h-custom" style="background-color: #eee;">
+                <div class="container py-5 h-100">
+                    <div class="row d-flex justify-content-center align-items-center h-100">
+                        <div class="col-lg-8 col-xl-6">
+                            <div class="card border-top border-bottom border-3" style="border-color: #ffb524 !important;">
+                                <div class="d-flex justify-content-end m-2">
+                                    
+                                    <a asp-action="OrderDetails" asp-controller="Orders" asp-route-Id="@order.Id" class="btn btn-primary" style="color:honeydew" data-abc="true">
+                                        View Details
+                                        <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                                <div class="card-body p-5">
+
+                                    <p class="lead fw-bold mb-5" style="color: #81c408;">Purchase Receipt</p>
+
+                                    <div class="row">
+                                        <div class="col mb-3">
+                                            <p class="small text-muted mb-1">Date</p>
+                                            <p>@order.OrderDate.ToString("yyyy/MM/dd")</p>
+                                        </div>
+                                        <div class="col mb-3">
+                                            <p class="small text-muted mb-1">Order No.</p>
+                                            <p>@order.OrderNo</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="mx-n5 px-5 py-4" style="background-color: #f2f2f2;">
+                                        <div class="row">
+                                            <div class="col-md-8 col-lg-9">
+                                                <p>Quantity of products in order:</p>
+                                            </div>
+                                            <div class="col-md-4 col-lg-3" style="color: #81c408;">
+                                                <p>@order.ProductQuantity</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-8 col-lg-9">
+                                                <p>Total Amount:</p>
+                                            </div>
+                                            <div class="col-md-4 col-lg-3" style="color: #81c408;">
+                                                <p>₼@order.TotalAmount</p>
+                                            </div>
+                                        </div>
+
+                                        @* <div class="row">
+                                        <div class="col-md-8 col-lg-9">
+                                        <p class="mb-0">Shipping</p>
+                                        </div>
+                                        <div class="col-md-4 col-lg-3">
+                                        <p class="mb-0">£33.00</p>
+                                        </div>
+                                        </div> *@
+                                    </div>
+
+                                    @*  <div class="my-4">
+                                    <div class="col-md-4 offset-md-8 col-lg-3 offset-lg-9">
+                                    <p class="lead fw-bold mb-0" style="color: #81c408;">Total Amount:</p>
+                                    <p class="lead fw-bold mb-0" style="color: #81c408;">£262.99</p>
+                                    </div>
+                                    </div> *@
+
+                                    <p class="lead fw-bold mb-4 pb-2" style="color: #81c408;">Tracking Order</p>
+
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="horizontal-timeline">
+                                                <ul class="list-inline items d-flex justify-content-between">
+                                                    <li class="list-inline-item items-list">
+                                                        <i class="fas fa-clock fa-lg" style="color: @(order.OrderStatus == "Pending" ? "#81c408" : "#ffb524")"></i>
+                                                        <p class="py-1 px-2 rounded text-white" style="background-color: @(order.OrderStatus == "Pending" ? "#81c408" : "#ffb524");">@((order.OrderStatus == "Pending" ? order.OrderStatus : "Pending"))</p>
+                                                    </li>
+                                                    <li class="list-inline-item items-list">
+                                                        <i class="fas fa-check-circle fa-lg" style="color: @(order.OrderStatus == "Accepted" ? "#81c408" : "#ffb524")"></i>
+                                                        <p class="py-1 px-2 rounded text-white" style="background-color: @(order.OrderStatus == "Accepted" ? "#81c408" : "#ffb524");">@((order.OrderStatus == "Accepted" ? order.OrderStatus : "Accepted"))</p>
+                                                    </li>
+                                                    <li class="list-inline-item items-list">
+                                                        <i class="fas fa-truck fa-lg" style="color: @(order.OrderStatus == "OnTheWay" ? "#81c408" : "#ffb524")"></i>
+                                                        <p class="py-1 px-2 rounded text-white" style="background-color: @(order.OrderStatus == "OnTheWay" ? "#81c408" : "#ffb524");">@((order.OrderStatus == "OnTheWay" ? order.OrderStatus : "On the way"))</p>
+                                                    </li>
+                                                    <li class="list-inline-item items-list" style="margin-right: 8px;">
+                                                        <i class="fas fa-box fa-lg" style="color: @(order.OrderStatus == "Delivered" ? "#81c408" : "#ffb524")"></i>
+                                                        <p class="py-1 px-2 rounded text-white" style="background-color: @(order.OrderStatus == "Delivered" ? "#81c408" : "#ffb524"); margin-right: -8px;">@((order.OrderStatus == "Delivered" ? order.OrderStatus : "Delivered"))</p>
+                                                    </li>
+                                                </ul>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <p class="mt-4 pt-2 mb-0">
+                                        Want any help? <a asp-action="Contact" asp-controller="Home" style="color: #ffb524;">
+                                            Please contact
+                                            us
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    else
+    {
+        <h1 class="text-center text-black display-6">No Orders Found</h1>
+    }
+}
+
+@section MyOrdersCss{
+    <link href="~/css/my-orders.css" rel="stylesheet">
+}

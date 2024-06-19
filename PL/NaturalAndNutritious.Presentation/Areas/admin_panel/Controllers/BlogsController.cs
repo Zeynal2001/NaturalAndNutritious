@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NaturalAndNutritious.Business.Abstractions.AdminPanelAbstractions;
 using NaturalAndNutritious.Business.Dtos.AdminPanelDtos;
-using NaturalAndNutritious.Business.Repositories;
 using NaturalAndNutritious.Data.Abstractions;
 using NaturalAndNutritious.Data.Enums;
 using NaturalAndNutritious.Presentation.Areas.admin_panel.Models;
@@ -139,8 +138,9 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                     Id = blog.Id,
                     Title = blog.Title,
                     BlogPhotoUrl = blog.BlogPhotoUrl,
-                    ShortDescription = blog.ShortDescription,
-                    Description = blog.Description,
+                    AdditionalPhotoUrl1 = blog.AdditionalPhotoUrl1,
+                    AdditionalPhotoUrl2 = blog.AdditionalPhotoUrl2,
+                    Content = blog.Content,
                 };
 
                 _logger.LogInformation("Blog found for Id: {Id}", Id);
@@ -178,10 +178,13 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                 }
 
                 var blogPhotoUrl = await _blogService.CompleteFileOperations(model);
+                if(model.AdditionalPhoto1 != null)
+                    blog.AdditionalPhotoUrl1 = await _blogService.CompleteFileOperations2(model);
+                if(model.AdditionalPhoto2 != null)
+                    blog.AdditionalPhotoUrl2 = await _blogService.CompleteFileOperations3(model);
 
                 blog.Title = model.Title;
-                blog.ShortDescription = model.ShortDescription;
-                blog.Description = model.Description;
+                blog.Content = model.Content;
                 blog.BlogPhotoUrl = blogPhotoUrl;
                 blog.UpdatedAt = DateTime.UtcNow;
 

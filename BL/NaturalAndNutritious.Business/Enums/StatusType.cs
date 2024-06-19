@@ -5,8 +5,9 @@
         None,
         Pending,
         Accepted,
+        OnTheWay,
+        Delivered,
         Rejected,
-        Completed,
         Canceled,
     }
 }

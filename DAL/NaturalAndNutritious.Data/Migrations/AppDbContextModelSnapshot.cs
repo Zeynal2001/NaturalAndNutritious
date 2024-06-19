@@ -51,29 +51,29 @@ namespace NaturalAndNutritious.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "fe3047f8-f51d-4a9c-91bb-ab8cfc10bb71",
-                            ConcurrencyStamp = "d24693f5-5b7f-435d-b4fe-1caad508df53",
+                            Id = "b7431375-53db-48e4-af47-99424197eab6",
+                            ConcurrencyStamp = "d811d100-33f5-4944-a990-f3f26f9ea4aa",
                             Name = "None",
                             NormalizedName = "NONE"
                         },
                         new
                         {
-                            Id = "1273a40a-6bb2-42c5-9a64-1603ed2f6b34",
-                            ConcurrencyStamp = "e593a1ca-7fb0-4a74-8bae-7d445d33ca51",
+                            Id = "1916cf7b-1d78-425e-95ac-f15d158d5509",
+                            ConcurrencyStamp = "a8cbfb62-e996-4d6e-925c-78972f6dd5ab",
                             Name = "Admin",
                             NormalizedName = "ADMİN"
                         },
                         new
                         {
-                            Id = "b1c6b5e2-3938-4af1-9aa0-aa92e7c9c39c",
-                            ConcurrencyStamp = "01a8359f-6225-47fb-a7c5-7bfd3fa7233a",
+                            Id = "863282c2-3e7f-4e80-a6b4-ad3b6c368098",
+                            ConcurrencyStamp = "15909f5c-357a-493a-a1b0-69e598c63757",
                             Name = "Client",
                             NormalizedName = "CLİENT"
                         },
                         new
                         {
-                            Id = "348b860a-8e7d-49c9-bf0d-bc7572c75241",
-                            ConcurrencyStamp = "eb1bafcc-917a-45a4-bb3b-3107348aad2a",
+                            Id = "cbd23540-ad5b-41cd-a819-946c8cdcb4c7",
+                            ConcurrencyStamp = "9aa92c3f-f370-48ee-8630-afd14ff6bc29",
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         });
@@ -276,22 +276,24 @@ namespace NaturalAndNutritious.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("AdditionalPhotoUrl1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AdditionalPhotoUrl2")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("BlogPhotoUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
-
-                    b.Property<string>("ShortDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -352,6 +354,9 @@ namespace NaturalAndNutritious.Data.Migrations
                     b.Property<string>("CustomerName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAnswered")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");

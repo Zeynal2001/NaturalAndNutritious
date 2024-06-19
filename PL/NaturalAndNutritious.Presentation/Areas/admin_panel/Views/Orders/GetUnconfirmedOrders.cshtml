@@ -12,7 +12,7 @@
             <div class="card-body">
                 <div class="row align-items-center justify-content-between">
                     <div class="col-lg-6">
-                        <h2 class="card-title">All Orders</h2>
+                        <h2 class="card-title">All Uncofrimed Orders</h2>
                     </div>
                     <div class="col-lg-2">
                         <div class="btn-group" role="group" aria-label="Basic example">
@@ -90,7 +90,17 @@
                                                     @prop.GetValue(order)
                                                 </td>
                                                 continue;
-                                            case "CustomerName":
+                                            case "RecipientName":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "MobileNumber":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "OrderStatus":
                                                 <td class="py-1">
                                                     @prop.GetValue(order)
                                                 </td>
@@ -180,10 +190,21 @@
                                                     <div class="modal-body">
                                                         <div class="row">
                                                             <div class="col-md-6">
-                                                                <a asp-action="Update" asp-controller="Oders" asp-route-Id="@order.Id" class="btn btn-success btn-icon-text">
+                                                                <a asp-action="OrderDetails" asp-route-Id="@order.Id" class="btn btn-success btn-icon-text">
+                                                                    Order Details
+                                                                    <i class="mdi mdi-arrow-right-bold-circle btn-icon-append"></i>
+                                                                </a>
+
+                                                                <a asp-action="Update" asp-route-Id="@order.Id" class="btn btn-info btn-icon-text">
                                                                     Update
                                                                     <i class="mdi mdi-pencil-circle btn-icon-append"></i>
                                                                 </a>
+
+                                                                <a asp-action="ChangeStatus" asp-route-Id="@order.Id" class="btn btn-success btn-icon-text">
+                                                                    Change Status
+                                                                    <i class="mdi mdi-pencil-circle btn-icon-append"></i>
+                                                                </a>
+
                                                                 <form method="post" asp-action="ConfirmOrder" class="m-auto">
                                                                     <input name="Id" id="Id" hidden value="@order.Id" />
                                                                     <button type="submit" class="btn btn-info btn-icon-text">

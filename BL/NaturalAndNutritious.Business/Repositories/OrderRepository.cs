@@ -17,14 +17,16 @@ namespace NaturalAndNutritious.Business.Repositories
         public async Task<IQueryable<Order>> GetOrdersByUserId(string userId)
         {
             return await Task.Run(() => _context.Orders
-                .Include(o => o.AppUser)
-                .Where(o => o.AppUser.Id == userId));
+                .Include(o => o.OrderDetails)
+                .OrderByDescending(o => o.OrderDate)
+                .Where(o => !o.IsDeleted && o.AppUser.Id == userId));
         }
 
         public async Task<IQueryable<OrderDetail>> GetOrderDetailsByOrderId(Guid orderId)
         {
             return await Task.Run(() => _context.OrderDetails
-                .Include(o => o.Order)
+                .Include(od => od.Order)
+                .ThenInclude(o => o.Shipper)
                 .Where(o => o.Order.Id == orderId));
         }
 

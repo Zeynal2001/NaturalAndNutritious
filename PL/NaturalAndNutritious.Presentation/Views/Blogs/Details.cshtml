@@ -1,0 +1,38 @@
+﻿@model BlogDetailsVm
+
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">@ViewData["title"]</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a asp-action="Index">@Context.Request.Path.ToString().Replace(@Context.Request.Path.ToString(), "Blogs")</a></li>
+        <li class="breadcrumb-item"><a asp-action="Details">@Context.Request.Path.ToString().Replace(@Context.Request.Path.ToString(), "Details")</a></li>
+        @* <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+        <li class="breadcrumb-item active text-white">Shop</li> *@
+    </ol>
+</div>
+
+<div class="container-fluid py-3">
+    <div class="container d-flex justify-content-center">
+        <div class="row d-flex justify-content-center">
+            <div class="col-lg-8 d-flex justify-content-center">
+                <!-- News Detail Start -->
+                <div class="position-relative mb-3">
+                    <img class="img-fluid w-100" src="~/@Model.BlogPhotoUrl" style="object-fit: cover;">
+                    <div class="overlay position-relative bg-light">
+                        <div class="mb-3">
+                            @* <span>@Model.CreatedDate.ToLongDateString()</span> *@
+                            <span>@Model.CreatedDate.Year - @Model.CreatedDate.Month - @Model.CreatedDate.Day</span>
+                        </div>
+                        <div>
+                            <h3 class="mb-3">@Model.Title</h3>
+                            <p>
+                                @Model.Content
+                            <p>
+                        </div>
+                    </div>
+                </div>
+                <!-- News Detail End -->
+            </div>
+        </div>
+    </div>
+</div>

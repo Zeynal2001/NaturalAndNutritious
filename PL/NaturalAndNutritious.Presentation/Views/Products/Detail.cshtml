@@ -5,7 +5,7 @@
     <h1 class="text-center text-white display-6">@ViewData["title"]</h1>
     <ol class="breadcrumb justify-content-center mb-0">
         <li class="breadcrumb-item"><a asp-action="Index">Products</a></li>
-        <li class="breadcrumb-item"><a asp-action="Detail">ProductDetail</a></li>
+        <li class="breadcrumb-item"><a asp-action="Detail">Product Details</a></li>
     </ol>
 </div>
 <!-- Single Page Header End -->
@@ -145,7 +145,12 @@
                         </div>
                     }
                 </div>
-                <form asp-action="AddReview" asp-controller="Products" method="post">
+
+                <partial name="_AddReview.cshtml" model="@Model.ProductDetails">
+
+                </partial>
+
+                @* <form asp-action="AddReview" asp-controller="Products" method="post">
                     <h4 class="mb-5 fw-bold">Leave a Reply</h4>
                     <div class="row g-4">
                         <div class="col-lg-6">
@@ -180,7 +185,7 @@
                             </div>
                         </div>
                     </div>
-                </form>
+                </form> *@
 
             </div>
             <div class="col-lg-4 col-xl-3">

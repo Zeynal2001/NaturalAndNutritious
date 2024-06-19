@@ -9,11 +9,15 @@ namespace NaturalAndNutritious.Business.Dtos.AdminPanelDtos
         [Required]
         public string Title { get; set; }
         [Required]
-        public string ShortDescription { get; set; }
-        [Required]
-        public string Description { get; set; }
+        public string Content { get; set; }
         [Required]
         [FileValidator(AcceptedTypes = ".png, .jpg, .jpeg, .svg")]
         public IFormFile BlogPhoto { get; set; }
+        [Required]
+        [FileValidator(AcceptedTypes = ".png, .jpg, .jpeg, .svg")]
+        public IFormFile AdditionalPhoto1 { get; set; }
+        [Required]
+        [FileValidator(AcceptedTypes = ".png, .jpg, .jpeg, .svg")]
+        public IFormFile AdditionalPhoto2 { get; set; }
     }
 }

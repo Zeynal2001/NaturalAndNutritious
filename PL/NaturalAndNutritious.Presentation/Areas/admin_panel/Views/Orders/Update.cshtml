@@ -1,0 +1,104 @@
+﻿@model UpdateOrderDto
+@{
+    ViewData["Title"] = "Update Order";
+}
+<div class="">
+    <div class="col-md-12 grid-margin">
+        <div class="card">
+            <div asp-validation-summary="All"></div>
+            <h4 class="card-title">Update Order Details</h4>
+            <div class="">
+                <div class="container">
+                    @* <p>Current Shipper:  @Model.Shipper </p> *@
+                    <form class="forms-sample" method="post" enctype="multipart/form-data">
+
+                        <div class="form-group">
+                            <label asp-for="RecipientName" for="exampleInputNickName2">Recipient Name:</label>
+                            <input asp-for="RecipientName" type="text" class="form-control" id="exampleInputNickName2" placeholder="@Model.RecipientName">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="RecipientLName" for="exampleInputUsername3">Recipient Last Name:</label>
+                            <input asp-for="RecipientLName" type="text" class="form-control" id="exampleInputUsername3" placeholder="@Model.RecipientLName">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="MobileNumber" for="exampleInputUsername4">Mobile Number:</label>
+                            <input asp-for="MobileNumber" type="tel" class="form-control" id="exampleInputUsername4" placeholder="@Model.MobileNumber">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ShipAddress" for="exampleInputNickName5">Ship Address:</label>
+                            <input asp-for="ShipAddress" type="text" class="form-control" id="exampleInputNickName5" placeholder="@Model.RecipientName">
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ShipCity" for="exampleInputNickName6">Ship City:</label>
+                            <input asp-for="ShipCity" type="text" class="form-control" id="exampleInputNickName6" placeholder="@Model.ShipCity">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="ShipCountry" for="exampleInputNickName11">Ship Country:</label>
+                            <input asp-for="ShipCountry" type="text" class="form-control" id="exampleInputNickName11" placeholder="@Model.ShipCountry">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="ShipRegion" for="exampleInputNickName7">Ship Region:</label>
+                            <input asp-for="ShipRegion" type="text" class="form-control" id="exampleInputNickName7" placeholder="@Model.ShipRegion">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="ShipPostalCode" for="exampleInputNickName8">Ship Postal Code:</label>
+                            <input asp-for="ShipPostalCode" type="text" class="form-control" id="exampleInputNickName8" placeholder="@Model.ShipPostalCode">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="ShippedDate" for="exampleInputNickName9">Shipped Date:</label>
+                            <input asp-for="ShippedDate" type="date" class="form-control" id="exampleInputNickName9" placeholder="@Model.ShippedDate">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="RequiredDate" for="exampleInputNickName10">Required Date:</label>
+                            <input asp-for="RequiredDate" type="date" class="form-control" id="exampleInputNickName10" placeholder="@Model.RequiredDate">
+                        </div>
+
+                        @* <div class="form-group">
+                            <label asp-for="Shipper" for="shipperSelect">Select Shipper:</label>
+                            <select asp-for="Shipper" multiple class="form-control" id="shipperSelect">
+                                <option selected>--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</option>
+                                @foreach (var shipper in shippers)
+                                {
+                                    <option value="@shipper.Id">@shipper.CompanyName</option>
+                                }
+                            </select>
+                        </div> *@
+
+                        @* <div class="form-group">
+                            <label asp-for="ShipperName">Shipper</label>
+                            <select asp-for="ShipperName" multiple class="form-control" id="shipperSelect">
+                                @if (Model.Shippers != null && Model.Shippers.Any())
+                                {
+                                    @foreach (var shipper in Model.Shippers)
+                                    {
+                                        <option value="@shipper">@shipper</option>
+                                    }
+                                }
+                                else
+                                {
+                                    <option disabled>No shippers available</option>
+                                }
+                            </select>
+                        </div> *@
+
+                        <div class="form-group">
+                            <input asp-for="Id" type="text" class="form-control" id="exampleInputEmail1" hidden>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary me-2" style="color:honeydew;">Submit</button>
+                        <button asp-action="GetAllOrders" asp-controller="Orders" class="btn btn-light">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
