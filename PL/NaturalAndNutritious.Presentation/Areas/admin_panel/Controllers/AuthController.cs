@@ -62,14 +62,14 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
 
             if (result.IsNull)
             {
-                _logger.LogWarning("Login failed: {Message}", result.Message);
+                _logger.LogError("Login failed: {Message}", result.Message);
                 ModelState.AddModelError("adminAuthError", result.Message);
                 return View(model);
             }
 
             if (!result.Succeeded)
             {
-                _logger.LogWarning("Login unsuccessful: {Message}", result.Message);
+                _logger.LogError("Login unsuccessful: {Message}", result.Message);
                 ModelState.AddModelError("adminLoginError", result.Message);
                 return View(model);
             }
