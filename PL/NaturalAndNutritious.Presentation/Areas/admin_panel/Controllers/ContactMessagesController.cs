@@ -30,6 +30,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         public async Task<IActionResult> GetAllMessages(int page = 1, int pageSize = 5)
         {
             _logger.LogInformation("GetAllMessages action called with page: {Page} and pageSize: {PageSize}", page, pageSize);
+
             var messagesQueryable = await _messageRepository.FilterWithPagination(page, pageSize);
             var messages = await messagesQueryable
                 .OrderByDescending(sc => sc.CreatedAt)
@@ -65,6 +66,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         public async Task<IActionResult> SeeMessage(Guid Id)
         {
             _logger.LogInformation("SeeMessage action called");
+
             var message = await _messageRepository.GetByIdAsync(Id);
 
             if (message == null)
@@ -89,6 +91,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         public async Task<IActionResult> ReplyToMessage(Guid Id)
         {
             _logger.LogInformation("ReplyToMessage GET action called");
+
             var message = await _messageRepository.GetByIdAsync(Id);
 
             if (message == null)
@@ -122,6 +125,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         public async Task<IActionResult> ReplyToMessage(ReplyModel model)
         {
             _logger.LogInformation("ReplyToMessage POST action called");
+
             if (!ModelState.IsValid)
             {
                 ViewData["hasError"] = ModelState.ErrorCount;
@@ -191,7 +195,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while updating the message with messageId: {messageId}", message.Id);
-                return View("Error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An error occurred while updating the message." };
+                return View("AdminError", errorMessage);
             }
         }
 

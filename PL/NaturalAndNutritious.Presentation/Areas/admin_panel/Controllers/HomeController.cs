@@ -30,7 +30,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
 
         public async Task<IActionResult> Index()
         {
-            _logger.LogInformation("AdminHomeIndex action called");
+            _logger.LogInformation("Admin panel HomeController Index action called");
 
             var products = await _productRepository.GetAllAsync();
             _logger.LogInformation("Fetched {ProductCount} products from the database", products.Count());
@@ -54,50 +54,82 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SendMailToUsers(EmailModel model)
         {
-            if (!ModelState.IsValid)
+            _logger.LogInformation("SendMailToUsers method called with Model: {Model}", model);
+
+            try
             {
-                ViewData["hassError"] = ModelState.ErrorCount;
-                return View("Index", model);
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogWarning("SendMailToUsers method called with invalid model state. Error count: {ErrorCount}", ModelState.ErrorCount);
+                    ViewData["hassError"] = ModelState.ErrorCount;
+                    return View("Index", model);
+                }
+
+                var dto = new MailDto()
+                {
+                    Addresses = new List<MailboxAddress>()
+                    {
+                        new MailboxAddress("receiver", model.Recipient)
+                    },
+                    Subject = model.Subject,
+                    Content = model.Message
+                };
+
+                await _emailService.SendAsync(dto);
+
+                _logger.LogInformation("Email sent to user: {Recipient}, Subject: {Subject}", model.Recipient, model.Subject);
+
+                return RedirectToAction("Index");
             }
-
-            var dto = new MailDto()
+            catch (Exception ex)
             {
-                 Addresses = new List<MailboxAddress>()
-                 {
-                     new MailboxAddress("reciever", model.Recipient)
-                 },
-                 Subject = model.Subject,
-                Content = model.Message
-            };
+                _logger.LogError(ex, "An error occurred while sending email to users: {Recipient}, Subject: {Subject}", model.Recipient, model.Subject);
 
-            await _emailService.SendAsync(dto);
-
-            return RedirectToAction("Index");
+                var errorMessage = new ErrorModel { ErrorMessage = "An error occurred while sending email to users." };
+                return View("AdminError", errorMessage);
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SendMailToSubscribers(EmailModel model)
         {
-            if (!ModelState.IsValid)
+            _logger.LogInformation("SendMailToSubscribers method called with Model: {Model}", model);
+
+            try
             {
-                ViewData["hassError"] = ModelState.ErrorCount;
-                return View("Index", model);
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogWarning("SendMailToSubscribers method called with invalid model state. Error count: {ErrorCount}", ModelState.ErrorCount);
+                    ViewData["hassError"] = ModelState.ErrorCount;
+                    return View("Index", model);
+                }
+
+                var dto = new MailDto()
+                {
+                    Addresses = new List<MailboxAddress>()
+                    {
+                        new MailboxAddress("receiver", model.Recipient)
+                    },
+                    Subject = model.Subject,
+                    Content = model.Message
+                };
+
+                await _emailService.SendAsync(dto);
+
+                _logger.LogInformation("Email sent to subscribers: {Recipient}, Subject: {Subject}", model.Recipient, model.Subject);
+
+                return RedirectToAction("Index");
             }
-
-            var dto = new MailDto()
+            catch (Exception ex)
             {
-                Addresses = new List<MailboxAddress>()
-                 {
-                     new MailboxAddress("reciever", model.Recipient)
-                 },
-                Subject = model.Subject,
-                Content = model.Message
-            };
+                var msg = string.Format("An error occurred while sending email to subscribers. Email {0}, subject '{1}'", model.Recipient, model.Subject);
+                _logger.LogError(ex, msg);
 
-            await _emailService.SendAsync(dto);
-
-            return RedirectToAction("Index");
+                //var errorMessage = new ErrorModel { ErrorMessage = msg };
+                var errorMessage = new ErrorModel { ErrorMessage = "An error occurred while sending email to subscribers." };
+                return View("AdminError", errorMessage);
+            }
         }
     }
 }

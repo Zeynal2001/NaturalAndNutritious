@@ -31,9 +31,12 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
         public async Task<IActionResult> Index()
         {
+            _logger.LogInformation("Home Index method called.");
+            
             try
             {
                 ViewData["title"] = "Home";
+
                 var totalproducts = await _productRepository.GetAllAsync();
                 var totoalusers = await _userRepository.GetAllUsers();
 
@@ -77,8 +80,8 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while loading home page.");
-                ViewData["msg"] = "An unexpected error occurred.";
+                _logger.LogError("An error occurred while loading Home page: {Exception}", ex.ToString());
+                ViewData["msg"] = "An unexpected error occurred while loading Home page.";
                 return View("Error");
             }
         }
@@ -101,6 +104,8 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
         public async Task<IActionResult> Search(string query, int page = 1)
         {
+            _logger.LogInformation("Search method called. Query: {Query}, Page: {Page}", query, page);
+
             try
             {
                 ViewData["title"] = "Search";
@@ -120,14 +125,16 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while loading search page.");
-                ViewData["msg"] = "An unexpected error occurred.";
+                _logger.LogError("An error occurred while loading Search page: {Exception}", ex.ToString());
+                ViewData["msg"] = "An unexpected error occurred while loading Search page.";
                 return View("Error");
             }
         }
 
         public async Task<IActionResult> FilterByCategories(string categoryFilter, int page = 1)
         {
+            _logger.LogInformation("FilterByCategories method called. CategoryFilter: {CategoryFilter}, Page: {Page}", categoryFilter, page);
+
             try
             {
                 ViewData["title"] = "Products By Category";
@@ -148,43 +155,56 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while filtering products by category.");
-                ViewData["msg"] = "An unexpected error occurred.";
+                _logger.LogError("An error occurred while filtering products by category: {Exception}", ex.ToString());
+                ViewData["msg"] = "An unexpected error occurred while loading FilterByCategories page.";
                 return View("Error");
             }
         }
 
         public IActionResult Contact()
         {
-            ViewData["title"] = "Contact";
+            try
+            {
+                ViewData["title"] = "Contact";
+                _logger.LogInformation("Contact page accessed.");
 
-            return View();
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred while loading the Contact page: {Exception}", ex.ToString());
+                ViewData["msg"] = "An unexpected error occurred while loading Contact page.";
+                return View("Error");
+            }
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddMessage(MessageDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                _logger.LogWarning("Model state is invalid. Error count: {ErrorCount}", ModelState.ErrorCount);
-                ViewData["hasError"] = ModelState.ErrorCount;
-                return View(dto);
-            }
-
-            var message = new ContactMessage()
-            {
-                Id = Guid.NewGuid(),
-                CustomerName = dto.CustomerName,
-                CustomerEmailAddress = dto.CustomerEmailAddress,
-                CustomerMessage = dto.CustomerMessage,
-                CreatedAt = DateTime.UtcNow,
-                IsAnswered = false,
-                IsDeleted = false
-            };
+            _logger.LogInformation("AddMessage method called.");
 
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogWarning("Model state is invalid. Error count: {ErrorCount}", ModelState.ErrorCount);
+                    ViewData["msg"] = "Model state is invalid.";
+                    return View("Error");
+                }
+
+                var message = new ContactMessage()
+                {
+                    Id = Guid.NewGuid(),
+                    CustomerName = dto.CustomerName,
+                    CustomerEmailAddress = dto.CustomerEmailAddress,
+                    CustomerMessage = dto.CustomerMessage,
+                    CreatedAt = DateTime.UtcNow,
+                    IsAnswered = false,
+                    IsDeleted = false
+                };
+
                 await _messageRepository.CreateAsync(message);
                 int affected = await _messageRepository.SaveChangesAsync();
 
@@ -197,15 +217,16 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
                 _logger.LogInformation("Message was successfully delivered with ID: {MessageId}", message.Id);
                 ViewData["successMsg"] = "The message was successfully delivered.";
-                return View(nameof(Contact));
+                return RedirectToAction(nameof(Contact));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while saving the message.");
-                ViewData["msg"] = "An unexpected error occurred.";
+                _logger.LogError("An error occurred while saving the message: {Exception}", ex.ToString());
+                ViewData["msg"] = "An unexpected error occurred while adding message.";
                 return View("Error");
             }
         }
+
 
         public IActionResult Privacy()
         {

@@ -60,7 +60,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while adding subscriber with email: {Email}", model.SubscriberEmail);
+                _logger.LogError("An error occurred while adding subscriber with email {Email}: {Exception}", model.SubscriberEmail, ex.ToString());
                 return View("Error");
             }
         }

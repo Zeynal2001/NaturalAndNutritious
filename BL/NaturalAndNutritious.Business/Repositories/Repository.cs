@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using NaturalAndNutritious.Data.Abstractions;
 using NaturalAndNutritious.Data.Data;
 using NaturalAndNutritious.Data.Entities;

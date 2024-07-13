@@ -33,10 +33,10 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
         public async Task<IActionResult> Index(int page = 1)
         {
+            _logger.LogInformation("Products page requested. Page number: {Page}", page);
+
             try
             {
-                _logger.LogInformation("Products page requested. Page number: {Page}", page);
-
                 ViewData["title"] = "Products";
 
                 var categoriesAsQueryable = await _categoryRepository.GetAllAsync();
@@ -49,7 +49,6 @@ namespace NaturalAndNutritious.Presentation.Controllers
                 {
                     DiscountedProducts = discountedProducts,
                     Categories = await categoriesAsQueryable
-                        .Where(c => !c.IsDeleted)
                         .Select(c => new CategoryDto()
                         {
                             Id = c.Id,
@@ -64,18 +63,19 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("An error occurred while processing the request: {ErrorMessage}", ex.Message);
+                _logger.LogError("An error occurred while processing the request: {Exception}", ex.ToString());
                 return View("Error");
             }
         }
 
         public async Task<IActionResult> ProductsByCategory(Guid Id, int page = 1)
         {
+            _logger.LogInformation("Products by category page requested. Category ID: {CategoryId}, Page number: {Page}", Id, page);
+
             try
             {
-                _logger.LogInformation("Products by category page requested. Category ID: {CategoryId}, Page number: {Page}", Id, page);
-
                 ViewData["title"] = "Products By Category";
+                ViewData["filterCat"] = Id.ToString();
 
                 var category = await _categoryRepository.Table
                     .Include(c => c.Products)
@@ -112,31 +112,34 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("An error occurred while processing the request: {ErrorMessage}", ex.Message);
+                _logger.LogError("An error occurred while processing the request: {Exception}", ex.ToString());
                 return View("Error");
             }
         }
 
         public async Task<IActionResult> DiscountedProducts(int page = 1)
         {
+            _logger.LogInformation("Discounted products page requested. Page number: {Page}", page);
+
             try
             {
-                _logger.LogInformation("Discounted products page requested. Page number: {Page}", page);
-
                 ViewData["title"] = "Discounted Products";
+
                 var discountedProductsVm = await _productService.GetDiscountedProducts(page, 5);
 
                 return View(discountedProductsVm);
             }
             catch (Exception ex)
             {
-                _logger.LogError("An error occurred while processing the request: {ErrorMessage}", ex.Message);
+                _logger.LogError("An error occurred while processing the request: {Exception}", ex.ToString());
                 return View("Error");
             }
         }
 
         public async Task<IActionResult> Detail(Guid Id)
         {
+            _logger.LogInformation("Detail method called for product ID {ProductId}", Id);
+
             var theUserHasOrder = false;
             try
             {
@@ -169,12 +172,17 @@ namespace NaturalAndNutritious.Presentation.Controllers
                 }
 
                 //-------------We check whether the specific product is included in the user's orders.--------------
-                var currentUserPrincipal = User;
-                var user = await _userManager.GetUserAsync(currentUserPrincipal);
+                if (User.Identity.IsAuthenticated)
+                {
+                    var currentUserPrincipal = User;
+                    var user = await _userManager.GetUserAsync(currentUserPrincipal);
 
-                var ordersAsQueryable = await _orderRepository.GetOrdersByUserId(user.Id);
-
-                theUserHasOrder = ordersAsQueryable.Any(o => o.OrderDetails.Any(od => od.ProductId == product.Id));
+                    if (user != null)
+                    {
+                        var ordersAsQueryable = await _orderRepository.GetOrdersByUserId(user.Id);
+                        theUserHasOrder = ordersAsQueryable.Any(o => o.OrderDetails.Any(od => od.ProductId == product.Id));
+                    }
+                }
                 //--------------------------------------------------------------------------------------------------
 
                 var details = new ProductDetailsDto()
@@ -233,7 +241,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("An error occurred while processing the request for product ID {ProductId}: {ErrorMessage}", Id, ex.Message);
+                _logger.LogError("An error occurred while processing the request for product ID {ProductId}: {Exception}", Id, ex.ToString());
                 return View("Error");
             }
         }
@@ -243,13 +251,17 @@ namespace NaturalAndNutritious.Presentation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddReview(ReviewDto reviewDto)
         {
-            //TODO: Details dakı review elave etmek formunu partial view a cixart
 
-            _logger.LogInformation("AddReview POST action called");
+            _logger.LogInformation("AddReview POST action called.");
+
+            //if (!ModelState.IsValid)
+            //{
+            //    return View("_AddReview", reviewDto);
+            //}
 
             if (reviewDto.ProductId == null)
             {
-                ViewData["msg"] = "Product Id is required";
+                ViewData["msg"] = "Product Id is required.";
                 return View("Error");
             }
 
@@ -261,7 +273,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
             if (reviewDto.ReviewText == null)
             {
-                ViewData["msg"] = "Review text is required";
+                ViewData["msg"] = "Review text is required.";
                 return View("Error");
             }
 
@@ -281,13 +293,15 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("An error occurred while adding review for product ID {ProductId}: {ErrorMessage}", reviewDto.ProductId, ex.Message);
+                _logger.LogError("An error occurred while adding review for product ID {ProductId}: {Exception}", reviewDto.ProductId, ex.ToString());
                 return View("Error");
             }
         }
 
         public async Task<IActionResult> PriceRange()
         {
+            _logger.LogInformation("PriceRange (GET) method called.");
+
             try
             {
                 var products = await _productRepository.GetAllAsync();
@@ -310,7 +324,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("An error occurred while loading the price range page: {ErrorMessage}", ex.Message);
+                _logger.LogError("An error occurred while loading the price range page: {Exception}", ex.ToString());
                 return View("Error");
             }
         }
@@ -318,6 +332,8 @@ namespace NaturalAndNutritious.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> PriceRange(PriceRangeVm model)
         {
+            _logger.LogInformation("PriceRange [HttpPost] method called with selected price: {SelectedPrice}.", model.SelectedPrice);
+
             try
             {
                 var products = await _productService.GetProductsByPriceAsync(model.SelectedPrice);
@@ -359,7 +375,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("An error occurred while filtering products by price range: {ErrorMessage}", ex.Message);
+                _logger.LogError("An error occurred while filtering products by price range: {Exception}", ex.ToString());
                 return View("Error");
             }
         }
@@ -367,6 +383,8 @@ namespace NaturalAndNutritious.Presentation.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProductsByIds([FromQuery] Guid id)
         {
+            _logger.LogInformation("GetProductsByIds method called with ID: {ProductId}", id);
+            
             try
             {
                 var product = await _productRepository.Table
@@ -390,7 +408,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("An error occurred while retrieving product by ID {ProductId}: {ErrorMessage}", id, ex.Message);
+                _logger.LogError("An error occurred while retrieving product by ID {ProductId}: {Exception}", id, ex.ToString());
                 return StatusCode(500);
             }
         }

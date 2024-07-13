@@ -63,191 +63,254 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         {
             _logger.LogInformation("Edit GET action called with userId: {UserId}", userId);
 
-            var user = await _usersService.GetUserByIdAsync(userId);
-
-            if (user == null)
+            try
             {
-                var errorModel = new ErrorModel()
+                var user = await _usersService.GetUserByIdAsync(userId);
+
+                if (user == null)
                 {
-                    ErrorMessage = "There isn't such user"
+                    _logger.LogWarning("User not found with userId: {UserId}", userId);
+                    var errorModel = new ErrorModel()
+                    {
+                        ErrorMessage = "There isn't such user"
+                    };
+
+                    return RedirectToAction("AdminError", errorModel);
+                }
+
+                var userEditDetails = new EditUserDto()
+                {
+                    Id = user.Id,
+                    FirstName = user.FName,
+                    LastName = user.LName,
+                    NickName = user.UserName,
+                    BirthDate = user.BirthDate,
+                    Email = user.Email,
+                    ProfilePhotoUrl = user.ProfilePhotoUrl,
                 };
 
-                return RedirectToAction("AdminError", errorModel);
+                _logger.LogInformation("User details loaded successfully for userId: {UserId}", userId);
+
+                return View(userEditDetails);
             }
-
-            var userEditDetails = new EditUserDto()
+            catch (Exception ex)
             {
-                Id = user.Id,
-                FirstName = user.FName,
-                LastName = user.LName,
-                NickName = user.UserName,
-                BirthDate = user.BirthDate,
-                Email = user.Email,
-                ProfilePhotoUrl = user.ProfilePhotoUrl,
-            };
+                _logger.LogError(ex, "An error occurred while loading the Edit page for userId: {UserId}", userId);
 
-            return View(userEditDetails);
+                var errorModel = new ErrorModel() { ErrorMessage = "An unexpected error occurred while loading the user details." };
+                return View("AdminError", errorModel);
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditUserDto model)
         {
-            _logger.LogInformation("Edit POST action called.");
+            _logger.LogInformation("Edit POST action called for userId: {UserId}", model.Id);
 
-            if (!ModelState.IsValid)
+            try
             {
-                return View(model);
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogWarning("Edit POST action called with invalid model state. Error count: {ErrorCount}", ModelState.ErrorCount);
+                    return View(model);
+                }
+
+                var user = await _usersService.GetUserByIdAsync(model.Id);
+
+                if (user == null)
+                {
+                    _logger.LogWarning("User not found with userId: {UserId}", model.Id);
+                    ModelState.AddModelError("editError", "There isn't such user");
+                    return View(model);
+                }
+
+                var profilePhotoUrl = await _usersService.CompleteFileOperations(model);
+
+                var result = await _usersService.EditUserDetails(user, profilePhotoUrl, model);
+
+                if (!result.Succeeded)
+                {
+                    _logger.LogWarning("Failed to update user details for userId: {UserId}. Error: {ErrorMessage}", model.Id, result.Message);
+                    ModelState.AddModelError("editErrors", result.Message);
+                    ViewData["hasError"] = true;
+                    return View(model);
+                }
+                if (result.IsNull)
+                {
+                    _logger.LogWarning("No changes detected for userId: {UserId}. Message: {Message}", model.Id, result.Message);
+                    ModelState.AddModelError("editErrors", result.Message);
+                    ViewData["hasError"] = true;
+                    return View(model);
+                }
+
+                _logger.LogInformation("User details updated successfully for userId: {UserId}", model.Id);
+                return RedirectToAction(nameof(GetAllUsers));
             }
-
-            var user = await _usersService.GetUserByIdAsync(model.Id);
-
-            if (user == null)
+            catch (Exception ex)
             {
-                ModelState.AddModelError("editError", "There isn't such user");
-                return View(model);
+                _logger.LogError(ex, "An error occurred while updating user details for userId: {UserId}", model.Id);
+
+                var errorModel = new ErrorModel() { ErrorMessage = "An unexpected error occurred while updating the user details." };
+                return View("AdminError", errorModel);
             }
-
-            var profilePhotoUrl = await _usersService.CompleteFileOperations(model);
-
-            var result = await _usersService.EditUserDetails(user, profilePhotoUrl, model);
-
-            if (!result.Succeeded)
-            {
-                ModelState.AddModelError("editErrors", result.Message);
-                ViewData["hasError"] = true;
-                return View(model);
-            }
-            if (result.IsNull)
-            {
-                ModelState.AddModelError("editErrors", result.Message);
-                ViewData["hasError"] = true;
-                return View(model);
-            }
-
-            _logger.LogInformation("User details updated successfully for userId: {UserId}", model.Id);
-            return RedirectToAction(nameof(GetAllUsers));
         }
-
 
         public async Task<IActionResult> ChangeRole(string Id)
         {
             _logger.LogInformation("ChangeRole GET action called with userId: {UserId}", Id);
 
-            var user = await _usersService.GetUserByIdAsync(Id);
-
-            if (user == null)
+            try
             {
-                var errorModel = new ErrorModel()
+                var user = await _usersService.GetUserByIdAsync(Id);
+
+                if (user == null)
                 {
-                    ErrorMessage = "There isn't such user"
+                    _logger.LogWarning("User not found with userId: {UserId}", Id);
+                    var errorModel = new ErrorModel()
+                    {
+                        ErrorMessage = "There isn't such user"
+                    };
+
+                    return View("AdminError", errorModel);
+                }
+
+                var currentRoles = await _usersService.GetUserRolesAsync(user);
+                var roles = await _usersService.GetAllRoles();
+
+                var roleVm = new ChangeRoleVm()
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    UserName = user.FName + " " + user.LName,
+                    ProfilePhotoPath = user.ProfilePhotoUrl,
+                    UserRoles = currentRoles.ToList(),
+                    Roles = roles
                 };
 
+                _logger.LogInformation("ChangeRole GET action successfully retrieved data for userId: {UserId}", Id);
+
+                return View(roleVm);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving data for ChangeRole GET action with userId: {UserId}", Id);
+
+                var errorModel = new ErrorModel() { ErrorMessage = "An unexpected error occurred while retrieving user roles." };
                 return View("AdminError", errorModel);
             }
-
-            var currentRoles = await _usersService.GetUserRolesAsync(user);
-            var roles = await _usersService.GetAllRoles();
-
-            var roleVm = new ChangeRoleVm()
-            {
-                Id = user.Id,
-                Email = user.Email,
-                UserName = user.FName + " " + user.LName,
-                ProfilePhotoPath = user.ProfilePhotoUrl,
-                UserRoles = currentRoles.ToList(),
-                Roles = roles
-            };
-
-            return View(roleVm);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangeRole(ChangeRoleVm model)
         {
-            _logger.LogInformation("ChangeRole POST action called.");
+            _logger.LogInformation("ChangeRole POST action called for userId: {UserId}", model.Id);
 
-            var user = await _usersService.GetUserByIdAsync(model.Id);
-
-            if (user == null)
+            try
             {
-                var errorModel = new ErrorModel()
-                {
-                    ErrorMessage = "There isn't such user"
-                };
+                var user = await _usersService.GetUserByIdAsync(model.Id);
 
+                if (user == null)
+                {
+                    _logger.LogWarning("User not found with userId: {UserId}", model.Id);
+                    var errorModel = new ErrorModel()
+                    {
+                        ErrorMessage = "There isn't such user"
+                    };
+
+                    return View("AdminError", errorModel);
+                }
+
+                var role = await _usersService.GetRoleById(model.SelectedRoleId);
+
+                if (role == null)
+                {
+                    _logger.LogWarning("Role not found with roleId: {RoleId}", model.SelectedRoleId);
+                    var errorModel = new ErrorModel()
+                    {
+                        ErrorMessage = "There isn't such role."
+                    };
+
+                    return View("AdminError", errorModel);
+                }
+
+                if (await _usersService.IsInRoleAsync(user, role.Name))
+                {
+                    _logger.LogWarning("User with userId: {UserId} already has the role: {RoleName}", model.Id, role.Name);
+                    var errorModel = new ErrorModel()
+                    {
+                        ErrorMessage = "The user already has this role."
+                    };
+
+                    return View("AdminError", errorModel);
+                }
+
+                var result = await _usersService.AddToRoleAsync(user, role.Name);
+
+                if (!result.Succeeded)
+                {
+                    _logger.LogWarning("Failed to change role for userId: {UserId}. Errors: {Errors}", model.Id, string.Join(", ", result.Errors));
+                    ModelState.AddModelError("roleError", result.Errors.ErrorsToString());
+                    return View(model);
+                }
+
+                _logger.LogInformation("Role changed successfully for userId: {UserId}", model.Id);
+                return RedirectToAction(nameof(GetAllUsers));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while changing role for userId: {UserId}", model.Id);
+
+                var errorModel = new ErrorModel() { ErrorMessage = "An unexpected error occurred while changing role." };
                 return View("AdminError", errorModel);
             }
-
-            var role = await _usersService.GetRoleById(model.SelectedRoleId);
-
-            if (role == null)
-            {
-                var errorModel = new ErrorModel()
-                {
-                    ErrorMessage = "There isn't such role."
-                };
-
-                return View("AdminError", errorModel);
-            }
-
-            if (await _usersService.IsInRoleAsync(user, role.Name))
-            {
-                var errorModel = new ErrorModel()
-                {
-                    ErrorMessage = "The user already has this role."
-                };
-
-                return View("AdminError", errorModel);
-            }
-
-            var result = await _usersService.AddToRoleAsync(user, role.Name);
-
-            if (!result.Succeeded)
-            {
-                ModelState.AddModelError("roleError", result.Errors.ErrorsToString());
-                return View(model);
-            }
-
-            _logger.LogInformation("Role changed successfully for userId: {UserId}", model.Id);
-            return RedirectToAction(nameof(GetAllUsers));
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(string userId)
         {
-            _logger.LogInformation("Delete POST action called with userId: {UserId}", userId);
+            _logger.LogInformation("User Delete POST action called with userId: {UserId}", userId);
 
-            var currentUserId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            if (currentUserId == null)
+            try
             {
-                var errorModel = new ErrorModel();
-                errorModel.ErrorMessage = "You are not logged in as an admin!";
+                var currentUserId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                if (currentUserId == null)
+                {
+                    _logger.LogWarning("Current user ID could not be retrieved. The user might not be logged in.");
+                    var errorModel = new ErrorModel { ErrorMessage = "You are not logged in as an admin!" };
 
+                    return View("AdminError", errorModel);
+                }
+
+                var result = await _usersService.DeleteUser(currentUserId, userId);
+
+                if (result.IsNull)
+                {
+                    _logger.LogWarning("Failed to delete user with userId: {UserId}. Reason: {Reason}", userId, result.Message);
+                    var errorModel = new ErrorModel { ErrorMessage = result.Message };
+
+                    return View("AdminError", errorModel);
+                }
+
+                if (!result.IsDeleted)
+                {
+                    _logger.LogWarning("User with userId: {UserId} could not be deleted. Reason: {Reason}", userId, result.Message);
+                    var errorModel = new ErrorModel { ErrorMessage = result.Message };
+
+                    return View("AdminError", errorModel);
+                }
+
+                _logger.LogInformation("User deleted successfully for userId: {UserId}", userId);
+                return RedirectToAction(nameof(GetAllUsers));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while deleting user with userId: {UserId}", userId);
+
+                var errorModel = new ErrorModel { ErrorMessage = "An unexpected error occurred while deleting the user." };
                 return View("AdminError", errorModel);
             }
-
-            var result = await _usersService.DeleteUser(currentUserId, userId);
-
-            if (result.IsNull)
-            {
-                var errorModel = new ErrorModel();
-                errorModel.ErrorMessage = result.Message;
-
-                return View("AdminError", errorModel);
-            }
-
-            if (!result.IsDeleted)
-            {
-                var errorModel = new ErrorModel();
-                errorModel.ErrorMessage = result.Message;
-
-                return View("AdminError", errorModel);
-            }
-
-            _logger.LogInformation("User deleted successfully for userId: {UserId}", userId);
-            return RedirectToAction(nameof(GetAllUsers));
         }
 
         public IActionResult Create()
@@ -263,33 +326,44 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RegisterDto model)
         {
-            _logger.LogInformation("Create POST action called.");
+            _logger.LogInformation("Create POST action called with model: {Model}", model);
 
             ViewData["hasError"] = false;
 
-            if (!ModelState.IsValid)
+            try
             {
-                ViewData["hasError"] = true;
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogWarning("Model state is invalid for Create action. Error count: {ErrorCount}", ModelState.ErrorCount);
+                    ViewData["hasError"] = true;
+                    return View(model);
+                }
+
+                var result = await _authService.Register(model, "profile-photos");
+
+                if (!result.Succeeded)
+                {
+                    _logger.LogWarning("User registration failed. Reason: {Reason}", result.Message);
+                    ViewData["hasError"] = true;
+                    ModelState.AddModelError("registerErrors", result.Message);
+                    return View(model);
+                }
+
+                if (result.Succeeded)
+                {
+                    TempData["successMsg"] = result.Message;
+                    _logger.LogInformation("User created successfully with email: {Email}", model.Email);
+                    return RedirectToAction(nameof(GetAllUsers));
+                }
+
                 return View(model);
             }
-
-            var result = await _authService.Register(model, "profile-photos");
-
-            if (!result.Succeeded)
+            catch (Exception ex)
             {
-                ViewData["hasError"] = true;
-                ModelState.AddModelError("registerErrors", result.Message);
-                return View(model);
+                _logger.LogError(ex, "An error occurred while creating a user.");
+                var errorModel = new ErrorModel { ErrorMessage = "An unexpected error occurred while creating the user." };
+                return View("AdminError", errorModel);
             }
-
-            if (result.Succeeded)
-            {
-                TempData["successMsg"] = result.Message;
-                _logger.LogInformation("User created successfully with email: {Email}", model.Email);
-                return RedirectToAction(nameof(GetAllUsers));
-            }
-
-            return View(model);
         }
 
         public IActionResult GetBannedUsers()
@@ -301,36 +375,60 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
 
         public async Task<IActionResult> SendBatchEmail()
         {
-            var usersAsQueryable = await _userRepository.GetAllUsers();
-            var users = usersAsQueryable.OrderBy(usr => usr.FName + " " + usr.FName).ToList();
+            _logger.LogInformation("SendBatchEmail GET action called.");
 
-            ViewBag.Users = users;
+            try
+            {
+                var usersAsQueryable = await _userRepository.GetAllUsers();
+                var users = usersAsQueryable.OrderBy(usr => usr.FName + " " + usr.FName).ToList();
 
-            return View();
+                ViewBag.Users = users;
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching users for SendBatchEmail.");
+                var errorModel = new ErrorModel { ErrorMessage = "An unexpected error occurred while fetching users." };
+                return View("AdminError", errorModel);
+            }
         }
 
         [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> SendBatchEmail(SendBatchEmailModel model)
         {
+            _logger.LogInformation("SendBatchEmail POST action called with model: {Model}", model);
+
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Model state is invalid for SendBatchEmail action. Error count: {ErrorCount}", ModelState.ErrorCount);
                 return View(model);
             }
 
-            foreach (var mail in model.Emails)
+            try
             {
-                var dto = new MailDto()
+                foreach (var mail in model.Emails)
                 {
-                    Addresses = new List<MailboxAddress>() { new MailboxAddress(mail.Split("@")[0], mail) },
-                    Subject = model.Subject,
-                    Content = model.Message
-                };
+                    var dto = new MailDto()
+                    {
+                        Addresses = new List<MailboxAddress>() { new MailboxAddress(mail.Split("@")[0], mail) },
+                        Subject = model.Subject,
+                        Content = model.Message
+                    };
 
-                await _emailService.SendAsync(dto);
+                    await _emailService.SendAsync(dto);
+                }
+
+                _logger.LogInformation("Batch email sent successfully.");
+                return RedirectToAction("Index", "Home");
             }
-
-            return RedirectToAction("Index", "Home");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while sending batch emails.");
+                var errorModel = new ErrorModel { ErrorMessage = "An unexpected error occurred while sending batch emails." };
+                return View("AdminError", errorModel);
+            }
         }
     }
 }

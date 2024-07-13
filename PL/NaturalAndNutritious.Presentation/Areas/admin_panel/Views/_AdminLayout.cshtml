@@ -67,13 +67,13 @@
             <nav class="sidebar sidebar-offcanvas" id="sidebar">
                 <ul class="nav">
                     <li class="nav-item">
-                        <a class="nav-link active" asp-action="Index" asp-controller="Home">
+                        <a class="nav-link active collapsed" asp-action="Index" asp-controller="Home">
                             <i class="mdi mdi-home menu-icon"></i>
                             <span class="menu-title">Dashboard</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-users" aria-expanded="false" aria-controls="ui-users">
+                        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#ui-users" aria-expanded="false" aria-controls="ui-users">
                             <i class="mdi mdi-account menu-icon"></i>
                             <span class="menu-title">Users</span>
                             <i class="menu-arrow"></i>
@@ -87,7 +87,7 @@
                         </div>
                     </li> 
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-subscribers" aria-expanded="false" aria-controls="ui-subscribers">
+                        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#ui-subscribers" aria-expanded="false" aria-controls="ui-subscribers">
                             <i class="mdi mdi-account menu-icon"></i>
                             <span class="menu-title">Subscribers</span>
                             <i class="menu-arrow"></i>
@@ -101,7 +101,7 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-messages" aria-expanded="false" aria-controls="ui-messages">
+                        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#ui-messages" aria-expanded="false" aria-controls="ui-messages">
                             <i class="mdi mdi-message-processing menu-icon"></i>
                             <span class="menu-title">Contact Messages</span>
                             <i class="menu-arrow"></i>
@@ -113,7 +113,7 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-blogs" aria-expanded="false" aria-controls="ui-blogs">
+                        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#ui-blogs" aria-expanded="false" aria-controls="ui-blogs">
                             <i class="mdi mdi-newspaper menu-icon"></i>
                             <span class="menu-title">Blogs</span>
                             <i class="menu-arrow"></i>
@@ -126,7 +126,7 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-products" aria-expanded="false" aria-controls="ui-products">
+                        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#ui-products" aria-expanded="false" aria-controls="ui-products">
                             <i class="mdi mdi-package menu-icon"></i>
                             <span class="menu-title">Products</span>
                             <i class="menu-arrow"></i>
@@ -139,7 +139,7 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-orders" aria-expanded="false" aria-controls="ui-orders">
+                        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#ui-orders" aria-expanded="false" aria-controls="ui-orders">
                             <i class="mdi mdi-check-decagram menu-icon"></i>
                             @*  *@
                             <span class="menu-title">Orders</span>
@@ -150,11 +150,14 @@
                                 <li class="nav-item"> <a class="nav-link" asp-action="GetAllOrders" asp-controller="Orders">All Orders</a></li>
                                 <li class="nav-item"> <a class="nav-link" asp-action="GetUnconfirmedOrders" asp-controller="Orders">Unconfirmed Orders</a></li>
                                 <li class="nav-item"> <a class="nav-link" asp-action="GetConfirmedOrders" asp-controller="Orders">Confirmed Orders</a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-action="GetDeliveredOrders" asp-controller="Orders">Delivered Orders</a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-action="GetCancelledOrders" asp-controller="Orders">Cancelled Orders</a></li>
+                                <li class="nav-item"> <a class="nav-link" asp-action="GetRejectedOrders" asp-controller="Orders">Rejected Orders</a></li>
                             </ul>
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-categories" aria-expanded="false" aria-controls="ui-categories">
+                        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#ui-categories" aria-expanded="false" aria-controls="ui-categories">
                             <i class="mdi mdi-table menu-icon"></i>
                             @* mdi-table-large *@
                             <span class="menu-title">Categories</span>
@@ -168,7 +171,7 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-subcategories" aria-expanded="false" aria-controls="ui-subcategories">
+                        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#ui-subcategories" aria-expanded="false" aria-controls="ui-subcategories">
                             <i class="mdi mdi-table-large menu-icon"></i>
                             @*  *@
                             <span class="menu-title">Subcategories</span>
@@ -182,7 +185,7 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-suppliers" aria-expanded="false" aria-controls="ui-suppliers">
+                        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#ui-suppliers" aria-expanded="false" aria-controls="ui-suppliers">
                             <i class="mdi mdi-pound-box menu-icon"></i>
                             @*  *@
                             <span class="menu-title">Suppliers</span>
@@ -196,7 +199,7 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-shippers" aria-expanded="false" aria-controls="ui-shippers">
+                        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#ui-shippers" aria-expanded="false" aria-controls="ui-shippers">
                             <i class="mdi mdi-truck menu-icon"></i>
                             @*  *@
                             <span class="menu-title">Shippers</span>
@@ -272,6 +275,9 @@
     @RenderSection("GetAllOrdersJs", false)
     @RenderSection("GetAllOrders2Js", false)
     @RenderSection("GetAllOrders3Js", false)
+    @RenderSection("GetAllOrders4Js", false)
+    @RenderSection("GetAllOrders5Js", false)
+    @RenderSection("GetAllOrders6Js", false)
     @RenderSection("GetAllBlogsJs", false)
     @RenderSection("GetAllMessagesJs", false)
     @RenderSection("ProfileEditJs", false)

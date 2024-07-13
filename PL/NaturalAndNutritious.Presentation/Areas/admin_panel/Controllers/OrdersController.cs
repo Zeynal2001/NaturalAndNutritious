@@ -31,206 +31,384 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
 
         public async Task<IActionResult> GetAllOrders(int page = 1, int pageSize = 5)
         {
-            var ordersAsQueryable = await _orderRepository.FilterWithPagination(page, pageSize);
+            _logger.LogInformation("GetAllOrders method called. Page: {Page}, PageSize: {PageSize}", page, pageSize);
 
-            var orders = await ordersAsQueryable
-                .Include(o => o.OrderDetails)
-                .OrderByDescending(o => o.CreatedAt)
-                .Select(o => new AllOrdersDto()
-                {
-                    Id = o.Id.ToString(),
-                    UserName = o.AppUser.FullName,
-                    ShipName = o.Shipper.CompanyName,
-                    OrderStatus = o.OrderStatus,
-                    OrderDate = o.OrderDate,
-                    ShippedDate = o.ShippedDate,
-                    RequiredDate = o.RequiredDate,
-                    Freight = o.Freight,
-                    ShipAddress = o.ShipAddress,
-                    ShipCity = o.ShipCity,
-                    ShipRegion = o.ShipRegion,
-                    ShipPostalCode = o.ShipPostalCode,
-                    ShipCountry = o.ShipCountry,
-                    Confirmed = o.Confirmed,
-                    CreatedAt = o.CreatedAt,
-                    UpdatedAt = o.UpdatedAt,
-                    RecipientName = o.FirstName + " " + o.LastName,
-                    MobileNumber = o.MobileNumber
-                }).ToListAsync();
-
-            var totalOrders = await _orderService.TotalOrders();
-
-            var vm = new GetAllOrdersVm()
+            try
             {
-                Orders = orders,
-                CurrentPage = page,
-                TotalPages = (int)Math.Ceiling(totalOrders / (double)pageSize),
-                PageSize = pageSize
-            };
+                var ordersAsQueryable = await _orderRepository.FilterWithPagination(page, pageSize);
 
-            return View(vm);
+                var orders = await ordersAsQueryable
+                    .Include(o => o.OrderDetails)
+                    .OrderByDescending(o => o.CreatedAt)
+                    .Select(o => new AllOrdersDto()
+                    {
+                        Id = o.Id.ToString(),
+                        UserName = o.AppUser.FullName,
+                        ShipName = o.Shipper.CompanyName,
+                        OrderStatus = o.OrderStatus,
+                        OrderDate = o.OrderDate,
+                        ShippedDate = o.ShippedDate,
+                        RequiredDate = o.RequiredDate,
+                        Freight = o.Freight,
+                        ShipAddress = o.ShipAddress,
+                        ShipCity = o.ShipCity,
+                        ShipRegion = o.ShipRegion,
+                        ShipPostalCode = o.ShipPostalCode,
+                        ShipCountry = o.ShipCountry,
+                        Confirmed = o.Confirmed,
+                        CreatedAt = o.CreatedAt,
+                        UpdatedAt = o.UpdatedAt,
+                        RecipientName = o.FirstName + " " + o.LastName,
+                        MobileNumber = o.MobileNumber
+                    }).ToListAsync();
+
+                var totalOrders = await _orderService.TotalOrders();
+
+                var vm = new GetAllOrdersVm()
+                {
+                    Orders = orders,
+                    CurrentPage = page,
+                    TotalPages = (int)Math.Ceiling(totalOrders / (double)pageSize),
+                    PageSize = pageSize
+                };
+
+                _logger.LogInformation("Successfully retrieved all orders. Total orders: {TotalOrders}", totalOrders);
+
+                return View(vm);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred while getting all orders: {Exception}", ex.ToString());
+                //return StatusCode(500, "Internal server error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An error occurred while getting all orders." };
+                return View("AdminError", errorMessage);
+            }
         }
 
         public async Task<IActionResult> GetUnconfirmedOrders(int page = 1, int pageSize = 5)
         {
-            var ordersAsQueryable = await _orderRepository.GetAllAsync();
+            _logger.LogInformation("GetUnconfirmedOrders method called. Page: {Page}, PageSize: {PageSize}", page, pageSize);
 
-            var orders = await ordersAsQueryable
-                .Include(o => o.OrderDetails)
-                .Where(o => o.Confirmed == false)
-                .OrderByDescending(o => o.CreatedAt)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .Select(o => new AllOrdersDto()
-                {
-                    Id = o.Id.ToString(),
-                    UserName = o.AppUser.FullName,
-                    ShipName = o.Shipper.CompanyName,
-                    OrderStatus = o.OrderStatus,
-                    OrderDate = o.OrderDate,
-                    ShippedDate = o.ShippedDate,
-                    RequiredDate = o.RequiredDate,
-                    Freight = o.Freight,
-                    ShipAddress = o.ShipAddress,
-                    ShipCity = o.ShipCity,
-                    ShipRegion = o.ShipRegion,
-                    ShipPostalCode = o.ShipPostalCode,
-                    ShipCountry = o.ShipCountry,
-                    Confirmed = o.Confirmed,
-                    CreatedAt = o.CreatedAt,
-                    UpdatedAt = o.UpdatedAt,
-                    RecipientName = o.FirstName + " " + o.LastName,
-                    MobileNumber = o.MobileNumber
-                }).ToListAsync();
-
-            var totalOrders = await _orderService.TotalUnconfirmedOrders();
-
-            var vm = new GetAllOrdersVm()
+            try
             {
-                Orders = orders,
-                CurrentPage = page,
-                TotalPages = (int)Math.Ceiling(totalOrders / (double)pageSize),
-                PageSize = pageSize
-            };
+                var ordersAsQueryable = await _orderRepository.GetAllAsync();
 
-            return View(vm);
+                var orders = await ordersAsQueryable
+                    .Include(o => o.OrderDetails)
+                    .Where(o => o.Confirmed == false)
+                    .OrderByDescending(o => o.CreatedAt)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(o => new AllOrdersDto()
+                    {
+                        Id = o.Id.ToString(),
+                        UserName = o.AppUser.FullName,
+                        ShipName = o.Shipper.CompanyName,
+                        OrderStatus = o.OrderStatus,
+                        OrderDate = o.OrderDate,
+                        ShippedDate = o.ShippedDate,
+                        RequiredDate = o.RequiredDate,
+                        Freight = o.Freight,
+                        ShipAddress = o.ShipAddress,
+                        ShipCity = o.ShipCity,
+                        ShipRegion = o.ShipRegion,
+                        ShipPostalCode = o.ShipPostalCode,
+                        ShipCountry = o.ShipCountry,
+                        Confirmed = o.Confirmed,
+                        CreatedAt = o.CreatedAt,
+                        UpdatedAt = o.UpdatedAt,
+                        RecipientName = o.FirstName + " " + o.LastName,
+                        MobileNumber = o.MobileNumber
+                    }).ToListAsync();
+
+                var totalOrders = await _orderService.TotalUnconfirmedOrders();
+
+                var vm = new GetAllOrdersVm()
+                {
+                    Orders = orders,
+                    CurrentPage = page,
+                    TotalPages = (int)Math.Ceiling(totalOrders / (double)pageSize),
+                    PageSize = pageSize
+                };
+
+                _logger.LogInformation("Successfully retrieved unconfirmed orders. Total orders: {TotalOrders}", totalOrders);
+
+                return View(vm);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred while getting all unconfirmed orders: {Exception}", ex.ToString());
+                //return StatusCode(500, "Internal server error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An error occurred while getting all unconfirmed orders." };
+                return View("AdminError", errorMessage);
+            }
         }
 
         public async Task<IActionResult> GetConfirmedOrders(int page = 1, int pageSize = 5)
         {
-            var ordersAsQueryable = await _orderRepository.GetAllAsync();
+            _logger.LogInformation("GetConfirmedOrders method called. Page: {Page}, PageSize: {PageSize}", page, pageSize);
 
-            var orders = await ordersAsQueryable
-                .Include(o => o.OrderDetails)
-                .Where(o => o.Confirmed == true)
-                .OrderByDescending(o => o.CreatedAt)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .Select(o => new AllOrdersDto()
+            try
+            {
+                var ordersAsQueryable = await _orderRepository.GetAllAsync();
+
+                var orders = await ordersAsQueryable
+                    .Include(o => o.OrderDetails)
+                    .Where(o => o.Confirmed == true)
+                    .OrderByDescending(o => o.CreatedAt)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(o => new AllOrdersDto()
+                    {
+                        Id = o.Id.ToString(),
+                        UserName = o.AppUser.FullName,
+                        ShipName = o.Shipper.CompanyName,
+                        OrderStatus = o.OrderStatus,
+                        OrderDate = o.OrderDate,
+                        ShippedDate = o.ShippedDate,
+                        RequiredDate = o.RequiredDate,
+                        Freight = o.Freight,
+                        ShipAddress = o.ShipAddress,
+                        ShipCity = o.ShipCity,
+                        ShipRegion = o.ShipRegion,
+                        ShipPostalCode = o.ShipPostalCode,
+                        ShipCountry = o.ShipCountry,
+                        Confirmed = o.Confirmed,
+                        CreatedAt = o.CreatedAt,
+                        UpdatedAt = o.UpdatedAt,
+                        RecipientName = o.FirstName + " " + o.LastName,
+                        MobileNumber = o.MobileNumber
+                    }).ToListAsync();
+
+                var totalOrders = await _orderService.TotalConfirmedOrders();
+
+                var vm = new GetAllOrdersVm()
                 {
-                    Id = o.Id.ToString(),
-                    UserName = o.AppUser.FullName,
-                    ShipName = o.Shipper.CompanyName,
-                    OrderStatus = o.OrderStatus,
-                    OrderDate = o.OrderDate,
-                    ShippedDate = o.ShippedDate,
-                    RequiredDate = o.RequiredDate,
-                    Freight = o.Freight,
-                    ShipAddress = o.ShipAddress,
-                    ShipCity = o.ShipCity,
-                    ShipRegion = o.ShipRegion,
-                    ShipPostalCode = o.ShipPostalCode,
-                    ShipCountry = o.ShipCountry,
-                    Confirmed = o.Confirmed,
-                    CreatedAt = o.CreatedAt,
-                    UpdatedAt = o.UpdatedAt,
-                    RecipientName = o.FirstName + " " + o.LastName,
-                    MobileNumber = o.MobileNumber
-                }).ToListAsync();
+                    Orders = orders,
+                    CurrentPage = page,
+                    TotalPages = (int)Math.Ceiling(totalOrders / (double)pageSize),
+                    PageSize = pageSize
+                };
 
-            var totalOrders = await _orderService.TotalConfirmedOrders();
+                _logger.LogInformation("Successfully retrieved confirmed orders. Total orders: {TotalOrders}", totalOrders);
 
-            var vm = new GetAllOrdersVm()
+                return View(vm);
+            }
+            catch (Exception ex)
             {
-                Orders = orders,
-                CurrentPage = page,
-                TotalPages = (int)Math.Ceiling(totalOrders / (double)pageSize),
-                PageSize = pageSize
-            };
+                _logger.LogError("An error occurred while getting all confirmed orders: {Exception}", ex.ToString());
+                //return StatusCode(500, "Internal server error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An error occurred while getting all confirmed orders." };
+                return View("AdminError", errorMessage);
+            }
+        }
 
-            return View(vm);
+        public async Task<IActionResult> GetDeliveredOrders(int page = 1, int pageSize = 5)
+        {
+            _logger.LogInformation("GetDeliveredOrders method called. Page: {Page}, PageSize: {PageSize}", page, pageSize);
+
+            try
+            {
+                var ordersAsQueryable = await _orderRepository.GetAllAsync();
+
+                var orders = await ordersAsQueryable
+                    .Include(o => o.OrderDetails)
+                    .Where(o => o.OrderStatus == nameof(StatusType.Delivered))
+                    .OrderByDescending(o => o.CreatedAt)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(o => new AllOrdersDto()
+                    {
+                        Id = o.Id.ToString(),
+                        UserName = o.AppUser.FullName,
+                        ShipName = o.Shipper.CompanyName,
+                        OrderStatus = o.OrderStatus,
+                        OrderDate = o.OrderDate,
+                        ShippedDate = o.ShippedDate,
+                        RequiredDate = o.RequiredDate,
+                        Freight = o.Freight,
+                        ShipAddress = o.ShipAddress,
+                        ShipCity = o.ShipCity,
+                        ShipRegion = o.ShipRegion,
+                        ShipPostalCode = o.ShipPostalCode,
+                        ShipCountry = o.ShipCountry,
+                        Confirmed = o.Confirmed,
+                        CreatedAt = o.CreatedAt,
+                        UpdatedAt = o.UpdatedAt,
+                        RecipientName = o.FirstName + " " + o.LastName,
+                        MobileNumber = o.MobileNumber
+                    }).ToListAsync();
+
+                var totalOrders = await _orderService.TotalConfirmedOrders();
+
+                var vm = new GetAllOrdersVm()
+                {
+                    Orders = orders,
+                    CurrentPage = page,
+                    TotalPages = (int)Math.Ceiling(totalOrders / (double)pageSize),
+                    PageSize = pageSize
+                };
+
+                _logger.LogInformation("Successfully retrieved delivered orders. Total orders: {TotalOrders}", totalOrders);
+
+                return View(vm);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred while getting all delivered orders: {Exception}", ex.ToString());
+                //return StatusCode(500, "Internal server error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An error occurred while getting all delivered orders." };
+                return View("AdminError", errorMessage);
+            }
+        }
+
+        public async Task<IActionResult> GetCancelledOrders(int page = 1, int pageSize = 5)
+        {
+            _logger.LogInformation("GetCanceledOrders method called. Page: {Page}, PageSize: {PageSize}", page, pageSize);
+
+            try
+            {
+                var ordersAsQueryable = await _orderRepository.GetAllAsync();
+
+                var orders = await ordersAsQueryable
+                    .Include(o => o.OrderDetails)
+                    .Where(o => o.OrderStatus == nameof(StatusType.Canceled))
+                    .OrderByDescending(o => o.CreatedAt)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(o => new AllOrdersDto()
+                    {
+                        Id = o.Id.ToString(),
+                        UserName = o.AppUser.FullName,
+                        ShipName = o.Shipper.CompanyName,
+                        OrderStatus = o.OrderStatus,
+                        OrderDate = o.OrderDate,
+                        ShippedDate = o.ShippedDate,
+                        RequiredDate = o.RequiredDate,
+                        Freight = o.Freight,
+                        ShipAddress = o.ShipAddress,
+                        ShipCity = o.ShipCity,
+                        ShipRegion = o.ShipRegion,
+                        ShipPostalCode = o.ShipPostalCode,
+                        ShipCountry = o.ShipCountry,
+                        Confirmed = o.Confirmed,
+                        CreatedAt = o.CreatedAt,
+                        UpdatedAt = o.UpdatedAt,
+                        RecipientName = o.FirstName + " " + o.LastName,
+                        MobileNumber = o.MobileNumber
+                    }).ToListAsync();
+
+                var totalOrders = await _orderService.TotalConfirmedOrders();
+
+                var vm = new GetAllOrdersVm()
+                {
+                    Orders = orders,
+                    CurrentPage = page,
+                    TotalPages = (int)Math.Ceiling(totalOrders / (double)pageSize),
+                    PageSize = pageSize
+                };
+
+                _logger.LogInformation("Successfully retrieved cancelled orders. Total orders: {TotalOrders}", totalOrders);
+
+                return View(vm);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred while getting all canceled orders: {Exception}", ex.ToString());
+                //return StatusCode(500, "Internal server error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An error occurred while getting all cancelled orders." };
+                return View("AdminError", errorMessage);
+            }
+        }
+
+        public async Task<IActionResult> GetRejectedOrders(int page = 1, int pageSize = 5)
+        {
+            _logger.LogInformation("GetRejectedOrders method called. Page: {Page}, PageSize: {PageSize}", page, pageSize);
+
+            try
+            {
+                var ordersAsQueryable = await _orderRepository.GetAllAsync();
+
+                var orders = await ordersAsQueryable
+                    .Include(o => o.OrderDetails)
+                    .Where(o => o.OrderStatus == nameof(StatusType.Rejected))
+                    .OrderByDescending(o => o.CreatedAt)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(o => new AllOrdersDto()
+                    {
+                        Id = o.Id.ToString(),
+                        UserName = o.AppUser.FullName,
+                        ShipName = o.Shipper.CompanyName,
+                        OrderStatus = o.OrderStatus,
+                        OrderDate = o.OrderDate,
+                        ShippedDate = o.ShippedDate,
+                        RequiredDate = o.RequiredDate,
+                        Freight = o.Freight,
+                        ShipAddress = o.ShipAddress,
+                        ShipCity = o.ShipCity,
+                        ShipRegion = o.ShipRegion,
+                        ShipPostalCode = o.ShipPostalCode,
+                        ShipCountry = o.ShipCountry,
+                        Confirmed = o.Confirmed,
+                        CreatedAt = o.CreatedAt,
+                        UpdatedAt = o.UpdatedAt,
+                        RecipientName = o.FirstName + " " + o.LastName,
+                        MobileNumber = o.MobileNumber
+                    }).ToListAsync();
+
+                var totalOrders = await _orderService.TotalConfirmedOrders();
+
+                var vm = new GetAllOrdersVm()
+                {
+                    Orders = orders,
+                    CurrentPage = page,
+                    TotalPages = (int)Math.Ceiling(totalOrders / (double)pageSize),
+                    PageSize = pageSize
+                };
+
+                _logger.LogInformation("Successfully retrieved rejected orders. Total orders: {TotalOrders}", totalOrders);
+
+                return View(vm);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred while getting all rejected orders: {Exception}", ex.ToString());
+                //return StatusCode(500, "Internal server error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An error occurred while getting all rejected orders." };
+                return View("AdminError", errorMessage);
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> AssumingDeleted(string Id)
+        public async Task<IActionResult> ConfirmOrder(string Id)
         {
+            _logger.LogInformation("ConfirmOrder method called with Id: {Id}", Id);
+
             if (!Guid.TryParse(Id, out var guidId))
             {
-                throw new ArgumentException($"The id '{Id}' is not a valid GUID.", nameof(Id));
+                var errorMessage = $"The id '{Id}' is not a valid GUID.";
+                _logger.LogError(errorMessage);
+
+                var errorModel = new ErrorModel
+                {
+                    ErrorMessage = errorMessage
+                };
+                return View("AdminError", errorModel);
             }
+
             var order = await _orderRepository.GetByIdAsync(guidId);
 
             if (order == null)
             {
-                var errorModel = new ErrorModel();
-                errorModel.ErrorMessage = "There isn't such order.";
-
-                return View("AdminError", errorModel);
-            }
-            order.IsDeleted = true;
-
-            var isUpdated = await _orderRepository.UpdateAsync(order);
-            await _orderRepository.SaveChangesAsync();
-
-            if (isUpdated == false)
-            {
-                var errorModel = new ErrorModel();
-                errorModel.ErrorMessage = "Order not updated.";
-
+                var errorModel = new ErrorModel
+                {
+                    ErrorMessage = "There isn't such order."
+                };
+                _logger.LogWarning("Order with Id: {Id} not found.", Id);
                 return View("AdminError", errorModel);
             }
 
-            return RedirectToAction(nameof(GetAllOrders));
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Delete(string Id)
-        {
-            if (!Guid.TryParse(Id, out var guidId))
-            {
-                throw new ArgumentException($"The id '{Id}' is not a valid GUID.", nameof(Id));
-            }
-
-            var isDeleted = await _orderRepository.DeleteAsync(guidId);
-            await _orderRepository.SaveChangesAsync();
-
-            if (isDeleted == false)
-            {
-                var errorModel = new ErrorModel();
-                errorModel.ErrorMessage = "There isn't such order.";
-
-                return View("AdminError", errorModel);
-            }
-
-            return RedirectToAction(nameof(GetAllOrders));
-        }
-
-        [HttpPost]
-        public async Task <IActionResult> ConfirmOrder(string Id)
-        {
-            if (!Guid.TryParse(Id, out var guidId))
-            {
-                throw new ArgumentException($"The id '{Id}' is not a valid GUID.", nameof(Id));
-            }
-            var order = await _orderRepository.GetByIdAsync(guidId);
-
-            if (order == null)
-            {
-                var errorModel = new ErrorModel();
-                errorModel.ErrorMessage = "There isn't such order.";
-
-                return View("AdminError", errorModel);
-            }
             order.Confirmed = true;
             order.OrderStatus = nameof(StatusType.Accepted);
 
@@ -239,31 +417,47 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
 
             if (isUpdated == false)
             {
-                var errorModel = new ErrorModel();
-                errorModel.ErrorMessage = "Order not updated.";
-
+                var errorModel = new ErrorModel
+                {
+                    ErrorMessage = "Order not updated."
+                };
+                _logger.LogError("Failed to update order with Id: {Id}", Id);
                 return View("AdminError", errorModel);
             }
 
+            _logger.LogInformation("Order with Id: {Id} confirmed successfully.", Id);
             return RedirectToAction(nameof(GetConfirmedOrders));
         }
 
         [HttpPost]
         public async Task<IActionResult> UnconfirmOrder(string Id)
         {
+            _logger.LogInformation("UnconfirmOrder method called with Id: {Id}", Id);
+
             if (!Guid.TryParse(Id, out var guidId))
             {
-                throw new ArgumentException($"The id '{Id}' is not a valid GUID.", nameof(Id));
+                var errorMessage = $"The id '{Id}' is not a valid GUID.";
+                _logger.LogError(errorMessage);
+
+                var errorModel = new ErrorModel
+                {
+                    ErrorMessage = errorMessage
+                };
+                return View("AdminError", errorModel);
             }
+
             var order = await _orderRepository.GetByIdAsync(guidId);
 
             if (order == null)
             {
-                var errorModel = new ErrorModel();
-                errorModel.ErrorMessage = "There isn't such order.";
-
+                var errorModel = new ErrorModel
+                {
+                    ErrorMessage = "There isn't such order."
+                };
+                _logger.LogWarning("Order with Id: {Id} not found.", Id);
                 return View("AdminError", errorModel);
             }
+
             order.Confirmed = false;
             order.OrderStatus = nameof(StatusType.Pending);
 
@@ -272,17 +466,21 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
 
             if (isUpdated == false)
             {
-                var errorModel = new ErrorModel();
-                errorModel.ErrorMessage = "Order not updated.";
-
+                var errorModel = new ErrorModel
+                {
+                    ErrorMessage = "Order not updated."
+                };
+                _logger.LogError("Failed to update order with Id: {Id}", Id);
                 return View("AdminError", errorModel);
             }
 
+            _logger.LogInformation("Order with Id: {Id} unconfirmed successfully.", Id);
             return RedirectToAction(nameof(GetUnconfirmedOrders));
         }
 
         public async Task<IActionResult> OrderDetails(string Id)
         {
+            _logger.LogInformation("OrderDetails method called with Id: {Id}", Id);
             ViewData["title"] = "OrderDetails";
 
             if (!Guid.TryParse(Id, out var guidId))
@@ -326,7 +524,16 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                     OrderStatus = order.OrderStatus,
                     Shipper = order.Shipper.CompanyName,
                     ShipperTel = order.Shipper.PhoneNumber,
-                    EstimatedDeliveryTime = order.RequiredDate
+                    EstimatedDeliveryTime = order.RequiredDate,
+                    RecipientFName = order.FirstName,
+                    RecipientLName = order.LastName,
+                    MobileNumber = order.MobileNumber,
+                    ShipCountry = order.ShipCountry,
+                    ShipCity = order.ShipCity,
+                    ShipRegion = order.ShipRegion,
+                    ShipAddress = order.ShipAddress,
+                    ShipPostalCode = order.ShipPostalCode,
+                    CashOnDelivery = order.CashOnDelivery
                 };
 
                 return View(vm);
@@ -334,8 +541,9 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error in OrderDetails action for OrderId {OrderId}", Id);
-                ViewData["msg"] = "An error occurred while processing your request.";
-                return View("Error");
+                var errorModel = new ErrorModel() { ErrorMessage = "An error occurred while processing your request." };
+                
+                return View("AdminError", errorModel);
             }
         }
 
@@ -389,7 +597,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while updating the order with Id: {Id}", Id);
-                return View("Error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An error occurred while updating the order." };
+                return View("AdminError", errorMessage);
             }
         }
 
@@ -457,8 +666,92 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while updating the order with Id: {Id}", model.Id);
-                return View("Error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An error occurred while updating the order." };
+                return View("AdminError", errorMessage);
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AssumingDeleted(string Id)
+        {
+            _logger.LogInformation("AssumingDeleted order method called with Id: {Id}", Id);
+
+            if (!Guid.TryParse(Id, out var guidId))
+            {
+                var errorMessage = $"The id '{Id}' is not a valid GUID.";
+                _logger.LogError(errorMessage);
+
+                var errorModel = new ErrorModel
+                {
+                    ErrorMessage = errorMessage
+                };
+                return View("AdminError", errorModel);
+                //throw new ArgumentException(errorMessage, nameof(Id));
+            }
+
+            var order = await _orderRepository.GetByIdAsync(guidId);
+
+            if (order == null)
+            {
+                var errorModel = new ErrorModel
+                {
+                    ErrorMessage = "There isn't such order."
+                };
+                _logger.LogWarning("Order with Id: {Id} not found.", Id);
+                return View("AdminError", errorModel);
+            }
+
+            order.IsDeleted = true;
+
+            var isUpdated = await _orderRepository.UpdateAsync(order);
+            await _orderRepository.SaveChangesAsync();
+
+            if (isUpdated == false)
+            {
+                var errorModel = new ErrorModel
+                {
+                    ErrorMessage = "Order not updated."
+                };
+                _logger.LogError("Failed to update order with Id: {Id}", Id);
+                return View("AdminError", errorModel);
+            }
+
+            _logger.LogInformation("Order with Id: {Id} marked as deleted successfully.", Id);
+            return RedirectToAction(nameof(GetAllOrders));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(string Id)
+        {
+            _logger.LogInformation("Delete order method called with Id: {Id}", Id);
+
+            if (!Guid.TryParse(Id, out var guidId))
+            {
+                var errorMessage = $"The id '{Id}' is not a valid GUID.";
+                _logger.LogError(errorMessage);
+
+                var errorModel = new ErrorModel
+                {
+                    ErrorMessage = errorMessage
+                };
+                return View("AdminError", errorModel);
+            }
+
+            var isDeleted = await _orderRepository.DeleteAsync(guidId);
+            await _orderRepository.SaveChangesAsync();
+
+            if (isDeleted == false)
+            {
+                var errorModel = new ErrorModel
+                {
+                    ErrorMessage = "There isn't such order."
+                };
+                _logger.LogWarning("Order with Id: {Id} not found for deletion.", Id);
+                return View("AdminError", errorModel);
+            }
+
+            _logger.LogInformation("Order with Id: {Id} deleted successfully.", Id);
+            return RedirectToAction(nameof(GetAllOrders));
         }
 
         public async Task<IActionResult> ChangeStatus(string Id)
@@ -502,7 +795,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while changing status of the order with Id: {Id}", Id);
-                return View("Error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An error occurred while changing status of the order." };
+                return View("AdminError", errorMessage);
             }
         }
 
@@ -558,7 +852,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while changing status of the order with Id: {Id}", model.Id);
-                return View("Error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An error occurred while changing status of the order." };
+                return View("AdminError", errorMessage);
             }
         }
     }

@@ -111,8 +111,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
 
             if (supplier == null)
             {
-                var errorModel = new ErrorModel { ErrorMessage = "There isn't such supplier." };
                 _logger.LogWarning("Supplier with ID {Id} not found.", Id);
+                var errorModel = new ErrorModel { ErrorMessage = "There isn't such supplier." };
                 return View("AdminError", errorModel);
             }
 
@@ -197,7 +197,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(string Id)
         {
-            _logger.LogInformation("Delete POST action called with supplierId: {Id}", Id);
+            _logger.LogInformation("Supplier Delete POST action called with supplierId: {Id}", Id);
 
             if (!Guid.TryParse(Id, out var guidId))
             {
@@ -211,8 +211,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
 
             if (!isDeleted)
             {
-                var errorModel = new ErrorModel { ErrorMessage = "There isn't such supplier." };
                 _logger.LogWarning("Supplier with ID {Id} not found for deletion.", Id);
+                var errorModel = new ErrorModel { ErrorMessage = "There isn't such supplier." };
                 return View("AdminError", errorModel);
             }
 
@@ -223,7 +223,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         [HttpPost]
         public async Task<IActionResult> AssumingDeleted(string Id)
         {
-            _logger.LogInformation("AssumingDeleted POST action called with supplierId: {Id}", Id);
+            _logger.LogInformation("Supplier AssumingDeleted POST action called with supplierId: {Id}", Id);
 
             if (!Guid.TryParse(Id, out var guidId))
             {
@@ -248,8 +248,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
 
             if (!isUpdated)
             {
-                var errorModel = new ErrorModel { ErrorMessage = "Supplier not updated." };
                 _logger.LogWarning("Supplier update to deleted failed for supplierId: {Id}", Id);
+                var errorModel = new ErrorModel { ErrorMessage = "Supplier not updated." };
                 return View("AdminError", errorModel);
             }
 

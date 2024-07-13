@@ -22,6 +22,8 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
         public async Task<IActionResult> Index()
         {
+            _logger.LogInformation("ProfileController Index method called");
+
             try
             {
                 ViewData["title"] = "Profile";
@@ -57,13 +59,16 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"An error occurred while processing the Profile/Index action: {ex.Message}");
+                //_logger.LogError($"An error occurred while processing the Profile/Index action: {ex.ToString()}");
+                _logger.LogError("An error occurred while processing the Profile/Index action: {Exception}", ex.ToString());
                 return View("Error");
             }
         }
 
         public async Task<IActionResult> Edit()
         {
+            _logger.LogInformation("ProfileController Edit (GET) method called");
+
             try
             {
                 ViewData["title"] = "Edit";
@@ -109,7 +114,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"An error occurred while processing the Profile/Edit action: {ex.Message}");
+                _logger.LogError("An error occurred while processing the Profile/Edit action: {Exception}", ex.ToString());
                 return View("Error");
             }
         }
@@ -119,6 +124,8 @@ namespace NaturalAndNutritious.Presentation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(ProfileEditVm vm)
         {
+            _logger.LogInformation("ProfileController Edit (POST) method called");
+
             try
             {
                 ViewData["hasError"] = false;
@@ -165,7 +172,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"An error occurred while processing the Profile/Edit [HttpPost] action: {ex.Message}");
+                _logger.LogError("An error occurred while processing the Profile/Edit [HttpPost] action: {Exception}", ex.ToString());
                 return View("Error");
             }
         }
@@ -175,6 +182,8 @@ namespace NaturalAndNutritious.Presentation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(ProfileEditVm model)
         {
+            _logger.LogInformation("ProfileController ChangePassword (POST) method called");
+
             try
             {
                 ViewData["hasError"] = false;
@@ -212,7 +221,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"An error occurred while processing the Profile/ChangePassword [HttpPost] action: {ex.Message}");
+                _logger.LogError("An error occurred while processing the Profile/ChangePassword [HttpPost] action: {Exception}", ex.ToString());
                 return View("Error");
             }
         }

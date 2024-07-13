@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NaturalAndNutritious.Business.Enums;
 using NaturalAndNutritious.Data.Abstractions;
 using NaturalAndNutritious.Data.Entities;
+using NaturalAndNutritious.Presentation.Areas.admin_panel.Models;
 using NaturalAndNutritious.Presentation.Models;
 using NaturalAndNutritious.Presentation.ViewModels;
 
@@ -25,10 +27,12 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
         public async Task<IActionResult> MyOrders()
         {
-            ViewData["title"] = "Orders";
+            _logger.LogInformation("MyOrders page requested.");
 
             try
             {
+                ViewData["title"] = "Orders";
+
                 var currentUserPrincipal = User;
                 var user = await _userManager.GetUserAsync(currentUserPrincipal);
 
@@ -49,7 +53,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in MyOrders action");
+                _logger.LogError("An error occurred while loading the MyOrders page: {Exception}", ex.ToString());
                 ViewData["msg"] = "An error occurred while processing your request.";
                 return View("Error");
             }
@@ -57,10 +61,14 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
         public async Task<IActionResult> OrderDetails(Guid Id)
         {
-            ViewData["title"] = "OrderDetails";
+            _logger.LogInformation("OrderDetails action called with Id: {Id}", Id);
 
             try
             {
+                ViewData["title"] = "OrderDetails";
+                bool IsDelivered = false;
+                bool IsCanceled = false;
+
                 var orderDetailsAsQueryable = await _orderRepository.GetOrderDetailsByOrderId(Id);
 
                 var orderDetails = await orderDetailsAsQueryable.Select(od => new OrderDetailsModel()
@@ -82,6 +90,16 @@ namespace NaturalAndNutritious.Presentation.Controllers
                     return View("Error");
                 }
 
+                if (order.OrderStatus == nameof(StatusType.Delivered) || order.OrderStatus == nameof(StatusType.Canceled) || order.OrderStatus == nameof(StatusType.Rejected))
+                {
+                    IsDelivered = true;
+                }
+
+                if (order.OrderStatus == nameof(StatusType.Canceled) || order.OrderStatus == nameof(StatusType.Rejected) || order.OrderStatus == nameof(StatusType.OnTheWay) || order.OrderStatus == nameof(StatusType.Delivered))
+                {
+                    IsCanceled = true;
+                }
+
                 var vm = new OrderDetailsVm()
                 {
                     OrderDetails = orderDetails,
@@ -89,17 +107,108 @@ namespace NaturalAndNutritious.Presentation.Controllers
                     OrderStatus = order.OrderStatus,
                     Shipper = order.Shipper.CompanyName,
                     ShipperTel = order.Shipper.PhoneNumber,
-                    EstimatedDeliveryTime = order.RequiredDate
+                    EstimatedDeliveryTime = order.RequiredDate,
+                    RecipientFName = order.FirstName,
+                    RecipientLName = order.LastName,
+                    MobileNumber = order.MobileNumber,
+                    ShipCountry = order.ShipCountry,
+                    ShipCity = order.ShipCity,
+                    ShipRegion = order.ShipRegion,
+                    ShipAddress = order.ShipAddress,
+                    ShipPostalCode = order.ShipPostalCode,
+                    CashOnDelivery = order.CashOnDelivery,
+                    IsDelivered = IsDelivered,
+                    IsCanceled = IsCanceled
                 };
 
                 return View(vm);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in OrderDetails action for OrderId {OrderId}", Id);
+                _logger.LogError("An error occurred in OrderDetails action for OrderId {OrderId}: {Exception}", Id, ex.ToString());
                 ViewData["msg"] = "An error occurred while processing your request.";
                 return View("Error");
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Received(string Id)
+        {
+            _logger.LogInformation("Received method called with Id: {Id}", Id);
+
+            if (!Guid.TryParse(Id, out var guidId))
+            {
+                string errorMessage = $"The id '{Id}' is not a valid GUID.";
+                _logger.LogError(errorMessage);
+
+                ViewData["msg"] = errorMessage;
+                return View("Error");
+            }
+
+            var order = await _orderRepository.GetByIdAsync(guidId);
+
+            if (order == null)
+            {
+                _logger.LogWarning("Order with Id: {Id} not found.", Id);
+
+                ViewData["msg"] = "Order not found!";
+                return View("Error");
+            }
+
+            order.OrderStatus = nameof(StatusType.Delivered);
+
+            int affected = await _orderRepository.SaveChangesAsync();
+
+            if (affected == 0)
+            {
+                _logger.LogError("Failed to update order as Delivered with Id: {Id}", Id);
+
+                ViewData["msg"] = "Order not updated.";
+                return View("Error");
+            }
+
+            _logger.LogInformation("Order with Id: {Id} updated successfully as Delivered/Received.", Id);
+            return RedirectToAction(nameof(MyOrders));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Canceled(string Id)
+        {
+            _logger.LogInformation("Canceled method called with Id: {Id}", Id);
+
+            if (!Guid.TryParse(Id, out var guidId))
+            {
+                string errorMessage = $"The id '{Id}' is not a valid GUID.";
+                _logger.LogError(errorMessage);
+
+                ViewData["msg"] = errorMessage;
+                return View("Error");
+            }
+
+            var order = await _orderRepository.GetByIdAsync(guidId);
+
+            if (order == null)
+            {
+                _logger.LogWarning("Order with Id: {Id} not found.", Id);
+
+                ViewData["msg"] = "Order not found!";
+                return View("Error");
+            }
+
+            order.OrderStatus = nameof(StatusType.Canceled);
+
+            int affected = await _orderRepository.SaveChangesAsync();
+
+            if (affected == 0)
+            {
+                _logger.LogError("Failed to update order as Canceled with Id: {Id}", Id);
+
+                ViewData["msg"] = "Order not updated.";
+                return View("Error");
+            }
+
+            _logger.LogInformation("Order with Id: {Id} updated successfully as Canceled.", Id);
+            return RedirectToAction(nameof(MyOrders));
         }
     }
 }

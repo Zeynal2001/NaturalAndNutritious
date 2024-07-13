@@ -50,7 +50,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while logging out: {ErrorMessage}", ex.Message);
+                _logger.LogError(ex, "Error occurred while logging out: {Exception}", ex.ToString());
             }
 
             return RedirectToAction("Index", "Home");
@@ -60,9 +60,9 @@ namespace NaturalAndNutritious.Presentation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginDto model, string? returnUrl)
         {
-            ViewData["hasError"] = false;
-
             _logger.LogInformation("Login attempt.");
+
+            ViewData["hasError"] = false;
 
             if (!ModelState.IsValid)
             {
@@ -102,9 +102,9 @@ namespace NaturalAndNutritious.Presentation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterDto model)
         {
-            ViewData["hasError"] = false;
-
             _logger.LogInformation("Registration attempt.");
+
+            ViewData["hasError"] = false;
 
             if (!ModelState.IsValid)
             {

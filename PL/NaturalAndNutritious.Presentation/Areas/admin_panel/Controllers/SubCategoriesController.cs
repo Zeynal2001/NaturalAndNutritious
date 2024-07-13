@@ -184,7 +184,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(string Id)
         {
-            _logger.LogInformation("Delete POST action called with subcategoryId: {Id}", Id);
+            _logger.LogInformation("Subcategory Delete POST action called with subcategoryId: {Id}", Id);
 
             if (!Guid.TryParse(Id, out var guidId))
             {
@@ -210,7 +210,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         [HttpPost]
         public async Task<IActionResult> AssumingDeleted(string Id)
         {
-            _logger.LogInformation("AssumingDeleted POST action called with subcategoryId: {Id}", Id);
+            _logger.LogInformation("Subcategory AssumingDeleted POST action called with subcategoryId: {Id}", Id);
 
             if (!Guid.TryParse(Id, out var guidId))
             {

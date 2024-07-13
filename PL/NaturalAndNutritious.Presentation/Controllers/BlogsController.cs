@@ -19,10 +19,11 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
         public async Task<IActionResult> Index(int page = 1)
         {
+            _logger.LogInformation("Blogs page requested. Page number: {Page}", page);
+
             try
             {
                 ViewData["title"] = "Blogs";
-                _logger.LogInformation("Blogs page requested. Page number: {Page}", page);
 
                 var blogsAsQueryable = await _blogRepository.FilterWithPagination(page, 9);
                 var totalBlogs = blogsAsQueryable.Count();
@@ -46,13 +47,15 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("An error occurred while processing the request: {ErrorMessage}", ex.Message);
+                _logger.LogError("An error occurred while processing the request: {Exception}", ex.ToString());
                 return View("Error");
             }
         }
 
         public async Task<IActionResult> Details(Guid Id)
         {
+            _logger.LogInformation("Blog Details action called with Id: {Id}", Id);
+
             try
             {
                 ViewData["title"] = "Details";
@@ -83,7 +86,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("An error occurred while processing the request for product ID {BlogId}: {ErrorMessage}", Id, ex.Message);
+                _logger.LogError("An error occurred while processing the request for product ID {BlogId}: {Exception}", Id, ex.ToString());
                 return View("Error");
             }
         }

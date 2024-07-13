@@ -102,8 +102,10 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                 }
 
                 var selectedCategory = await _categoryRepository.GetByIdAsync(categoryId);
-                var selectedSubCategory = await _subCategoryRepository.GetByIdAsync(subCategoryId);
+                //var selectedSubCategory = await _subCategoryRepository.GetByIdAsync(subCategoryId);
+                var selectedSubCategory = await _subCategoryRepository.Table.Include(sub => sub.Category).FirstOrDefaultAsync(sub => sub.Id == subCategoryId);
                 var selectedSupplier = await _supplierRepository.GetByIdAsync(supplierId);
+
 
                 if (selectedCategory == null)
                 {
@@ -116,6 +118,11 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                 if (selectedSupplier == null)
                 {
                     return new ProductServiceResult { Succeeded = false, IsNull = true, Message = "Supplier not found!" };
+                }
+
+                if (selectedCategory.Id != selectedSubCategory.Category.Id)
+                {
+                    return new ProductServiceResult { Succeeded = false, IsNull = false, Message = "The selected subcategory is not associated with the selected category. Please make the selections correctly." };
                 }
 
                 var uploaded = await _storageService.UploadFileAsync(dirPath, model.ProductImage);
@@ -364,11 +371,12 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
             categoryFilter = categoryFilter.ToLower();
 
             var productsAsQueryable = _productRepository.Table
-                .Include(p => p.Category)
-                .Include(p => p.Discount)
-                .Where(p => !p.IsDeleted && 
-                            (p.Category.CategoryName == categoryFilter))
-                .OrderByDescending(p => p.CreatedAt);
+                                      .Include(p => p.Category)
+                                      .Include(p => p.Discount)
+                                      .Where(p => !p.IsDeleted && 
+                                      (p.Category.CategoryName == categoryFilter))
+                .OrderByDescending(p => p.ViewsCount)
+                .ThenByDescending(p => p.CreatedAt);
 
             var totalProducts = await productsAsQueryable.CountAsync();
 
@@ -412,7 +420,6 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                 CurrentPage = page,
                 TotalPages = (int)Math.Ceiling(totalProducts / (double)pageSize),
                 Categories = await categoriesAsQueryable
-                .Where(c => !c.IsDeleted)
                 .Select(c => new CategoryDto()
                 {
                     Id = c.Id,
@@ -434,8 +441,8 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                                       .Include(p => p.Category)
                                       .Include(p => p.Discount)
                                       .Where(p => !p.IsDeleted && (p.Category.Id == categoryId))
-                .OrderByDescending(p => p.CreatedAt)
-                .ThenByDescending(p => p.ViewsCount);
+                .OrderByDescending(p => p.ViewsCount)
+                .ThenByDescending(p => p.CreatedAt);
 
             var totalProducts = await productsAsQueryable.CountAsync();
 
@@ -479,8 +486,8 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                                       .Include(p => p.Category)
                                       .Include(p => p.Discount)
                                       .Where(p => !p.IsDeleted && (p.Category.Id == categoryId))
-            .OrderByDescending(p => p.CreatedAt)
-            .ThenByDescending(p => p.ViewsCount);
+            .OrderByDescending(p => p.ViewsCount)
+            .ThenByDescending(p => p.CreatedAt);
 
             return await productsAsQueryable.CountAsync();
         }
@@ -496,8 +503,8 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                                       .Include(p => p.Category)
                                       .Include(p => p.Discount)
                                       .Where(p => !p.IsDeleted)
-                .OrderByDescending(p => p.CreatedAt)
-                .ThenByDescending(p => p.ViewsCount);
+                .OrderByDescending(p => p.ViewsCount)
+                .ThenByDescending(p => p.CreatedAt);
 
             var totalProducts = await productsAsQueryable.CountAsync();
 
@@ -541,8 +548,8 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                                     .Include(p => p.Category)
                                     .Include(p => p.Discount)
                                     .Where(p => !p.IsDeleted)
-            .OrderByDescending(p => p.CreatedAt)
-            .ThenByDescending(p => p.ViewsCount);
+            .OrderByDescending(p => p.ViewsCount)
+            .ThenByDescending(p => p.CreatedAt);
 
             return await productsAsQueryable.CountAsync();
         }
@@ -702,8 +709,10 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
             return await _productRepository.Table
                                            .Include(p => p.Category)
                                            .Include(p => p.Discount)
-                .Where(p => p.ProductPrice <= price && !p.IsDeleted)
-                .ToListAsync();
+                                           .Where(p => p.ProductPrice <= price && !p.IsDeleted)
+            .OrderByDescending(p => p.ViewsCount)
+            .ThenByDescending(p => p.CreatedAt)
+            .ToListAsync();
         }
         
         //3)/ 66 - 33 = discountedPrice(33)   2)// originalPrice(66) * 0,5 = 33    1)//DiscountRate(50) / 100 = 0,5

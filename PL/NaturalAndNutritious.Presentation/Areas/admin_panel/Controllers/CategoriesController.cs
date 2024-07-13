@@ -58,6 +58,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         public IActionResult Create()
         {
             _logger.LogInformation("Create GET action called.");
+
             return View();
         }
 

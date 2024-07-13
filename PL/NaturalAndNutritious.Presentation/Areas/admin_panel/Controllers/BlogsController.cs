@@ -27,6 +27,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         public async Task<IActionResult> GetAllBlogs(int page = 1, int pageSize = 5)
         {
             _logger.LogInformation("GetAllBlogs action called with page: {Page} and pageSize: {PageSize}", page, pageSize);
+
             var blogsQueryable = await _blogRepository.FilterWithPagination(page, pageSize);
             var blogs = await blogsQueryable
                 .OrderByDescending(sc => sc.CreatedAt)
@@ -71,7 +72,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while loading the Blog Create view");
-                return View("Error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An error occurred while loading the Blog Create view." };
+                return View("AdminError", errorMessage);
             }
         }
 
@@ -111,7 +113,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while creating the blog");
-                return View("Error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An error occurred while while creating the blog." };
+                return View("AdminError", errorMessage);
             }
         }
 
@@ -149,7 +152,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while updating the Blog with Id: {Id}", Id);
-                return View("Error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An error occurred while loading the Blog Update view." };
+                return View("AdminError", errorMessage);
             }
         }
 
@@ -204,7 +208,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while updating the blog with Id: {Id}", model.Id);
-                return View("Error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An error occurred while updating the blog." };
+                return View("AdminError", errorMessage);
             }
         }
 
@@ -235,7 +240,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while deleting the blog with blogId: {blogId}", Id);
-                return View("Error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An error occurred while deleting the blog." };
+                return View("AdminError", errorMessage);
             }
         }
 
@@ -281,7 +287,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while updating the blog with Id: {Id}", Id);
-                return View("Error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An error occurred while updating the blog as IsDeleted." };
+                return View("AdminError", errorMessage);
             }
         }
     }

@@ -18,8 +18,8 @@ namespace NaturalAndNutritious.Business.Repositories
         {
             return await Task.Run(() => _context.Orders
                 .Include(o => o.OrderDetails)
-                .OrderByDescending(o => o.OrderDate)
-                .Where(o => !o.IsDeleted && o.AppUser.Id == userId));
+                .Where(o => !o.IsDeleted && o.AppUser.Id == userId)
+                .OrderByDescending(o => o.OrderDate));
         }
 
         public async Task<IQueryable<OrderDetail>> GetOrderDetailsByOrderId(Guid orderId)

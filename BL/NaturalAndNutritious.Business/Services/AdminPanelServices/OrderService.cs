@@ -38,7 +38,7 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
             return await _orderRepository.Table
                                          .Include(o => o.OrderDetails)
                                          .OrderByDescending(o => o.CreatedAt)
-                                         .CountAsync();
+            .CountAsync();
         }
 
         public async Task<int> TotalConfirmedOrders()
@@ -47,7 +47,7 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                                          .Include(o => o.OrderDetails)
                                          .Where(o => o.Confirmed == true)
                                          .OrderByDescending(o => o.CreatedAt)
-                                         .CountAsync();
+            .CountAsync();
         }
         
         public async Task<int> TotalUnconfirmedOrders()

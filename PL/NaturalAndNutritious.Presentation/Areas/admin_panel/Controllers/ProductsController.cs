@@ -58,7 +58,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while getting products for page: {Page}", page);
-                return View("Error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An unexpected error occurred." };
+                return View("AdminError", errorMessage);
             }
         }
 
@@ -92,7 +93,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while loading the Create view");
-                return View("Error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An error occurred while loading the Create view." };
+                return View("AdminError", errorMessage);
             }
         }
 
@@ -114,15 +116,15 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
 
                 if (result.IsNull)
                 {
-                    var error = new ErrorModel { ErrorMessage = result.Message };
                     _logger.LogWarning("Product creation failed: {Message}", result.Message);
+                    var error = new ErrorModel { ErrorMessage = result.Message };
                     return View("AdminError", error);
                 }
 
                 if (!result.Succeeded)
                 {
+                    _logger.LogError("Product creation failed: {Message}", result.Message);
                     var error = new ErrorModel { ErrorMessage = result.Message };
-                    _logger.LogWarning("Product creation failed: {Message}", result.Message);
                     return View("AdminError", error);
                 }
 
@@ -132,7 +134,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while creating the product");
-                return View("Error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An unexpected error occurred." };
+                return View("AdminError", errorMessage);
             }
         }
 
@@ -185,7 +188,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while updating the product with Id: {Id}", Id);
-                return View("Error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An unexpected error occurred." };
+                return View("AdminError", errorMessage);
             }
         }
 
@@ -249,14 +253,15 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while updating the product with Id: {Id}", model.Id);
-                return View("Error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An unexpected error occurred." };
+                return View("AdminError", errorMessage);
             }
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(string productId)
         {
-            _logger.LogInformation("Delete action called with productId: {productId}", productId);
+            _logger.LogInformation("Product Delete action called with productId: {productId}", productId);
 
             if (!Guid.TryParse(productId, out var guidId))
             {
@@ -287,14 +292,15 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while deleting the product with productId: {productId}", productId);
-                return View("Error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An unexpected error occurred." };
+                return View("AdminError", errorMessage);
             }
         }
 
         [HttpPost]
         public async Task<IActionResult> AssumingDeleted(string productId)
         {
-            _logger.LogInformation("AssumingDeleted action called with productId: {productId}", productId);
+            _logger.LogInformation("Product AssumingDeleted action called with productId: {productId}", productId);
 
             if (!Guid.TryParse(productId, out var guidId))
             {
@@ -340,7 +346,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while updating the product with productId: {productId}", productId);
-                return View("Error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An unexpected error occurred." };
+                return View("AdminError", errorMessage);
             }
         }
 
@@ -393,7 +400,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while updating the product with productId: {productId}", productId);
-                return View("Error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An unexpected error occurred." };
+                return View("AdminError", errorMessage);
             }
         }
 
@@ -444,7 +452,8 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while removing the discount for productId: {productId}", productId);
-                return View("Error");
+                var errorMessage = new ErrorModel { ErrorMessage = "An unexpected error occurred." };
+                return View("AdminError", errorMessage);
             }
         }
     }

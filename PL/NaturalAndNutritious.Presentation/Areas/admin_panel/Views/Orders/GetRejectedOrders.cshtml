@@ -1,0 +1,253 @@
+﻿@model GetAllOrdersVm
+@{
+    ViewData["Title"] = "GetAllRejectedOrders";
+}
+@{
+    var prevPage = Model.CurrentPage - 1;
+    var nextPage = Model.CurrentPage + 1;
+}
+<div class="row">
+    <div class="col-md-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <div class="row align-items-center justify-content-between">
+                    <div class="col-lg-6">
+                        <h2 class="card-title">All Rejected Orders</h2>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <a class="btn btn-outline-secondary" asp-action="GetRejectedOrders" asp-route-pageSize="@Model.PageSize"> &lt;&lt; </a>
+                            @if (prevPage > 0)
+                            {
+                                <a class="btn btn-outline-secondary" asp-action="GetRejectedOrders" asp-route-page="@prevPage" asp-route-pageSize="@Model.PageSize">@prevPage</a>
+                            }
+
+                            <a class="btn btn-primary active" style="color:honeydew">@Model.CurrentPage</a>
+
+                            @if (nextPage <= Model.TotalPages)
+                            {
+                                <a class="btn btn-outline-secondary" asp-action="GetRejectedOrders" asp-route-page="@nextPage" asp-route-pageSize="@Model.PageSize">@nextPage</a>
+                            }
+                            <a class="btn btn-outline-secondary" asp-action="GetRejectedOrders" asp-route-page="@Model.TotalPages" asp-route-pageSize="@Model.PageSize"> &gt;&gt; </a>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <div class="d-flex flex-column">
+
+                            <select class="form-control form-control" id="pageSize" style="color:black">
+                                @foreach (var size in Model.PageSizes)
+                                {
+                                    @if (Model.PageSize == size)
+                                    {
+                                        <option selected>@size</option>
+                                        continue;
+                                    }
+                                    <option>@size</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                @{
+                                    var count = 0;
+                                    var modalId = $"exampleModal{count}";
+                                    var targetId = $"#exampleModal{count}";
+                                }
+
+                                @foreach (var propertyInfo in typeof(AllOrdersDto).GetProperties())
+                                {
+                                    if (propertyInfo.Name == "Id")
+                                    {
+                                        continue;
+                                    }
+                                    <th>
+                                        @propertyInfo.Name
+                                    </th>
+                                }
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.Orders)
+                            {
+                                <tr>
+                                    @foreach (var prop in order.GetType().GetProperties())
+                                    {
+                                        switch (prop.Name)
+                                        {
+                                            case "Id":
+                                                continue;
+                                            case "UserName":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "RecipientName":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "MobileNumber":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "OrderStatus":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "OrderDate":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "ShippedDate":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "RequiredDate":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "Freight":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "ShipName":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "ShipAddress":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "ShipCity":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "ShipRegion":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "ShipCountry":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "Confirmed":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "CreatedAt":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            case "UpdatedAt":
+                                                <td class="py-1">
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                continue;
+                                            default:
+                                                <td>
+                                                    @prop.GetValue(order)
+                                                </td>
+                                                break;
+                                        }
+                                    }
+                                    <td class="row flex-column">
+
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" style="color:honeydew" data-bs-target='@targetId'>
+                                            Actions
+                                        </button>
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id='@modalId' tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+
+                                                                <a asp-action="OrderDetails" asp-route-Id="@order.Id" class="btn btn-success btn-icon-text">
+                                                                    Order Details
+                                                                    <i class="mdi mdi-arrow-right-bold-circle btn-icon-append"></i>
+                                                                </a>
+
+                                                                <a asp-action="Update" asp-route-Id="@order.Id" class="btn btn-info btn-icon-text">
+                                                                    Update
+                                                                    <i class="mdi mdi-pencil-circle btn-icon-append"></i>
+                                                                </a>
+
+                                                                <a asp-action="ChangeStatus" asp-route-Id="@order.Id" class="btn btn-success btn-icon-text">
+                                                                    Change Status
+                                                                    <i class="mdi mdi-pencil-circle btn-icon-append"></i>
+                                                                </a>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <form method="post" asp-action="AssumingDeleted" class="m-auto">
+                                                                    <input name="Id" id="Id" hidden value="@order.Id" />
+                                                                    <button type="submit" class="btn btn-warning btn-icon-text">
+                                                                        Assuming deleted
+                                                                        <i class="mdi mdi-delete btn-icon-append"></i>
+                                                                    </button>
+                                                                </form>
+                                                                <form method="post" asp-action="Delete" class="m-auto">
+                                                                    <input name="Id" id="Id" hidden value="@order.Id" />
+                                                                    <button type="submit" class="btn btn-danger btn-icon-text">
+                                                                        Really delete
+                                                                        <i class="mdi mdi-delete btn-icon-append"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                count++;
+                                modalId = $"exampleModal{count}";
+                                targetId = $"#exampleModal{count}";
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section GetAllOrders5Js {
+    <script src="~/admin/js/orders6-paginate.js"></script>
+}

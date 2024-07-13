@@ -39,9 +39,9 @@
                 }
                 <div class="col-lg-7">
                     <form method="post" asp-action="AddMessage">
-                        <input asp-for="CustomerName" type="text" class="w-100 form-control border-0 py-3 mb-4" placeholder="Your Name">
-                        <input asp-for="CustomerEmailAddress" type="email" class="w-100 form-control border-0 py-3 mb-4" placeholder="Enter Your Email">
-                        <textarea asp-for="CustomerMessage" class="w-100 form-control border-0 mb-4" rows="5" cols="10" placeholder="Your Message"></textarea>
+                        <input asp-for="CustomerName" type="text" class="w-100 form-control border-0 py-3 mb-4" placeholder="Your Name" required>
+                        <input asp-for="CustomerEmailAddress" type="email" class="w-100 form-control border-0 py-3 mb-4" placeholder="Enter Your Email" required>
+                        <textarea asp-for="CustomerMessage" class="w-100 form-control border-0 mb-4" rows="5" cols="10" placeholder="Your Message" required></textarea>
                         <button class="w-100 btn form-control border-secondary py-3 bg-white text-primary " type="submit">Submit</button>
                     </form>
                 </div>

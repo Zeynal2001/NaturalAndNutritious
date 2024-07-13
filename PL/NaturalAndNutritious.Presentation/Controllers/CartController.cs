@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NaturalAndNutritious.Business.Dtos;
-using NaturalAndNutritious.Presentation.Models;
 using SessionMapper;
-using System.Text.Json;
 
 namespace NaturalAndNutritious.Presentation.Controllers
 {
@@ -19,15 +17,33 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            _logger.LogInformation("CartController Index method called.");
+
+            try
+            {
+                ViewData["title"] = "Cart";
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred in Cart Index method: {Exception}", ex.ToString());
+                ViewData["msg"] = "An unexpected error occurred.";
+                return View("Error");
+            }
         }
 
         [HttpPost]
         public IActionResult ProceedCheckout([FromBody] List<CheckoutModel> checkouts)
         {
+            _logger.LogInformation("ProceedCheckout method called.");
+
             try
             {
+                // Set checkouts in session
                 HttpContext.Session.SetAsJson<List<CheckoutModel>>("checkouts", checkouts);
+
+                _logger.LogInformation("Checkouts saved in session.");
 
                 return Ok(new
                 {
@@ -36,7 +52,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while proceeding checkout.");
+                _logger.LogError("An error occurred while proceeding checkout: {Exception}", ex.ToString());
                 return StatusCode(500, "An error occurred while proceeding checkout.");
             }
         }

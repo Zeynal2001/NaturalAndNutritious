@@ -97,7 +97,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(Guid Id)
         {
-            _logger.LogInformation("Delete POST action called with supplierId: {Id}", Id);
+            _logger.LogInformation("Shipper Delete POST action called with shipperId: {Id}", Id);
 
             var isDeleted = await _shipperRepository.DeleteAsync(Id);
             await _shipperRepository.SaveChangesAsync();
@@ -116,7 +116,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
         [HttpPost]
         public async Task<IActionResult> AssumingDeleted(Guid Id)
         {
-            _logger.LogInformation("AssumingDeleted POST action called with supplierId: {Id}", Id);
+            _logger.LogInformation("Shipper AssumingDeleted POST action called with shipperId: {Id}", Id);
 
             var supplier = await _shipperRepository.GetByIdAsync(Id);
 
