@@ -14,7 +14,6 @@ namespace NaturalAndNutritious.Business.Dtos.AdminPanelDtos
         public DateTime EndDate { get; set; }
         [Required]
         public string ProductId { get; set; }
-        [Required]
-        public string ProductName { get; set; }
+        public string? ProductName { get; set; }
     }
 }

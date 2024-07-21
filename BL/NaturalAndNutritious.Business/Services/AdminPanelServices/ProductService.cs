@@ -326,6 +326,7 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
             var totalProducts = await discountedProductsAsQueryable.CountAsync();
 
             var paginatedProducts = await discountedProductsAsQueryable
+                .OrderByDescending(p => p.ViewsCount)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -542,6 +543,206 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
             return productDetailDtos;
         }
 
+        public async Task<List<MainProductDto>> GetExoticFruits(int page, int pageSize)
+        {
+            if (page <= 0 || pageSize <= 0)
+            {
+                throw new ArgumentException("Page and pageSize must be greater than 0.");
+            }
+
+            var productsAsQueryable = _productRepository.Table
+                                      .Include(p => p.Category)
+                                      .Include(p => p.Discount)
+                                      .Where(p => !p.IsDeleted && p.SubCategory.SubCategoryName == "Exotic Fruits")
+                .OrderByDescending(p => p.ViewsCount)
+                .ThenByDescending(p => p.CreatedAt);
+
+            var totalProducts = await productsAsQueryable.CountAsync();
+
+            var paginatedProducts = await productsAsQueryable
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var productDetailDtos = new List<MainProductDto>();
+
+            foreach (var product in paginatedProducts)
+            {
+                var discount = await _discountRepository.GetDiscountByProductId(product.Id);
+                double discountedPrice = product.ProductPrice;
+
+                if (discount != null)
+                {
+                    discountedPrice = ApplyDiscount(product.ProductPrice, discount);
+                }
+
+                var productDetailDto = new MainProductDto
+                {
+                    Id = product.Id,
+                    ProductName = product.ProductName,
+                    ProductImageUrl = product.ProductImageUrl,
+                    ShortDescription = product.ShortDescription,
+                    OriginalPrice = product.ProductPrice,
+                    DiscountedPrice = discountedPrice,
+                    CategoryName = product.Category.CategoryName,
+                };
+
+                productDetailDtos.Add(productDetailDto);
+            }
+
+            return productDetailDtos;
+        }
+        
+        public async Task<List<MainProductDto>> GetExoticVegetables(int page, int pageSize)
+        {
+            if (page <= 0 || pageSize <= 0)
+            {
+                throw new ArgumentException("Page and pageSize must be greater than 0.");
+            }
+
+            var productsAsQueryable = _productRepository.Table
+                                      .Include(p => p.Category)
+                                      .Include(p => p.Discount)
+                                      .Where(p => !p.IsDeleted && p.SubCategory.SubCategoryName == "Exotic Vegetables")
+                .OrderByDescending(p => p.ViewsCount)
+                .ThenByDescending(p => p.CreatedAt);
+
+            var totalProducts = await productsAsQueryable.CountAsync();
+
+            var paginatedProducts = await productsAsQueryable
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var productDetailDtos = new List<MainProductDto>();
+
+            foreach (var product in paginatedProducts)
+            {
+                var discount = await _discountRepository.GetDiscountByProductId(product.Id);
+                double discountedPrice = product.ProductPrice;
+
+                if (discount != null)
+                {
+                    discountedPrice = ApplyDiscount(product.ProductPrice, discount);
+                }
+
+                var productDetailDto = new MainProductDto
+                {
+                    Id = product.Id,
+                    ProductName = product.ProductName,
+                    ProductImageUrl = product.ProductImageUrl,
+                    ShortDescription = product.ShortDescription,
+                    OriginalPrice = product.ProductPrice,
+                    DiscountedPrice = discountedPrice,
+                    CategoryName = product.Category.CategoryName,
+                };
+
+                productDetailDtos.Add(productDetailDto);
+            }
+
+            return productDetailDtos;
+        }
+        
+        public async Task<List<MainProductDto>> GetBerries(int page, int pageSize)
+        {
+            if (page <= 0 || pageSize <= 0)
+            {
+                throw new ArgumentException("Page and pageSize must be greater than 0.");
+            }
+
+            var productsAsQueryable = _productRepository.Table
+                                      .Include(p => p.Category)
+                                      .Include(p => p.Discount)
+                                      .Where(p => !p.IsDeleted && p.SubCategory.SubCategoryName == "Berries")
+                .OrderByDescending(p => p.ViewsCount)
+                .ThenByDescending(p => p.CreatedAt);
+
+            var totalProducts = await productsAsQueryable.CountAsync();
+
+            var paginatedProducts = await productsAsQueryable
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var productDetailDtos = new List<MainProductDto>();
+
+            foreach (var product in paginatedProducts)
+            {
+                var discount = await _discountRepository.GetDiscountByProductId(product.Id);
+                double discountedPrice = product.ProductPrice;
+
+                if (discount != null)
+                {
+                    discountedPrice = ApplyDiscount(product.ProductPrice, discount);
+                }
+
+                var productDetailDto = new MainProductDto
+                {
+                    Id = product.Id,
+                    ProductName = product.ProductName,
+                    ProductImageUrl = product.ProductImageUrl,
+                    ShortDescription = product.ShortDescription,
+                    OriginalPrice = product.ProductPrice,
+                    DiscountedPrice = discountedPrice,
+                    CategoryName = product.Category.CategoryName,
+                };
+
+                productDetailDtos.Add(productDetailDto);
+            }
+
+            return productDetailDtos;
+        }
+        
+        public async Task<List<MainProductDto>> GetApples(int page, int pageSize)
+        {
+            if (page <= 0 || pageSize <= 0)
+            {
+                throw new ArgumentException("Page and pageSize must be greater than 0.");
+            }
+
+            var productsAsQueryable = _productRepository.Table
+                                      .Include(p => p.Category)
+                                      .Include(p => p.Discount)
+                                      .Where(p => !p.IsDeleted && p.SubCategory.SubCategoryName == "Apples")
+                .OrderByDescending(p => p.ViewsCount)
+                .ThenByDescending(p => p.CreatedAt);
+
+            var totalProducts = await productsAsQueryable.CountAsync();
+
+            var paginatedProducts = await productsAsQueryable
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var productDetailDtos = new List<MainProductDto>();
+
+            foreach (var product in paginatedProducts)
+            {
+                var discount = await _discountRepository.GetDiscountByProductId(product.Id);
+                double discountedPrice = product.ProductPrice;
+
+                if (discount != null)
+                {
+                    discountedPrice = ApplyDiscount(product.ProductPrice, discount);
+                }
+
+                var productDetailDto = new MainProductDto
+                {
+                    Id = product.Id,
+                    ProductName = product.ProductName,
+                    ProductImageUrl = product.ProductImageUrl,
+                    ShortDescription = product.ShortDescription,
+                    OriginalPrice = product.ProductPrice,
+                    DiscountedPrice = discountedPrice,
+                    CategoryName = product.Category.CategoryName,
+                };
+
+                productDetailDtos.Add(productDetailDto);
+            }
+
+            return productDetailDtos;
+        }
+
         public async Task<int> TotalProductsForProductsController()
         {
             var productsAsQueryable = _productRepository.Table
@@ -553,6 +754,55 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
 
             return await productsAsQueryable.CountAsync();
         }
+        
+        public async Task<int> TotalExoticFruits()
+        {
+            var productsAsQueryable = _productRepository.Table
+                                    .Include(p => p.Category)
+                                    .Include(p => p.Discount)
+                                    .Where(p => !p.IsDeleted && p.SubCategory.SubCategoryName == "Exotic Fruits")
+            .OrderByDescending(p => p.ViewsCount)
+            .ThenByDescending(p => p.CreatedAt);
+
+            return await productsAsQueryable.CountAsync();
+        }
+        
+        public async Task<int> TotalExoticVegetables()
+        {
+            var productsAsQueryable = _productRepository.Table
+                                    .Include(p => p.Category)
+                                    .Include(p => p.Discount)
+                                    .Where(p => !p.IsDeleted && p.SubCategory.SubCategoryName == "Exotic Vegetables")
+            .OrderByDescending(p => p.ViewsCount)
+            .ThenByDescending(p => p.CreatedAt);
+
+            return await productsAsQueryable.CountAsync();
+        }
+        
+        public async Task<int> TotalBerries()
+        {
+            var productsAsQueryable = _productRepository.Table
+                                    .Include(p => p.Category)
+                                    .Include(p => p.Discount)
+                                    .Where(p => !p.IsDeleted && p.SubCategory.SubCategoryName == "Berries")
+            .OrderByDescending(p => p.ViewsCount)
+            .ThenByDescending(p => p.CreatedAt);
+
+            return await productsAsQueryable.CountAsync();
+        }
+        
+        public async Task<int> TotalApples()
+        {
+            var productsAsQueryable = _productRepository.Table
+                                    .Include(p => p.Category)
+                                    .Include(p => p.Discount)
+                                    .Where(p => !p.IsDeleted && p.SubCategory.SubCategoryName == "Apples")
+            .OrderByDescending(p => p.ViewsCount)
+            .ThenByDescending(p => p.CreatedAt);
+
+            return await productsAsQueryable.CountAsync();
+        }
+        
 
         public async Task<List<MainProductDto>> GetBestSellers(int topN)
         {
@@ -623,7 +873,7 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                 .Include(p => p.Category)
                 .Include(p => p.Category)
                 .Include(p => p.Discount)
-                .Where(p => p.Category.CategoryName == "Vegetable" && (!p.IsDeleted))
+                .Where(p => p.Category.CategoryName == "Vegetables" && (!p.IsDeleted))
                 .Take(8)
                 .Select(p => new MainProductDto()
                 {

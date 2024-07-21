@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using NaturalAndNutritious.Business.Abstractions;
 using NaturalAndNutritious.Business.Dtos;
@@ -100,7 +101,6 @@ namespace NaturalAndNutritious.Presentation.Controllers
                     Products = products,
                     Id = category.Id,
                     Categories = await categoriesAsQueryable
-                        .Where(c => !c.IsDeleted)
                         .Select(c => new CategoryDto()
                         {
                             Id = c.Id,
@@ -140,10 +140,10 @@ namespace NaturalAndNutritious.Presentation.Controllers
         {
             _logger.LogInformation("Detail method called for product ID {ProductId}", Id);
 
-            var theUserHasOrder = false;
             try
             {
                 ViewData["title"] = "Product Details";
+                var theUserHasOrder = false;
 
                 var product = await _productRepository.Table
                                     .Include(p => p.Category)
@@ -279,12 +279,13 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
             try
             {
-                var user = await _userManager.GetUserAsync(User);
-                if (user == null)
+                if (!User.Identity.IsAuthenticated)
                 {
                     _logger.LogWarning("User is not authenticated while trying to add review.");
                     return Unauthorized();
                 }
+
+                var user = await _userManager.GetUserAsync(User);
 
                 await _productService.AddReviewAsync(reviewDto, user);
                 _logger.LogInformation("Review added for product ID {ProductId} by user {UserId}.", reviewDto.ProductId, user.Id);
@@ -411,6 +412,70 @@ namespace NaturalAndNutritious.Presentation.Controllers
                 _logger.LogError("An error occurred while retrieving product by ID {ProductId}: {Exception}", id, ex.ToString());
                 return StatusCode(500);
             }
+        }
+
+        public async Task<IActionResult> ExoticFruits(int page = 1)
+        {
+            ViewData["title"] = "Exotic Fruits";
+
+            var fruits = await _productService.GetExoticFruits(page, 8);
+
+            var vm = new ExoticFruitsVm()
+            {
+                Fruits = fruits,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling(await _productService.TotalExoticFruits() / (double)9)
+            };
+
+            return View(vm);
+        }
+
+        public async Task<IActionResult> ExoticVegetables(int page = 1)
+        {
+            ViewData["title"] = "Exotic Vegetables";
+
+            var fruits = await _productService.GetExoticVegetables(page, 8);
+
+            var vm = new ExoticVegetablesVm()
+            {
+                Fruits = fruits,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling(await _productService.TotalExoticVegetables() / (double)9)
+            };
+
+            return View(vm);
+        }
+
+        public async Task<IActionResult> TastyBerries(int page = 1)
+        {
+            ViewData["title"] = "Tasty Berries";
+
+            var fruits = await _productService.GetBerries(page, 8);
+
+            var vm = new TastyBerriesVm()
+            {
+                Fruits = fruits,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling(await _productService.TotalBerries() / (double)9)
+            };
+
+            return View(vm);
+        }
+        
+        public async Task<IActionResult> FreshApples(int page = 1)
+        {
+            ViewData["title"] = "Fresh Apples";
+
+            var fruits = await _productService.GetApples(page, 8);
+
+            var vm = new FreshApplesVm()
+            {
+                Fruits = fruits,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling(await _productService.TotalApples() / (double)9)
+            };
+
+            return View(vm);
         }
     }
 }

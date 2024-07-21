@@ -1,6 +1,49 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">@ViewData["title"]</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a asp-action="Index">@Context.Request.Path.ToString().Replace(@Context.Request.Path.ToString(), "Home")</a></li>
+        <li class="breadcrumb-item"><a asp-action="Privacy">@ViewData["Title"]</a></li>
+        @* <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+        <li class="breadcrumb-item active text-white">Shop</li> *@
+    </ol>
+</div>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h2>Privacy Policy</h2>
+            <p>At Natural & Nutritious, we value your privacy and are committed to protecting your personal information. This privacy policy outlines how we collect, use, and safeguard your data.</p>
+
+            <h3>Information Collection</h3>
+            <p>We collect information from you when you register on our site, place an order, subscribe to our newsletter, or fill out a form. The types of information we may collect include your name, email address, mailing address, phone number, and payment details.</p>
+
+            <h3>Information Use</h3>
+            <p>The information we collect from you may be used in the following ways:</p>
+            <ul>
+                <li>To personalize your experience</li>
+                <li>To improve our website</li>
+                <li>To process transactions</li>
+                <li>To send periodic emails</li>
+            </ul>
+
+            <h3>Information Protection</h3>
+            <p>We implement a variety of security measures to maintain the safety of your personal information when you place an order or enter, submit, or access your personal information.</p>
+
+            <h3>Third-Party Disclosure</h3>
+            <p>We do not sell, trade, or otherwise transfer to outside parties your personally identifiable information. This does not include trusted third parties who assist us in operating our website, conducting our business, or servicing you, so long as those parties agree to keep this information confidential.</p>
+
+            <h3>Changes to Our Privacy Policy</h3>
+            <p>We reserve the right to update or change our privacy policy at any time. Any changes will be posted on this page, and the date of the update will be indicated.</p>
+
+            <p>By using our site, you consent to our privacy policy.</p>
+
+            <p>If you have any questions about this privacy policy, you can contact us using the information below:</p>
+            <p><a asp-action="Contact">Click Here</a></p>
+        </div>
+    </div>
+</div>

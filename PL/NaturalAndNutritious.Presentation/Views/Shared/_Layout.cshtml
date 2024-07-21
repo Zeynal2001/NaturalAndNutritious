@@ -57,9 +57,9 @@
                     <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="mailto:nutritious@gmail.com" class="text-white">nutritious@gmail.com</a></small>
                 </div>
                 <div class="top-link pe-2">
-                    <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
-                    <a href="#" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
-                    <a href="#" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
+                    <a asp-action="Privacy" asp-controller="Home" class="text-white"><small class="text-white mx-2">Privacy Policy</small>@*/*@</a>
+                    @* <a href="#" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
+                    <a href="#" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a> *@
                 </div>
             </div>
         </div>
@@ -255,10 +255,10 @@
                 <div class="col-lg-3 col-md-6">
                     <div class="d-flex flex-column text-start footer-item">
                         <h4 class="text-light mb-3">Shop Info</h4>
-                        <a class="btn-link" asp-action="Contact" asp-controller="Home">About Us</a>
+                        <a class="btn-link" asp-action="AboutUs" asp-controller="Home">About Us</a>
                         <a class="btn-link" asp-action="Contact" asp-controller="Home">Contact Us</a>
-                        <a class="btn-link" asp-action="Contact" asp-controller="Home">Privacy Policy</a>
-                        <a class="btn-link" asp-action="Contact" asp-controller="Home">Terms & Condition</a>
+                        <a class="btn-link" asp-action="Privacy" asp-controller="Home">Privacy Policy</a>
+                        <a class="btn-link" asp-action="TermsAndCondition" asp-controller="Home">Terms & Condition</a>
                         <a class="btn-link" asp-action="Contact" asp-controller="Home">Return Policy</a>
                         <a class="btn-link" asp-action="Contact" asp-controller="Home">FAQs & Help</a>
                     </div>

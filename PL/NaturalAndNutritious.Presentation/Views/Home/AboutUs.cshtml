@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "About Us";
+}
+
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">@ViewData["title"]</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a asp-action="Index">@Context.Request.Path.ToString().Replace(@Context.Request.Path.ToString(), "Home")</a></li>
+        <li class="breadcrumb-item"><a asp-action="Privacy">@ViewData["Title"]</a></li>
+        @* <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+        <li class="breadcrumb-item active text-white">Shop</li> *@
+    </ol>
+</div>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h2>About Us</h2>
+            <p>Welcome to Natural & Nutritious, your number one source for all organic and wholesome products. We're dedicated to giving you the very best of fruits, vegetables, bread, and meat, with a focus on quality, customer service, and uniqueness.</p>
+
+            <h3>Our Story</h3>
+            <p>Founded in 2024, Natural & Nutritious has come a long way from its beginnings in a small home kitchen. When we first started out, our passion for healthy, organic products drove us to do intense research and gave us the impetus to turn hard work and inspiration into a booming online store. We now serve customers all over the world and are thrilled to be a part of the eco-friendly, fair trade wing of the food industry.</p>
+
+            <h3>Our Mission</h3>
+            <p>Our mission is to provide our customers with high-quality, nutritious products that promote a healthier lifestyle. We believe in sustainability and work closely with local farmers and suppliers to bring you fresh and organic produce.</p>
+
+            <h3>Why Choose Us?</h3>
+            <ul>
+                <li>High-Quality Products</li>
+                <li>Exceptional Customer Service</li>
+                <li>Commitment to Sustainability</li>
+                <li>Wide Variety of Organic Products</li>
+            </ul>
+
+            <h3>Get in Touch</h3>
+            <p>If you have any questions or comments, please don't hesitate to contact us. We value your feedback and look forward to hearing from you:</p>
+            <p><a asp-action="Contact">Click Here</a></p>
+        </div>
+    </div>
+</div>

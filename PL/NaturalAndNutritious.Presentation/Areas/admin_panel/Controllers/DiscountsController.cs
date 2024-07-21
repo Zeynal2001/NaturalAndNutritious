@@ -89,7 +89,7 @@ namespace NaturalAndNutritious.Presentation.Areas.admin_panel.Controllers
                 return View("AdminError", error);
             }
 
-            _logger.LogInformation("Discount created successfully for productId: {ProductId}", model.ProductId);
+            _logger.LogInformation("Discount created successfully for productId {ProductId}, amount/rate: {Amount}", model.ProductId, model.DiscountRate);
             return RedirectToAction("GetAllProducts", "Products");
         }
     }

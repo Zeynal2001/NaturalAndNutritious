@@ -4,6 +4,7 @@ using NaturalAndNutritious.Business.Abstractions;
 using NaturalAndNutritious.Business.Dtos;
 using NaturalAndNutritious.Data.Abstractions;
 using NaturalAndNutritious.Data.Entities;
+using NaturalAndNutritious.Data.Enums;
 using NaturalAndNutritious.Presentation.ViewModels;
 
 namespace NaturalAndNutritious.Presentation.Controllers
@@ -17,8 +18,9 @@ namespace NaturalAndNutritious.Presentation.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IReviewRepository _reviewRepository;
         private readonly IMessageRepository _messageRepository;
+        private readonly IDiscountRepository _discountRepository;
 
-        public HomeController(ILogger<HomeController> logger, IProductService productService, IProductRepository productRepository, ICategoryRepository categoryRepository, IUserRepository userRepository, IReviewRepository reviewRepository, IMessageRepository messageRepository)
+        public HomeController(ILogger<HomeController> logger, IProductService productService, IProductRepository productRepository, ICategoryRepository categoryRepository, IUserRepository userRepository, IReviewRepository reviewRepository, IMessageRepository messageRepository, IDiscountRepository discountRepository)
         {
             _logger = logger;
             _productService = productService;
@@ -27,6 +29,7 @@ namespace NaturalAndNutritious.Presentation.Controllers
             _userRepository = userRepository;
             _reviewRepository = reviewRepository;
             _messageRepository = messageRepository;
+            _discountRepository = discountRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -36,6 +39,8 @@ namespace NaturalAndNutritious.Presentation.Controllers
             try
             {
                 ViewData["title"] = "Home";
+                double amount = 0.0;
+                double amount2 = 0.0;
 
                 var totalproducts = await _productRepository.GetAllAsync();
                 var totoalusers = await _userRepository.GetAllUsers();
@@ -51,6 +56,26 @@ namespace NaturalAndNutritious.Presentation.Controllers
                     CategoryName = c.CategoryName
                 }).ToListAsync();
 
+                var discount = await _discountRepository.Table
+                    .Where(d => !d.IsDeleted && d.Product.SubCategory.SubCategoryName == "Exotic Vegetables" && d.DiscountType == nameof(DiscountType.FixedAmount))
+                    .OrderByDescending(d => d.DiscountRate)
+                    .FirstOrDefaultAsync();
+                
+                var discount2 = await _discountRepository.Table
+                    .Where(d => !d.IsDeleted && d.Product.SubCategory.SubCategoryName == "Apples" && d.DiscountType == nameof(DiscountType.Percentage))
+                    .OrderByDescending(d => d.DiscountRate)
+                    .FirstOrDefaultAsync();
+
+                if (discount != null)
+                {
+                    amount = discount.DiscountRate;
+                }
+
+                if (discount2 != null)
+                {
+                    amount2 = discount2.DiscountRate;
+                }
+                
                 var vm = new HomeVm()
                 {
                     Categories = categories,
@@ -59,6 +84,8 @@ namespace NaturalAndNutritious.Presentation.Controllers
                     Vegetables = vegetables,
                     TotalCustomers = totoalusers.Count(),
                     TotalProducts = totalproducts.Count(),
+                    HighestDiscountVegetable = amount,
+                    HighestDiscountFruit = amount2,
                     Reviews = _reviewRepository.Table
                     .Where(r => r.Rating == 5 || r.Rating == 4)
                     .Select(r => new ReviewDto
@@ -178,7 +205,6 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddMessage(MessageDto dto)
@@ -227,14 +253,16 @@ namespace NaturalAndNutritious.Presentation.Controllers
             }
         }
 
-
         public IActionResult Privacy()
         {
-            ViewData["title"] = "Privacy";
-
+            return View();
+        } 
+        
+        public IActionResult AboutUs()
+        {
             return View();
         }
-
+        
         //[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         //public IActionResult Error()
         //{

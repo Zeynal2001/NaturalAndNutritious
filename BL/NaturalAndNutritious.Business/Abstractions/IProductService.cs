@@ -20,7 +20,15 @@ namespace NaturalAndNutritious.Business.Abstractions
         Task<List<MainProductDto>> GetVegetablesForVegetablesArea();
         Task<HomeFilterDtoAsVm> FilterProductsByCategories(string categoryFilter, int page, int pageSize);
         Task<List<MainProductDto>> ProductsForProductsController(int page, int pageSize);
+        Task<List<MainProductDto>> GetExoticFruits(int page, int pageSize);
+        Task<List<MainProductDto>> GetExoticVegetables(int page, int pageSize);
+        Task<List<MainProductDto>> GetBerries(int page, int pageSize);
+        Task<List<MainProductDto>> GetApples(int page, int pageSize);
         Task<int> TotalProductsForProductsController();
+        Task<int> TotalExoticFruits();
+        Task<int> TotalExoticVegetables();
+        Task<int> TotalBerries();
+        Task<int> TotalApples();
         Task<List<MainProductDto>> FilterProductsByCategoriesProductsController(Guid categoryId, int page, int pageSize);
         Task<List<MainProductDto>> GetAllDiscountedProducts();
         Task<List<RelatedProductsDto>> GetRelateProducts(Product product);

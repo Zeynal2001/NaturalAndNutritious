@@ -13,5 +13,7 @@ namespace NaturalAndNutritious.Presentation.ViewModels
         public int TotalCustomers { get; set; }
         public int TotalProducts { get; set; }
         public List<ReviewDto> Reviews { get; set; }
+        public double HighestDiscountVegetable { get; set; }
+        public double HighestDiscountFruit { get; set; }
     }
 }
