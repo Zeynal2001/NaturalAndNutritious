@@ -1,25 +1,36 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using NaturalAndNutritious.Business.Abstractions;
 using NaturalAndNutritious.Business.Abstractions.AdminPanelAbstractions;
 using NaturalAndNutritious.Business.Dtos;
+using NaturalAndNutritious.Data.Abstractions;
+using NaturalAndNutritious.Data.Entities;
+using NaturalAndNutritious.Presentation.ViewModels;
+using NuGet.Common;
 using System.Security.Claims;
 
 namespace NaturalAndNutritious.Presentation.Controllers
 {
     public class AuthController : Controller
     {
-        public AuthController(IAuthService authService, IStorageService storageService, IUserService usersService, ILogger<AuthController> logger)
+        public AuthController(IAuthService authService, IStorageService storageService, IUserService usersService, ILogger<AuthController> logger, UserManager<AppUser> userManager, IEmailService emailService, IUserRepository userRepository)
         {
             _authService = authService;
             _storageService = storageService;
             _usersService = usersService;
             _logger = logger;
+            _userManager = userManager;
+            _emailService = emailService;
+            _userRepository = userRepository;
         }
 
         private readonly IAuthService _authService;
         private readonly IStorageService _storageService;
         private readonly IUserService _usersService;
+        private readonly IEmailService _emailService;
+        private readonly IUserRepository _userRepository;
         private readonly ILogger<AuthController> _logger;
+        private readonly UserManager<AppUser> _userManager;
 
         public IActionResult Login(string? returnUrl)
         {
@@ -164,6 +175,90 @@ namespace NaturalAndNutritious.Presentation.Controllers
 
             _logger.LogInformation("User deleted successfully.");
             return RedirectToAction(nameof(Login));
+        }
+
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userRepository.FindUserByEmailAsync(model.Email);
+            if (user == null)
+            {
+                _logger.LogWarning("User with email {Email} was not found.", model.Email);
+                ViewData["msg"] = "No users with this email address could be found.";
+                return View("Error");
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var resetLink = Url.Action("ResetPassword", "Auth", new { token, email = model.Email }, protocol: Request.Scheme);
+
+            await _emailService.SendPasswordResetEmailAsync(model.Email, resetLink);
+            _logger.LogInformation("Password reset email sent to {Email}.", model.Email);
+
+            return RedirectToAction(nameof(ForgotPasswordConfirmation));
+        }
+
+        public IActionResult ForgotPasswordConfirmation()
+        {
+            return View();
+        }
+
+        public IActionResult ResetPassword(string token = null)
+        {
+            if (token == null)
+            {
+                _logger.LogError("A code must be supplied for password reset.");
+                throw new ApplicationException("A code must be supplied for password reset.");
+            }
+            var model = new ResetPasswordViewModel { Token = token };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userRepository.FindUserByEmailAsync(model.Email);
+            if (user == null)
+            {
+                _logger.LogWarning("User with email {Email} was not found.", model.Email);
+                return RedirectToAction(nameof(ResetPasswordConfirmation));
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("Password reset successful for user with email {Email}.", model.Email);
+                return RedirectToAction(nameof(ResetPasswordConfirmation));
+            }
+
+            foreach (var error in result.Errors)
+            {
+                _logger.LogError("Error resetting password for user with email {Email}: {Error}", model.Email, error.Description);
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
+        }
+
+        public IActionResult ResetPasswordConfirmation()
+        {
+            return View();
         }
     }
 }

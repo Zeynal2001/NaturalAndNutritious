@@ -5,6 +5,9 @@ using NaturalAndNutritious.Business.Services;
 using NaturalAndNutritious.Business.Abstractions;
 using NaturalAndNutritious.Business.Abstractions.AdminPanelAbstractions;
 using NaturalAndNutritious.Business.Services.AdminPanelServices;
+using Microsoft.AspNetCore.Identity;
+using NaturalAndNutritious.Data.Entities;
+using NaturalAndNutritious.Data.Data;
 
 namespace NaturalAndNutritious.Business.Extensions
 {

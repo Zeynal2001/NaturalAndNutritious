@@ -11,6 +11,7 @@ namespace NaturalAndNutritious.Data.Abstractions
         Task<AppUser> GetUserByIdAsync(string userId);
         Task<IdentityResult> UpdateUserAsync(AppUser user);
         Task<IdentityResult> DeleteUserAsync(AppUser user);
+        Task<AppUser> FindUserByEmailAsync(string email);
         Task<IdentityResult> ChangeUserPasswordAsync(AppUser user, string currentPassword, string newPassword);
     }
 }

@@ -74,12 +74,17 @@ namespace NaturalAndNutritious.Business.Repositories
         {
             return await Task.FromResult(_context.Users);
         }
+
+        public async Task<AppUser> FindUserByEmailAsync(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+        }
         /*
 public IQueryable<Review> GetReviewsByUserId(string userId)
 {
 return _context.Reviews
-      .Include(r => r.AppUser)
-      .Where(r => r.AppUser.Id == userId).AsQueryable();
+.Include(r => r.AppUser)
+.Where(r => r.AppUser.Id == userId).AsQueryable();
 }
 */
 

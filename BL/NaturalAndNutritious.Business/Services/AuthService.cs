@@ -95,7 +95,6 @@ namespace NaturalAndNutritious.Business.Services
             }
         }
 
-
         public async Task LogOut()
         {
             await _signInManager.SignOutAsync();

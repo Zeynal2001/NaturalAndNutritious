@@ -4,6 +4,7 @@ using MimeKit.Text;
 using NaturalAndNutritious.Business.Abstractions;
 using NaturalAndNutritious.Business.Dtos;
 using NaturalAndNutritious.Business.OptionTypes;
+using System.Net;
 
 namespace NaturalAndNutritious.Business.Services
 {
@@ -34,6 +35,24 @@ namespace NaturalAndNutritious.Business.Services
                 Console.WriteLine(ex.Message);
                 Console.ResetColor();
             }
+        }
+
+        public async Task SendPasswordResetEmailAsync(string email, string resetLink)
+        {
+            var subject = "Reset Your Password";
+            var content = $"Please reset your password by clicking this link: {resetLink}";
+
+            var mailDto = new MailDto
+            {
+                Addresses = new List<MailboxAddress>()
+                {
+                    new MailboxAddress("receiver", email)
+                },
+                Subject = subject,
+                Content = content
+            };
+
+            await SendAsync(mailDto);
         }
 
         private MimeMessage CreateMimeMessage(MailDto dto)
