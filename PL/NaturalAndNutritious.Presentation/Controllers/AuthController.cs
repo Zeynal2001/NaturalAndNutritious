@@ -237,7 +237,9 @@ namespace NaturalAndNutritious.Presentation.Controllers
             if (user == null)
             {
                 _logger.LogWarning("User with email {Email} was not found.", model.Email);
-                return RedirectToAction(nameof(ResetPasswordConfirmation));
+                ViewData["msg"] = "No users with this email address could be found.";
+                return View("Error");
+                //return RedirectToAction(nameof(ResetPasswordConfirmation));
             }
 
             var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);

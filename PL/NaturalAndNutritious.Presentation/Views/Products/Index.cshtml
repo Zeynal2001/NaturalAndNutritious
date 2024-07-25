@@ -120,8 +120,16 @@
                                                     <div class="d-flex mb-2">
                                                         @if (product.DiscountedPrice != product.OriginalPrice)
                                                         {
-                                                            <h5 class="fw-bold me-2">@product.DiscountedPrice ₼</h5>
-                                                            <p class="text-danger text-decoration-line-through">₼@product.OriginalPrice / kg</p>
+                                                            if (product.CategoryName == "Breads")
+                                                            {
+                                                                <h5 class="fw-bold me-2">@product.DiscountedPrice ₼</h5>
+                                                                <p class="text-danger text-decoration-line-through">₼@product.OriginalPrice pack/piece</p>
+                                                            }
+                                                            else
+                                                            {
+                                                                <h5 class="fw-bold me-2">@product.DiscountedPrice ₼</h5>
+                                                                <p class="text-danger text-decoration-line-through">₼@product.OriginalPrice / kg</p>
+                                                            }
                                                         }
                                                         else
                                                         {
@@ -176,12 +184,27 @@
                                                             <div class="d-flex justify-content-between flex-lg-wrap">
                                                                 @if (product.DiscountedPrice != product.OriginalPrice)
                                                                 {
-                                                                    <p class="text-dark fs-5 fw-bold me-2">₼@product.DiscountedPrice / kg</p>
-                                                                    <p class="text-danger text-decoration-line-through">₼@product.OriginalPrice / kg</p>
+                                                                    if (product.CategoryName == "Breads")
+                                                                    {
+                                                                        <p class="text-dark fs-5 fw-bold me-2">₼@product.DiscountedPrice pack/piece</p>
+                                                                        <p class="text-danger text-decoration-line-through">₼@product.OriginalPrice pack/piece</p>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <p class="text-dark fs-5 fw-bold me-2">₼@product.DiscountedPrice / kg</p>
+                                                                        <p class="text-danger text-decoration-line-through">₼@product.OriginalPrice / kg</p>
+                                                                    }
                                                                 }
                                                                 else
                                                                 {
-                                                                    <p class="text-dark fs-5 fw-bold me-2">₼@product.OriginalPrice / kg</p>
+                                                                    if (product.CategoryName == "Breads")
+                                                                    {
+                                                                        <p class="text-dark fs-5 fw-bold me-2">₼@product.OriginalPrice pack/piece</p>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <p class="text-dark fs-5 fw-bold me-2">₼@product.OriginalPrice / kg</p>
+                                                                    }   
                                                                 }
                                                             </div>
                                                         </div>

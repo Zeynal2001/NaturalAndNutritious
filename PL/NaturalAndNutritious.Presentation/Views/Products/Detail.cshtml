@@ -27,14 +27,34 @@
                         <div class="col-lg-6">
                             <h4 class="fw-bold mb-3">@Model.ProductDetails.ProductName</h4>
                             <p class="mb-3">Category: @Model.ProductDetails.CategoryName</p>
+                            @{
+                                var cat = Model.ProductDetails.CategoryName == "Breads";
+                            }
                             @if (Model.ProductDetails.DiscountedPrice != Model.ProductDetails.OriginalPrice)
                             {
-                                <h5 class="fw-bold mb-3">₼@Model.ProductDetails.DiscountedPrice /kg</h5>
-                                <h5 class="text-danger text-decoration-line-through">₼@Model.ProductDetails.OriginalPrice /kg</h5>
+                                if (cat)
+                                {
+                                    <h5 class="fw-bold mb-3">₼@Model.ProductDetails.DiscountedPrice pack/piece</h5>
+                                    <h5 class="text-danger text-decoration-line-through">₼@Model.ProductDetails.OriginalPrice pack/piece</h5>
+                                }
+                                else
+                                {
+                                    <h5 class="fw-bold mb-3">₼@Model.ProductDetails.DiscountedPrice /kg</h5>
+                                    <h5 class="text-danger text-decoration-line-through">₼@Model.ProductDetails.OriginalPrice /kg</h5>
+                                }
+                                
                             }
                             else
                             {
-                                <h5 class="fw-bold mb-3">₼@Model.ProductDetails.OriginalPrice /kg</h5>
+                                if (cat)
+                                {
+                                    <h5 class="fw-bold mb-3">₼@Model.ProductDetails.OriginalPrice pack/piece</h5>
+                                }
+                                else
+                                {
+                                    <h5 class="fw-bold mb-3">₼@Model.ProductDetails.OriginalPrice /kg</h5>
+                                }
+                                
                             }
                             <div class="d-flex mb-4">
                                 @{
