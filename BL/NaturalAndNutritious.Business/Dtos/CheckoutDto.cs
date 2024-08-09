@@ -4,7 +4,6 @@ namespace NaturalAndNutritious.Business.Dtos
 {
     public class CheckoutDto
     {
-        public string ShipName { get; set; }
         [Required]
         public string ShipAddress { get; set; }
         [Required]

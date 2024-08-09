@@ -802,7 +802,6 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
 
             return await productsAsQueryable.CountAsync();
         }
-        
 
         public async Task<List<MainProductDto>> GetBestSellers(int topN)
         {

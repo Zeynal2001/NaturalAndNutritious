@@ -30,6 +30,12 @@ namespace NaturalAndNutritious.Presentation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(CheckoutDto model)
         {
+            if (!ModelState.IsValid) 
+            {
+                _logger.LogWarning("Model state is invalid for model: {@model}", model);
+                return View(model);
+            }
+
             _logger.LogInformation("Checkout process started with the following data: {CheckoutDto}", model);
 
             var (success, message) = await _orderService.ProcessOrderAsync(model, User, HttpContext.Session);
@@ -45,7 +51,6 @@ namespace NaturalAndNutritious.Presentation.Controllers
             ViewData["msg"] = message;
             return View("Error");
         }
-
 
         public IActionResult OrderResult()
         {
