@@ -20,6 +20,4 @@ Whether you're a seasoned health enthusiast or just beginning your journey towar
 
 Happy shopping, and here's to a happier, healthier you! 🛍️🌞
 
-https://naturalandnutritiouss.bsite.net/
-
 [Zeynal Zeynalov/YASABMMC]
