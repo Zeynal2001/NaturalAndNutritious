@@ -331,7 +331,7 @@ namespace NaturalAndNutritious.Business.Services.AdminPanelServices
                 .Take(pageSize)
                 .ToListAsync();
 
-            var productDetailDtos = new List<MainProductDto>();
+            var productDetailDtos = new List<MainProductDto>(); 
 
             foreach (var product in paginatedProducts)
             {
