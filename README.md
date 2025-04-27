@@ -22,4 +22,4 @@ Happy shopping, and here's to a happier, healthier you! 🛍️🌞
 
 Visit site -> https://naturalandnutritiouss.bsite.net/
 
-[Zeynal Zeynalov/YASABMMC]
+[Zeynal Zeynalov]
